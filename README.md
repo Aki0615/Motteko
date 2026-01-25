@@ -19,6 +19,18 @@
 - Google Fonts
 - flutter_animate (アニメーション)
 
+## アーキテクチャ
+
+### 🎯 Dart専用実装
+
+このプロジェクトは**100% Dartのみで実装**されています。
+
+- ✅ カスタムネイティブコード（Kotlin/Swift）は使用していません
+- ✅ `MainActivity.kt`と`AppDelegate.swift`はFlutterのデフォルト実装のみ
+- ✅ 全てのアプリロジックはDartで記述
+
+今後の機能追加（カメラ、センサー、通知など）も、Dartプラグインを使用して実装する方針です。
+
 ## Getting Started
 
 ### 前提条件
