@@ -1,16 +1,45 @@
-# study
+# 忘れん坊防止アプリ (wasurenbo-test)
 
-A new Flutter project.
+忘れ物を防止するためのFlutterアプリケーションです。
+
+## 機能
+
+- **ホーム画面**: 統計情報と現在の状態を一目で確認
+- **持ち物リスト**: 忘れたくないアイテムを登録・管理
+- **カメラ監視**: カメラで持ち物を確認（デモモード）
+- **センサー連携**: 人感センサーの状態を表示（デモモード）
+- **通知履歴**: 過去の通知を確認
+
+## 技術スタック
+
+- Flutter
+- Provider (状態管理)
+- SharedPreferences (データ永続化)
+- go_router (ルーティング)
+- Google Fonts
+- flutter_animate (アニメーション)
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### 前提条件
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter SDK
+- Dart
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### インストール
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+# 依存関係のインストール
+flutter pub get
+
+# アプリの実行
+flutter run
+```
+
+## 開発状況
+
+現在は基本的な枠組みの実装が完了しています。今後、実際のカメラ機能やセンサー連携、通知機能を実装予定です。
+
+## ライセンス
+
+このプロジェクトはテスト用です。
