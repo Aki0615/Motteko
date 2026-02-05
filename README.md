@@ -1,4 +1,4 @@
-# 忘れん坊防止アプリ (wasurenbo-test)
+# 忘れん坊防止アプリ (Motteko)
 
 忘れ物を防止するためのFlutterアプリケーションです。
 
