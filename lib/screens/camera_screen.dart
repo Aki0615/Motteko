@@ -8,196 +8,132 @@ class CameraScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
-    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('カメラ監視'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 説明カード
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: theme.colorScheme.primary,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          'カメラ監視について',
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+            // ヘッダー部分
+            Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'カメラ監視',
+                    style: TextStyle(
+                      color: Color(0xFFFF7B00),
+                      fontSize: 32,
+                      fontFamily: 'LINESeedJP',
+                      fontWeight: FontWeight.w700,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'カメラを使って忘れたくないものを確認できます。将来的には実際のカメラ映像をリアルタイムで表示し、物体検知機能も追加予定です。',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color:
-                            theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 24),
 
-            // カメラプレビュー
-            Card(
-              child: Container(
-                height: 300,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.black87,
-                ),
-                child: Stack(
+            // メインコンテンツエリア
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
                   children: [
-                    Center(
+                    const SizedBox(height: 20),
+
+                    // カメラプレビューエリア
+                    Container(
+                      width: double.infinity,
+                      height: 250,
+                      padding: const EdgeInsets.all(16),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF1F2937),
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                            width: 1,
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            appState.isCameraActive
-                                ? Icons.videocam
-                                : Icons.videocam_off,
-                            size: 64,
-                            color: appState.isCameraActive
-                                ? Colors.green
-                                : Colors.white54,
+                          // カメラアイコン（停止中は斜線入り）
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              appState.isCameraActive
+                                  ? Icons.videocam
+                                  : Icons.videocam_off_outlined,
+                              size: 48,
+                              color: const Color(0xFF6B7280),
+                            ),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             appState.isCameraActive
                                 ? 'カメラ起動中...'
                                 : 'カメラは停止しています',
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: Colors.white70,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '※ デモモード',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.white54,
+                            style: const TextStyle(
+                              color: Color(0xFF6B7280),
+                              fontSize: 14,
+                              fontFamily: 'LINESeedJP',
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    if (appState.isCameraActive)
-                      Positioned(
-                        top: 16,
-                        right: 16,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
+
+                    const SizedBox(height: 32),
+
+                    // 写真を撮影ボタン
+                    GestureDetector(
+                      onTap: () {
+                        appState.toggleCamera();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              appState.isCameraActive
+                                  ? 'カメラを起動しました'
+                                  : 'カメラを停止しました',
+                            ),
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
+                        );
+                      },
+                      child: Container(
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFFF7B00),
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              '写真を撮影',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontFamily: 'LINESeedJP',
+                                fontWeight: FontWeight.w500,
                               ),
-                              const SizedBox(width: 8),
-                              const Text(
-                                'REC',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // カメラコントロール
-            ElevatedButton.icon(
-              onPressed: () {
-                appState.toggleCamera();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      appState.isCameraActive ? 'カメラを起動しました' : 'カメラを停止しました',
-                    ),
-                  ),
-                );
-              },
-              icon: Icon(
-                appState.isCameraActive ? Icons.stop : Icons.play_arrow,
-              ),
-              label: Text(
-                appState.isCameraActive ? 'カメラを停止' : 'カメラを起動',
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16),
-                backgroundColor: appState.isCameraActive
-                    ? Colors.red
-                    : theme.colorScheme.primary,
-                foregroundColor: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // 機能説明
-            Card(
-              color: theme.colorScheme.secondary.withOpacity(0.1),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '今後の予定機能',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _buildFeatureItem(
-                      icon: Icons.camera_alt,
-                      text: 'リアルタイムカメラ映像表示',
-                    ),
-                    _buildFeatureItem(
-                      icon: Icons.psychology,
-                      text: '物体検知による持ち物確認',
-                    ),
-                    _buildFeatureItem(
-                      icon: Icons.photo_library,
-                      text: '録画・撮影機能',
-                    ),
-                    _buildFeatureItem(
-                      icon: Icons.notifications_active,
-                      text: '自動通知連携',
                     ),
                   ],
                 ),
@@ -205,30 +141,6 @@ class CameraScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildFeatureItem({
-    required IconData icon,
-    required String text,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: Colors.grey[600]),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: 14,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
