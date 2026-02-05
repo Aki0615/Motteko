@@ -4,7 +4,16 @@ import 'core/app_theme.dart';
 import 'core/app_router.dart';
 import 'providers/app_state.dart';
 
-void main() {
+import 'services/notification_service.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 通知サービスの初期化と権限リクエスト
+  final notificationService = NotificationService();
+  await notificationService.initialize();
+  await notificationService.requestPermissions();
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppState(),

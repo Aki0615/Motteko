@@ -1,11 +1,66 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+// =============================================================================
+// sensor_indicator.dart
+// =============================================================================
+// センサーの状態を視覚的に表示するウィジェット。
+// 人感センサーが人を検知しているかどうかをわかりやすく表示します。
+//
+// 【このファイルの役割】
+// - センサーの状態（検知中/未検知）を視覚的に表示
+// - 状態に応じて色を変える（緑: 検知中、グレー: 未検知）
+// - タップでセンサー状態を切り替え可能（デバッグ用）
+// =============================================================================
 
+import 'package:flutter/material.dart';
+
+// テーマ設定のインポート
+import '../core/app_theme.dart';
+
+// =============================================================================
+// SensorIndicator クラス
+// =============================================================================
+
+/// センサーの状態を表示するインジケーターウィジェット
+///
+/// 円形のアイコンとステータスバッジで、センサーの状態を視覚的に表します。
+///
+/// 使用例:
+/// ```dart
+/// SensorIndicator(
+///   isActive: true,
+///   label: '人感センサー',
+///   onTap: () => print('タップされました'),
+/// )
+/// ```
 class SensorIndicator extends StatelessWidget {
+  // ---------------------------------------------------------------------------
+  // プロパティ
+  // ---------------------------------------------------------------------------
+
+  /// センサーがアクティブ（検知中）かどうか
+  ///
+  /// true: 人を検知中（緑色のバッジ表示）
+  /// false: 未検知（グレーのバッジ表示）
   final bool isActive;
+
+  /// センサーのラベル（表示名）
+  ///
+  /// 例: "人感センサー"
   final String label;
+
+  /// タップ時のコールバック関数（オプション）
+  ///
+  /// 主にデバッグ用途で、タップでセンサー状態を切り替えるのに使用
   final VoidCallback? onTap;
 
+  // ---------------------------------------------------------------------------
+  // コンストラクタ
+  // ---------------------------------------------------------------------------
+
+  /// SensorIndicatorのコンストラクタ
+  ///
+  /// [isActive] - センサーがアクティブかどうか（必須）
+  /// [label] - センサーの表示名（必須）
+  /// [onTap] - タップ時のコールバック（オプション）
   const SensorIndicator({
     super.key,
     required this.isActive,
@@ -13,84 +68,89 @@ class SensorIndicator extends StatelessWidget {
     this.onTap,
   });
 
+  // ---------------------------------------------------------------------------
+  // ビルドメソッド
+  // ---------------------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final indicatorColor = isActive ? Colors.green : Colors.grey;
-
+    // タップ可能なウィジェット
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(24),
+        // 上下の内側余白
+        padding: const EdgeInsets.symmetric(vertical: 32),
+
+        // コンテナの見た目
         decoration: BoxDecoration(
-          color: theme.cardTheme.color,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: indicatorColor.withOpacity(0.3),
-            width: 2,
-          ),
+          color: Colors.white, // 白背景
+          borderRadius: BorderRadius.circular(12), // 角丸
         ),
+
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            // アニメーション付きインジケーター
+            // =================================================================
+            // 円形のセンサーアイコン
+            // =================================================================
             Container(
-              width: 80,
+              width: 80, // 円の直径
               height: 80,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: indicatorColor.withOpacity(0.2),
+                color: AppTheme.gray100, // 薄いグレー背景
+                shape: BoxShape.circle, // 円形
                 border: Border.all(
-                  color: indicatorColor,
-                  width: 3,
+                  color: AppTheme.gray300, // 中間グレーの枠線
+                  width: 2,
                 ),
               ),
-              child: Center(
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: indicatorColor,
-                  ),
-                )
-                    .animate(
-                      onPlay: (controller) => controller.repeat(),
-                    )
-                    .fadeIn(
-                      duration: 1000.ms,
-                    )
-                    .then()
-                    .fadeOut(
-                      duration: 1000.ms,
-                    ),
+              // 人型アイコン
+              child: const Icon(
+                Icons.person_outline,
+                size: 36,
+                color: AppTheme.gray500,
               ),
             ),
-            const SizedBox(height: 16),
-            // ラベル
+
+            const SizedBox(height: 16), // アイコンとラベルの間隔
+
+            // =================================================================
+            // センサーのラベル（名前）
+            // =================================================================
             Text(
               label,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+              style: const TextStyle(
+                fontFamily: AppTheme.fontFamily,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textPrimary,
               ),
-              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            // 状態テキスト
+
+            const SizedBox(height: 12), // ラベルとバッジの間隔
+
+            // =================================================================
+            // ステータスバッジ（検知中 / 未検知）
+            // =================================================================
             Container(
+              // 内側の余白
               padding: const EdgeInsets.symmetric(
-                horizontal: 16,
+                horizontal: 20,
                 vertical: 8,
               ),
+              // バッジの見た目
               decoration: BoxDecoration(
-                color: indicatorColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
+                // 検知中: 緑、未検知: グレー
+                color: isActive ? AppTheme.successGreen : AppTheme.gray400,
+                borderRadius: BorderRadius.circular(20), // 丸みを帯びた角
               ),
+              // ステータステキスト
               child: Text(
                 isActive ? '検知中' : '未検知',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: indicatorColor,
-                  fontWeight: FontWeight.bold,
+                style: const TextStyle(
+                  fontFamily: AppTheme.fontFamily,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white, // 白文字
                 ),
               ),
             ),

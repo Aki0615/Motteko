@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/item_model.dart';
 import '../models/sensor_status.dart';
 import '../models/notification_model.dart';
+import '../services/notification_service.dart';
 
 class AppState extends ChangeNotifier {
   // 持ち物リスト
@@ -128,6 +129,13 @@ class AppState extends ChangeNotifier {
       type: type,
     );
     _notifications.insert(0, notification); // 最新を先頭に
+
+    // ローカル通知を表示
+    NotificationService().showNotification(
+      id: int.tryParse(notification.id) ?? 0, // IDはintである必要がある
+      title: '忘れん坊防止アプリ',
+      body: message,
+    );
 
     // 通知を最大50件に制限
     if (_notifications.length > 50) {
