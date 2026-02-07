@@ -275,6 +275,7 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               // 選択時: 塗りつぶしアイコン、非選択時: 線画アイコン
@@ -283,14 +284,13 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
               color: isSelected
                   ? const Color(0xFFFF7B00)
                   : const Color(0xFF6B7280),
-              size: 20,
+              size: 18,
             ),
-            const SizedBox(height: 2),
             Text(
               label,
               style: TextStyle(
                 fontFamily: 'LINESeedJP',
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: FontWeight.w400,
                 // 選択時: オレンジ、非選択時: グレー
                 color: isSelected
