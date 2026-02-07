@@ -95,33 +95,35 @@ class NotificationsScreen extends StatelessWidget {
     Color badgeBgColor;
     Color badgeTextColor;
     String badgeText;
-    IconData iconData;
+    String iconAsset; // 画像アセットのパス
 
     // 通知メッセージに基づいてタイプを判定
     final message = notification.message as String;
+    // 成功判定（「忘れ物なし」または「成功」を含む）
     if (message.contains('忘れ物なし') || message.contains('成功')) {
-      // 成功タイプ
       badgeBgColor = const Color(0xFFBEFFD6);
       badgeTextColor = const Color(0xFF22C55E);
       badgeText = '成功';
-      iconData = Icons.check_circle_outline;
-    } else if (message.contains('忘れ物') || message.contains('警告')) {
-      // 警告タイプ
+      iconAsset = 'assets/icons/success_icon.png';
+      // 警告判定（「忘れている」「忘れ物をしている」「可能性」「警告」を含む）
+    } else if (message.contains('忘れている') ||
+        message.contains('忘れ物をしている') ||
+        message.contains('可能性') ||
+        message.contains('警告')) {
       badgeBgColor = const Color(0xFFFFEFB2);
       badgeTextColor = const Color(0xFFFFA500);
       badgeText = '警告';
-      iconData = Icons.warning_amber_outlined;
+      iconAsset = 'assets/icons/warning_icon.png';
+      // それ以外は情報
     } else {
-      // 情報タイプ
       badgeBgColor = const Color(0xFFC1E5FF);
       badgeTextColor = const Color(0xFF26A5FF);
       badgeText = '情報';
-      iconData = Icons.info_outline;
+      iconAsset = 'assets/icons/info_icon.png';
     }
 
     return Container(
       width: double.infinity,
-      height: 88,
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
@@ -134,86 +136,71 @@ class NotificationsScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: Stack(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // テキストエリア
-          Positioned(
-            left: 41,
-            top: 3,
-            child: SizedBox(
-              width: 273,
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '$message\n',
-                      style: const TextStyle(
-                        color: Color(0xFF374151),
-                        fontSize: 14,
-                        fontFamily: 'LINESeedJP',
-                        fontWeight: FontWeight.w400,
-                        height: 1.20,
-                      ),
-                    ),
-                    TextSpan(
-                      text: _formatDateTime(notification.timestamp as DateTime),
-                      style: const TextStyle(
-                        color: Color(0xFF374151),
-                        fontSize: 12,
-                        fontFamily: 'LINESeedJP',
-                        fontWeight: FontWeight.w400,
-                        height: 1.20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          // アイコン
+          Image.asset(
+            iconAsset,
+            width: 30,
+            height: 30,
           ),
-          // バッジ
-          Positioned(
-            left: 41,
-            top: 40,
-            child: Container(
-              height: 16,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: ShapeDecoration(
-                color: badgeBgColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+          const SizedBox(width: 12),
+          // テキストエリア
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // メッセージ
+                Text(
+                  message,
+                  style: const TextStyle(
+                    color: Color(0xFF374151),
+                    fontSize: 14,
+                    fontFamily: 'LINESeedJP',
+                    fontWeight: FontWeight.w400,
+                    height: 1.20,
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    badgeText,
-                    style: TextStyle(
-                      color: badgeTextColor,
-                      fontSize: 8,
-                      fontFamily: 'LINESeedJP',
-                      fontWeight: FontWeight.w700,
-                      height: 1.20,
+                const SizedBox(height: 4),
+                // 日時
+                Text(
+                  _formatDateTime(notification.timestamp as DateTime),
+                  style: const TextStyle(
+                    color: Color(0xFF374151),
+                    fontSize: 12,
+                    fontFamily: 'LINESeedJP',
+                    fontWeight: FontWeight.w400,
+                    height: 1.20,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                // バッジ
+                Container(
+                  height: 16,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: ShapeDecoration(
+                    color: badgeBgColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          // アイコン
-          Positioned(
-            left: 5,
-            top: 4,
-            child: Container(
-              width: 20,
-              height: 20,
-              child: Icon(
-                iconData,
-                size: 20,
-                color: badgeTextColor,
-              ),
+                  child: Center(
+                    widthFactor: 1,
+                    child: Text(
+                      badgeText,
+                      style: TextStyle(
+                        color: badgeTextColor,
+                        fontSize: 8,
+                        fontFamily: 'LINESeedJP',
+                        fontWeight: FontWeight.w700,
+                        height: 1.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
