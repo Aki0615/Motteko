@@ -11,31 +11,34 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
       color: Colors.white,
       child: Stack(
         children: [
           // === 背景グラデーションヘッダー ===
-          // 左上から右下への斜めグラデーション（デザイン画像に合わせて）
           Positioned(
             left: 0,
             top: 0,
             right: 0,
-            height: 420, // 円のエリアをカバーするために下まで拡張
+            height: screenHeight * 0.5, // 画面の約50%
             child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                  begin: Alignment(0.83, 0.13),
+                  end: Alignment(0.84, 0.90),
                   colors: [
-                    Color(0xFFFF7B00), // 左上のオレンジ
-                    Color(0xFFFFAB60), // 右下の明るいピーチオレンジ
+                    Color(0xFFFF7B00),
+                    Color(0xFFFF9A40),
+                    Color(0xFFFFB870),
+                    Color(0xFFFFDAC4),
                   ],
+                  stops: [0.0, 0.35, 0.65, 1.0],
                 ),
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(40),
-                  bottomRight: Radius.circular(40),
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
               ),
             ),
@@ -48,166 +51,98 @@ class HomeScreen extends StatelessWidget {
             right: 0,
             child: SafeArea(
               bottom: false,
-              child: Container(
-                height: 60, // 他のセクションと同じ高さ
+              child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // 中央揃えのタイトル
-                    const Center(
-                      child: Text(
-                        'ホーム',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontFamily: 'LINESeedJP',
-                          fontWeight: FontWeight.w700,
+                child: SizedBox(
+                  height: 60,
+                  child: Row(
+                    children: [
+                      // 中央のタイトル
+                      const Expanded(
+                        child: Center(
+                          child: Text(
+                            'ホーム',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontFamily: 'LINESeedJP',
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    // 右側のアイコン
-                    Positioned(
-                      right: 0,
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const ShapeDecoration(
-                          color: Color(0xFFF4F6F7),
-                          shape: OvalBorder(),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0x3F000000),
-                              blurRadius: 4,
-                              offset: Offset(0, 4),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.download,
-                          size: 20,
-                          color: Color(0xFF6B7280),
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
 
-          // === メイン統計円 ===
+          // === 統計円エリア ===
           Positioned(
-            top: 100,
+            top: 120,
             left: 0,
             right: 0,
-            height: 320,
-            child: Stack(
-              alignment: Alignment.topCenter,
+            child: Column(
               children: [
                 // 大きな円（連続日数）
-                Positioned(
-                  top: 20,
-                  child: Container(
-                    width: 141,
-                    height: 141,
-                    decoration: const ShapeDecoration(
-                      color: Colors.white,
-                      shape: OvalBorder(),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          '連続日数',
-                          style: TextStyle(
-                            color: Color(0xFF6B7280),
-                            fontSize: 14,
-                            fontFamily: 'LINESeedJP',
-                            fontWeight: FontWeight.w400,
-                          ),
+                Container(
+                  width: 112.5,
+                  height: 112.5,
+                  decoration: const ShapeDecoration(
+                    color: Colors.white,
+                    shape: OvalBorder(),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        '連続日数',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontFamily: 'LINESeedJP',
+                          fontWeight: FontWeight.w400,
                         ),
-                        Text(
-                          '${appState.consecutiveDaysWithoutForgetting}日',
-                          style: const TextStyle(
-                            color: Color(0xFFFF7B00),
-                            fontSize: 32,
-                            fontFamily: 'LINESeedJP',
-                            fontWeight: FontWeight.w700,
-                          ),
+                      ),
+                      Text(
+                        '${appState.consecutiveDaysWithoutForgetting}',
+                        style: const TextStyle(
+                          color: Color(0xFFFF7B00),
+                          fontSize: 25,
+                          fontFamily: 'LINESeedJP',
+                          fontWeight: FontWeight.w700,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                // 小さな円（左）- 登録アイテム
-                Positioned(
-                  top: 185,
-                  left: screenWidth * 0.5 - 135,
-                  child: _buildSmallStatsCircle(
-                    label: '登録',
-                    value: '${appState.items.length}',
-                    unit: '個',
-                    color: const Color(0xFF3A55AE),
-                  ),
-                ),
-                // 小さな円（中央）- 今日の確認
-                Positioned(
-                  top: 215,
-                  child: _buildSmallStatsCircle(
-                    label: '確認',
-                    value:
-                        '${appState.items.where((i) => i.isRequired).length}',
-                    unit: '件',
-                    color: const Color(0xFF10B981),
-                  ),
-                ),
-                // 小さな円（右）- センサー
-                Positioned(
-                  top: 185,
-                  left: screenWidth * 0.5 + 53,
-                  child: Container(
-                    width: 82,
-                    height: 82,
-                    decoration: const ShapeDecoration(
-                      color: Colors.white,
-                      shape: OvalBorder(),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'センサー',
-                          style: TextStyle(
-                            color: Color(0xFF6B7280),
-                            fontSize: 10,
-                            fontFamily: 'LINESeedJP',
-                            fontWeight: FontWeight.w400,
-                          ),
+                const SizedBox(height: 30),
+                // 小さな統計円（3つ横並び）
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // 登録
+                      _buildSmallStatsCircle(
+                        label: '登録',
+                        value: '${appState.items.length}',
+                        unit: '個',
+                      ),
+                      // 確認（少し下にオフセット）
+                      Transform.translate(
+                        offset: const Offset(0, 30),
+                        child: _buildSmallStatsCircle(
+                          label: '確認',
+                          value:
+                              '${appState.items.where((i) => i.isRequired).length}',
+                          unit: '件',
                         ),
-                        Icon(
-                          appState.sensorStatus.isPersonPresent
-                              ? Icons.person
-                              : Icons.person_off,
-                          color: appState.sensorStatus.isPersonPresent
-                              ? const Color(0xFF10B981)
-                              : const Color(0xFF6B7280),
-                          size: 24,
-                        ),
-                        Text(
-                          appState.sensorStatus.isPersonPresent ? '検知中' : '未検知',
-                          style: TextStyle(
-                            color: appState.sensorStatus.isPersonPresent
-                                ? const Color(0xFF10B981)
-                                : const Color(0xFF6B7280),
-                            fontSize: 12,
-                            fontFamily: 'LINESeedJP',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      // センサー
+                      _buildSensorCircle(appState),
+                    ],
                   ),
                 ),
               ],
@@ -216,10 +151,10 @@ class HomeScreen extends StatelessWidget {
 
           // === 最近の通知セクション ===
           Positioned(
-            top: 430,
+            top: screenHeight * 0.52,
             left: 24,
             right: 24,
-            bottom: 100, // ScaffoldWithBottomNavBarのナビバー用スペース確保
+            bottom: 100,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -236,8 +171,8 @@ class HomeScreen extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         // すべて表示のアクション
                       },
                       child: const Text(
@@ -252,7 +187,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 // 通知リスト
                 Expanded(
                   child: ListView(
@@ -260,9 +195,7 @@ class HomeScreen extends StatelessWidget {
                     children: appState.notifications.isEmpty
                         ? [
                             _buildEmptyNotification(),
-                            const SizedBox(height: 10),
                             _buildEmptyNotification(),
-                            const SizedBox(height: 10),
                             _buildEmptyNotification(),
                           ]
                         : appState.notifications
@@ -274,8 +207,6 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-
-          // カスタムナビゲーションバーはScaffoldWithBottomNavBarで提供されるため、ここでは不要
         ],
       ),
     );
@@ -286,11 +217,10 @@ class HomeScreen extends StatelessWidget {
     required String label,
     required String value,
     required String unit,
-    required Color color,
   }) {
     return Container(
-      width: 82,
-      height: 82,
+      width: 90,
+      height: 90,
       decoration: const ShapeDecoration(
         color: Colors.white,
         shape: OvalBorder(),
@@ -301,16 +231,16 @@ class HomeScreen extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              color: Color(0xFF6B7280),
-              fontSize: 10,
+              color: Colors.black,
+              fontSize: 12,
               fontFamily: 'LINESeedJP',
               fontWeight: FontWeight.w400,
             ),
           ),
           Text(
             value,
-            style: TextStyle(
-              color: color,
+            style: const TextStyle(
+              color: Color(0xFFFF7B00),
               fontSize: 20,
               fontFamily: 'LINESeedJP',
               fontWeight: FontWeight.w700,
@@ -319,8 +249,50 @@ class HomeScreen extends StatelessWidget {
           Text(
             unit,
             style: const TextStyle(
-              color: Color(0xFF6B7280),
-              fontSize: 10,
+              color: Colors.black,
+              fontSize: 12,
+              fontFamily: 'LINESeedJP',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// センサー状態の円
+  Widget _buildSensorCircle(AppState appState) {
+    final isDetected = appState.sensorStatus.isPersonPresent;
+    return Container(
+      width: 90,
+      height: 90,
+      decoration: const ShapeDecoration(
+        color: Colors.white,
+        shape: OvalBorder(),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'センサー',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 12,
+              fontFamily: 'LINESeedJP',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          Icon(
+            isDetected ? Icons.person : Icons.person_off_outlined,
+            size: 24,
+            color:
+                isDetected ? const Color(0xFF22C55E) : const Color(0xFF6B7280),
+          ),
+          Text(
+            isDetected ? '検知中' : '未検知',
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 12,
               fontFamily: 'LINESeedJP',
               fontWeight: FontWeight.w400,
             ),
@@ -334,50 +306,77 @@ class HomeScreen extends StatelessWidget {
   Widget _buildEmptyNotification() {
     return Container(
       width: double.infinity,
-      height: 66,
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
-        color: const Color(0xFFDFE3E9),
+        color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
+          borderRadius: BorderRadius.circular(8),
         ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: const BoxDecoration(
+              color: Color(0xFFE5E7EB),
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 16),
+          const Expanded(
+            child: Text(
+              '通知はありません',
+              style: TextStyle(
+                color: Color(0xFF6B7280),
+                fontSize: 14,
+                fontFamily: 'LINESeedJP',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  /// 通知カードを構築するヘルパーメソッド（通知セクションと同じスタイル）
+  /// 通知カードを構築するヘルパーメソッド
   Widget _buildNotificationCard(dynamic notification) {
-    // 通知タイプに応じた色とバッジ設定
     Color badgeBgColor;
     Color badgeTextColor;
     String badgeText;
-    IconData iconData;
+    String iconAsset; // 画像アセットのパス
 
     final message = notification.message as String;
+    // 成功判定（「忘れ物なし」または「成功」を含む）
     if (message.contains('忘れ物なし') || message.contains('成功')) {
-      // 成功タイプ
       badgeBgColor = const Color(0xFFBEFFD6);
       badgeTextColor = const Color(0xFF22C55E);
       badgeText = '成功';
-      iconData = Icons.check_circle_outline;
-    } else if (message.contains('忘れ物') || message.contains('警告')) {
-      // 警告タイプ
+      iconAsset = 'assets/icons/success_icon.png';
+      // 警告判定（「忘れている」「忘れ物をしている」「可能性」「警告」を含む）
+    } else if (message.contains('忘れている') ||
+        message.contains('忘れ物をしている') ||
+        message.contains('可能性') ||
+        message.contains('警告')) {
       badgeBgColor = const Color(0xFFFFEFB2);
       badgeTextColor = const Color(0xFFFFA500);
       badgeText = '警告';
-      iconData = Icons.warning_amber_outlined;
+      iconAsset = 'assets/icons/warning_icon.png'; // 画像アセットを使用
+      // それ以外は情報
     } else {
-      // 情報タイプ
       badgeBgColor = const Color(0xFFC1E5FF);
       badgeTextColor = const Color(0xFF26A5FF);
       badgeText = '情報';
-      iconData = Icons.info_outline;
+      iconAsset = 'assets/icons/info_icon.png';
     }
 
     return Container(
       width: double.infinity,
-      height: 80,
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -389,69 +388,68 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // アイコン
-          Icon(
-            iconData,
-            size: 20,
-            color: badgeTextColor,
+          Image.asset(
+            iconAsset,
+            width: 30,
+            height: 30,
           ),
           const SizedBox(width: 12),
-          // テキストとバッジ
+          // テキストエリア
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // メッセージ
                 Text(
                   message,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Color(0xFF374151),
                     fontSize: 14,
                     fontFamily: 'LINESeedJP',
                     fontWeight: FontWeight.w400,
+                    height: 1.20,
                   ),
                 ),
                 const SizedBox(height: 4),
-                Row(
-                  children: [
-                    // バッジ
-                    Container(
-                      height: 16,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: ShapeDecoration(
-                        color: badgeBgColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          badgeText,
-                          style: TextStyle(
-                            color: badgeTextColor,
-                            fontSize: 8,
-                            fontFamily: 'LINESeedJP',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
+                // 日時
+                Text(
+                  _formatDateTime(notification.timestamp as DateTime),
+                  style: const TextStyle(
+                    color: Color(0xFF374151),
+                    fontSize: 12,
+                    fontFamily: 'LINESeedJP',
+                    fontWeight: FontWeight.w400,
+                    height: 1.20,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                // バッジ
+                Container(
+                  height: 16,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: ShapeDecoration(
+                    color: badgeBgColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    const SizedBox(width: 8),
-                    // 日時
-                    Text(
-                      _formatDateTime(notification.timestamp as DateTime),
-                      style: const TextStyle(
-                        color: Color(0xFF6B7280),
-                        fontSize: 10,
+                  ),
+                  child: Center(
+                    widthFactor: 1,
+                    child: Text(
+                      badgeText,
+                      style: TextStyle(
+                        color: badgeTextColor,
+                        fontSize: 8,
                         fontFamily: 'LINESeedJP',
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w700,
+                        height: 1.0,
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -462,6 +460,6 @@ class HomeScreen extends StatelessWidget {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.month}/${dateTime.day} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    return '${dateTime.year}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
   }
 }
