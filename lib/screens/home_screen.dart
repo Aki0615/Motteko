@@ -282,12 +282,17 @@ class HomeScreen extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
-          Icon(
-            isDetected ? Icons.person : Icons.person_off_outlined,
-            size: 24,
-            color:
-                isDetected ? const Color(0xFF22C55E) : const Color(0xFF6B7280),
-          ),
+          isDetected
+              ? Icon(
+                  Icons.person,
+                  size: 24,
+                  color: const Color(0xFF22C55E),
+                )
+              : Image.asset(
+                  'assets/icons/sensor_off_icon.png',
+                  width: 24,
+                  height: 24,
+                ),
           Text(
             isDetected ? '検知中' : '未検知',
             style: const TextStyle(
