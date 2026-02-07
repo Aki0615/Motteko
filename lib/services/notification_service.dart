@@ -1,3 +1,4 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 // import 'package:timezone/timezone.dart' as tz; // 不要
@@ -104,5 +105,58 @@ class NotificationService {
       notificationDetails: notificationDetails,
       payload: payload,
     );
+  }
+
+  // 画像付き通知を表示
+  Future<void> showBigPictureNotification({
+    required int id,
+    required String title,
+    required String body,
+    required String imageUrl,
+    String? payload,
+  }) async {
+    if (!_isInitialized) await initialize();
+
+    try {
+      final http.Response response = await http.get(Uri.parse(imageUrl));
+      final ByteArrayAndroidBitmap bigPicture =
+          ByteArrayAndroidBitmap(response.bodyBytes);
+
+      final BigPictureStyleInformation bigPictureStyleInformation =
+          BigPictureStyleInformation(
+        bigPicture,
+        largeIcon: bigPicture,
+        contentTitle: title,
+        summaryText: body,
+        htmlFormatContentTitle: true,
+        htmlFormatSummaryText: true,
+      );
+
+      final AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails(
+        'default_channel_id',
+        '忘れん坊防止通知',
+        channelDescription: '忘れ物防止アプリからの通知です',
+        importance: Importance.max,
+        priority: Priority.high,
+        styleInformation: bigPictureStyleInformation,
+      );
+
+      final NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+
+      await flutterLocalNotificationsPlugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: notificationDetails,
+        payload: payload,
+      );
+    } catch (e) {
+      // 画像取得に失敗した場合は通常の通知を表示
+      print('Error showing big picture notification: $e');
+      await showNotification(
+          id: id, title: title, body: body, payload: payload);
+    }
   }
 }

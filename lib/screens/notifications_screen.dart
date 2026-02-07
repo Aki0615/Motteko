@@ -119,25 +119,25 @@ class NotificationsScreen extends StatelessWidget {
     Color badgeBgColor;
     Color badgeTextColor;
     String badgeText;
-    // missing_itemsがある場合は警告扱い
+    String iconAsset; // 画像アセット
+
+    // アイコン判定ロジック（異常なし＝成功）
+    // 1. missing_itemsがある場合は警告
     if (missingItems.isNotEmpty) {
       badgeBgColor = const Color(0xFFFEF2F2);
       badgeTextColor = const Color(0xFFDC2626);
       badgeText = '忘れ物あり';
-    } else if (message.contains('撮影しました')) {
-      // 成功（定期撮影など）
+      iconAsset = 'assets/icons/warning_icon.png';
+    }
+    // 2. それ以外（missing_itemsが空）はすべて成功
+    else {
       badgeBgColor = const Color(0xFFDCFCE7);
       badgeTextColor = const Color(0xFF16A34A);
       badgeText = '完了';
-    } else {
-      // 情報（デフォルト）
-      badgeBgColor = const Color(0xFFEFF6FF);
-      badgeTextColor = const Color(0xFF2563EB);
-      badgeText = '情報';
+      iconAsset = 'assets/icons/success_icon.png';
     }
 
-    // アイコンアセットがない場合のエラーハンドリングはImage.assetで行うが、
-    // ここではIconウィジェットをフォールバックとして使うためのロジックを簡略化
+    final String? imageUrl = data['image_url'] as String?;
 
     return Container(
       width: double.infinity,
@@ -153,76 +153,114 @@ class NotificationsScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // アイコン
-          Icon(
-            missingItems.isNotEmpty
-                ? Icons.warning_amber_rounded
-                : Icons.camera_alt_outlined,
-            size: 30,
-            color: badgeTextColor,
-          ),
-          const SizedBox(width: 12),
-          // テキストエリア
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // メッセージ
-                Text(
-                  message,
-                  style: const TextStyle(
-                    color: Color(0xFF374151),
-                    fontSize: 14,
-                    fontFamily: 'LINESeedJP',
-                    fontWeight: FontWeight.w400,
-                    height: 1.20,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                // 日時（あれば表示）
-                if (timestampStr.isNotEmpty)
-                  Text(
-                    timestampStr,
-                    style: const TextStyle(
-                      color: Color(0xFF374151),
-                      fontSize: 12,
-                      fontFamily: 'LINESeedJP',
-                      fontWeight: FontWeight.w400,
-                      height: 1.20,
-                    ),
-                  ),
-                const SizedBox(height: 6),
-                // バッジ
-                Container(
-                  height: 16,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: ShapeDecoration(
-                    color: badgeBgColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Center(
-                    widthFactor: 1,
-                    child: Text(
-                      badgeText,
-                      style: TextStyle(
-                        color: badgeTextColor,
-                        fontSize: 8,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // アイコン
+              Image.asset(
+                iconAsset,
+                width: 30,
+                height: 30,
+              ),
+              const SizedBox(width: 12),
+              // テキストエリア
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // メッセージ
+                    Text(
+                      message,
+                      style: const TextStyle(
+                        color: Color(0xFF374151),
+                        fontSize: 14,
                         fontFamily: 'LINESeedJP',
-                        fontWeight: FontWeight.w700,
-                        height: 1.0,
+                        fontWeight: FontWeight.w400,
+                        height: 1.20,
                       ),
                     ),
+                    const SizedBox(height: 4),
+                    // 日時（あれば表示）
+                    if (timestampStr.isNotEmpty)
+                      Text(
+                        timestampStr,
+                        style: const TextStyle(
+                          color: Color(0xFF374151),
+                          fontSize: 12,
+                          fontFamily: 'LINESeedJP',
+                          fontWeight: FontWeight.w400,
+                          height: 1.20,
+                        ),
+                      ),
+                    const SizedBox(height: 6),
+                    // バッジ
+                    Container(
+                      height: 16,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: ShapeDecoration(
+                        color: badgeBgColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Center(
+                        widthFactor: 1,
+                        child: Text(
+                          badgeText,
+                          style: TextStyle(
+                            color: badgeTextColor,
+                            fontSize: 8,
+                            fontFamily: 'LINESeedJP',
+                            fontWeight: FontWeight.w700,
+                            height: 1.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // 画像があれば表示
+          if (imageUrl != null && imageUrl.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                imageUrl,
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 200,
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: Icon(Icons.broken_image, color: Colors.grey),
                   ),
                 ),
-              ],
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    height: 200,
+                    color: Colors.grey[100],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

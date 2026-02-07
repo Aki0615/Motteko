@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state.dart';
 
@@ -189,18 +190,37 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 // 通知リスト
                 Expanded(
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    children: appState.notifications.isEmpty
-                        ? [
-                            _buildEmptyNotification(),
-                            _buildEmptyNotification(),
-                            _buildEmptyNotification(),
-                          ]
-                        : appState.notifications
-                            .take(3)
-                            .map((n) => _buildNotificationCard(n))
-                            .toList(),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('detections')
+                        .orderBy('timestamp', descending: true)
+                        .limit(3)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text('エラーが発生しました: ${snapshot.error}'),
+                        );
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return _listEmptyNotification();
+                      }
+
+                      return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final doc = snapshot.data!.docs[index];
+                          final data = doc.data() as Map<String, dynamic>;
+                          return _buildNotificationCard(data);
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
@@ -306,6 +326,17 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  /// 空の通知カードリスト
+  Widget _listEmptyNotification() {
+    return Column(
+      children: [
+        _buildEmptyNotification(),
+        _buildEmptyNotification(),
+        _buildEmptyNotification(),
+      ],
+    );
+  }
+
   /// 空の通知カードを構築するヘルパーメソッド
   Widget _buildEmptyNotification() {
     return Container(
@@ -347,34 +378,31 @@ class HomeScreen extends StatelessWidget {
   }
 
   /// 通知カードを構築するヘルパーメソッド
-  Widget _buildNotificationCard(dynamic notification) {
+  Widget _buildNotificationCard(Map<String, dynamic> data) {
     Color badgeBgColor;
     Color badgeTextColor;
     String badgeText;
     String iconAsset; // 画像アセットのパス
 
-    final message = notification.message as String;
-    // 成功判定（「忘れ物なし」または「成功」を含む）
-    if (message.contains('忘れ物なし') || message.contains('成功')) {
+    final message = data['message'] as String? ?? '通知';
+    final List<dynamic> missingItems =
+        data['missing_items'] as List<dynamic>? ?? [];
+    final Timestamp? timestamp = data['timestamp'] as Timestamp?;
+
+    // アイコン判定ロジック（異常なし＝成功）
+    // 1. missing_itemsがある場合は警告
+    if (missingItems.isNotEmpty) {
+      badgeBgColor = const Color(0xFFFEF2F2);
+      badgeTextColor = const Color(0xFFDC2626);
+      badgeText = '忘れ物あり';
+      iconAsset = 'assets/icons/warning_icon.png';
+    }
+    // 2. それ以外（missing_itemsが空）はすべて成功
+    else {
       badgeBgColor = const Color(0xFFBEFFD6);
       badgeTextColor = const Color(0xFF22C55E);
       badgeText = '成功';
       iconAsset = 'assets/icons/success_icon.png';
-      // 警告判定（「忘れている」「忘れ物をしている」「可能性」「警告」を含む）
-    } else if (message.contains('忘れている') ||
-        message.contains('忘れ物をしている') ||
-        message.contains('可能性') ||
-        message.contains('警告')) {
-      badgeBgColor = const Color(0xFFFFEFB2);
-      badgeTextColor = const Color(0xFFFFA500);
-      badgeText = '警告';
-      iconAsset = 'assets/icons/warning_icon.png'; // 画像アセットを使用
-      // それ以外は情報
-    } else {
-      badgeBgColor = const Color(0xFFC1E5FF);
-      badgeTextColor = const Color(0xFF26A5FF);
-      badgeText = '情報';
-      iconAsset = 'assets/icons/info_icon.png';
     }
 
     return Container(
@@ -420,16 +448,17 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 // 日時
-                Text(
-                  _formatDateTime(notification.timestamp as DateTime),
-                  style: const TextStyle(
-                    color: Color(0xFF374151),
-                    fontSize: 12,
-                    fontFamily: 'LINESeedJP',
-                    fontWeight: FontWeight.w400,
-                    height: 1.20,
+                if (timestamp != null)
+                  Text(
+                    _formatDateTime(timestamp.toDate()),
+                    style: const TextStyle(
+                      color: Color(0xFF374151),
+                      fontSize: 12,
+                      fontFamily: 'LINESeedJP',
+                      fontWeight: FontWeight.w400,
+                      height: 1.20,
+                    ),
                   ),
-                ),
                 const SizedBox(height: 6),
                 // バッジ
                 Container(

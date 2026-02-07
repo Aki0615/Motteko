@@ -24,24 +24,31 @@ class DetectionService {
           final data = change.doc.data() as Map<String, dynamic>;
           final message = data['message'] as String? ?? '解析完了';
           final missingItems = data['missing_items'] as List<dynamic>? ?? [];
+          final imageUrl = data['image_url'] as String?;
 
-          _showNotification(message, missingItems);
+          _showNotification(message, missingItems, imageUrl);
         }
       }
     });
   }
 
   Future<void> _showNotification(
-      String message, List<dynamic> missingItems) async {
+      String message, List<dynamic> missingItems, String? imageUrl) async {
     String title = missingItems.isNotEmpty ? "⚠️ 忘れ物があります！" : "✅ 忘れ物なし";
 
-    // NotificationServiceのshowNotificationを使用
-    // IDは現在時刻などを利用してユニークにするか、0固定で上書きするか
-    // 今回は試作として0固定（常に最新の通知だけ表示）
-    await _notificationService.showNotification(
-      id: 0,
-      title: title,
-      body: message,
-    );
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      await _notificationService.showBigPictureNotification(
+        id: 0,
+        title: title,
+        body: message,
+        imageUrl: imageUrl,
+      );
+    } else {
+      await _notificationService.showNotification(
+        id: 0,
+        title: title,
+        body: message,
+      );
+    }
   }
 }
