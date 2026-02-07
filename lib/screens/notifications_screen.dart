@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/app_state.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final appState = context.watch<AppState>();
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -36,9 +34,37 @@ class NotificationsScreen extends StatelessWidget {
 
             // メインコンテンツエリア
             Expanded(
-              child: appState.notifications.isEmpty
-                  ? _buildEmptyState()
-                  : _buildNotificationsList(appState),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('detections')
+                    .orderBy('timestamp', descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('エラーが発生しました: ${snapshot.error}'),
+                    );
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return _buildEmptyState();
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 100),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      final doc = snapshot.data!.docs[index];
+                      final data = doc.data() as Map<String, dynamic>;
+                      return _buildNotificationCard(data);
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -79,48 +105,39 @@ class NotificationsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNotificationsList(AppState appState) {
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 100),
-      itemCount: appState.notifications.length,
-      itemBuilder: (context, index) {
-        final notification = appState.notifications[index];
-        return _buildNotificationCard(notification);
-      },
-    );
-  }
+  Widget _buildNotificationCard(Map<String, dynamic> data) {
+    // データから各種情報を取得
+    final String message = data['message'] as String? ?? '通知';
+    final Timestamp? timestamp = data['timestamp'] as Timestamp?;
+    final String timestampStr = timestamp != null
+        ? DateFormat('yyyy/MM/dd HH:mm').format(timestamp.toDate())
+        : '';
+    final List<dynamic> missingItems =
+        data['missing_items'] as List<dynamic>? ?? [];
 
-  Widget _buildNotificationCard(dynamic notification) {
-    // 通知タイプに応じた色とバッジ設定
+    // 通知メッセージに基づいてタイプを判定
     Color badgeBgColor;
     Color badgeTextColor;
     String badgeText;
-    String iconAsset; // 画像アセットのパス
-
-    // 通知メッセージに基づいてタイプを判定
-    final message = notification.message as String;
-    // 成功判定（「忘れ物なし」または「成功」を含む）
-    if (message.contains('忘れ物なし') || message.contains('成功')) {
-      badgeBgColor = const Color(0xFFBEFFD6);
-      badgeTextColor = const Color(0xFF22C55E);
-      badgeText = '成功';
-      iconAsset = 'assets/icons/success_icon.png';
-      // 警告判定（「忘れている」「忘れ物をしている」「可能性」「警告」を含む）
-    } else if (message.contains('忘れている') ||
-        message.contains('忘れ物をしている') ||
-        message.contains('可能性') ||
-        message.contains('警告')) {
-      badgeBgColor = const Color(0xFFFFEFB2);
-      badgeTextColor = const Color(0xFFFFA500);
-      badgeText = '警告';
-      iconAsset = 'assets/icons/warning_icon.png';
-      // それ以外は情報
+    // missing_itemsがある場合は警告扱い
+    if (missingItems.isNotEmpty) {
+      badgeBgColor = const Color(0xFFFEF2F2);
+      badgeTextColor = const Color(0xFFDC2626);
+      badgeText = '忘れ物あり';
+    } else if (message.contains('撮影しました')) {
+      // 成功（定期撮影など）
+      badgeBgColor = const Color(0xFFDCFCE7);
+      badgeTextColor = const Color(0xFF16A34A);
+      badgeText = '完了';
     } else {
-      badgeBgColor = const Color(0xFFC1E5FF);
-      badgeTextColor = const Color(0xFF26A5FF);
+      // 情報（デフォルト）
+      badgeBgColor = const Color(0xFFEFF6FF);
+      badgeTextColor = const Color(0xFF2563EB);
       badgeText = '情報';
-      iconAsset = 'assets/icons/info_icon.png';
     }
+
+    // アイコンアセットがない場合のエラーハンドリングはImage.assetで行うが、
+    // ここではIconウィジェットをフォールバックとして使うためのロジックを簡略化
 
     return Container(
       width: double.infinity,
@@ -140,10 +157,12 @@ class NotificationsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // アイコン
-          Image.asset(
-            iconAsset,
-            width: 30,
-            height: 30,
+          Icon(
+            missingItems.isNotEmpty
+                ? Icons.warning_amber_rounded
+                : Icons.camera_alt_outlined,
+            size: 30,
+            color: badgeTextColor,
           ),
           const SizedBox(width: 12),
           // テキストエリア
@@ -164,17 +183,18 @@ class NotificationsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                // 日時
-                Text(
-                  _formatDateTime(notification.timestamp as DateTime),
-                  style: const TextStyle(
-                    color: Color(0xFF374151),
-                    fontSize: 12,
-                    fontFamily: 'LINESeedJP',
-                    fontWeight: FontWeight.w400,
-                    height: 1.20,
+                // 日時（あれば表示）
+                if (timestampStr.isNotEmpty)
+                  Text(
+                    timestampStr,
+                    style: const TextStyle(
+                      color: Color(0xFF374151),
+                      fontSize: 12,
+                      fontFamily: 'LINESeedJP',
+                      fontWeight: FontWeight.w400,
+                      height: 1.20,
+                    ),
                   ),
-                ),
                 const SizedBox(height: 6),
                 // バッジ
                 Container(
@@ -206,10 +226,5 @@ class NotificationsScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.year}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')} '
-        '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
   }
 }
