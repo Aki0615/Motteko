@@ -23,6 +23,8 @@ import '../screens/items_screen.dart';
 import '../screens/camera_screen.dart';
 import '../screens/sensors_screen.dart';
 import '../screens/notifications_screen.dart';
+import '../screens/login_screen.dart';
+import '../screens/login_form_screen.dart';
 
 // =============================================================================
 // グローバル変数
@@ -56,10 +58,26 @@ class AppRouter {
     navigatorKey: _rootNavigatorKey,
 
     // アプリ起動時に最初に表示する画面のパス
-    initialLocation: '/',
+    initialLocation: '/login',
 
     // ルート（画面）の定義
     routes: [
+      // -----------------------------------------------------------------------
+      // ログイン画面（ナビゲーションバーなし）
+      // -----------------------------------------------------------------------
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+
+      // -----------------------------------------------------------------------
+      // ログインフォーム画面（ナビゲーションバーなし）
+      // -----------------------------------------------------------------------
+      GoRoute(
+        path: '/login-form',
+        builder: (context, state) => const LoginFormScreen(),
+      ),
+
       // -----------------------------------------------------------------------
       // ShellRoute: 共通レイアウト（ボトムナビゲーションバー）を持つルート群
       // -----------------------------------------------------------------------
