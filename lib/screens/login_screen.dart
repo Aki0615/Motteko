@@ -1,7 +1,7 @@
 // =============================================================================
 // login_screen.dart
 // =============================================================================
-// Figmaデザインに基づいたログイン画面。
+// Figmaデザインに基づいたウェルカム画面。
 // サインインとログインのボタンを配置し、アプリの初回起動時に表示されます。
 // =============================================================================
 
@@ -283,201 +283,6 @@ class LoginScreen extends StatelessWidget {
               ),
 
               // -----------------------------------------------------------------
-              // ステータスバー（iPhoneスタイル）
-              // -----------------------------------------------------------------
-              Positioned(
-                left: -19,
-                top: 0,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 430,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.only(top: 18, bottom: 13),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '1:47',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontFamily: 'SF Pro',
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.28,
-                                          letterSpacing: -0.44,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 11, bottom: 6),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 126,
-                                  height: 37,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.only(top: 18, bottom: 13),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    spacing: 3,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 27,
-                                            height: 23,
-                                            child: Stack(
-                                              children: [
-                                                Positioned(
-                                                  left: 2,
-                                                  top: 3,
-                                                  child: Container(
-                                                    width: 22.40,
-                                                    height: 14.42,
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    decoration: BoxDecoration(),
-                                                    child: Stack(),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 23,
-                                            height: 23,
-                                            child: Stack(
-                                              children: [
-                                                Positioned(
-                                                  left: 2,
-                                                  top: 4,
-                                                  child: Container(
-                                                    width: 19.11,
-                                                    height: 13.80,
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    decoration: BoxDecoration(),
-                                                    child: Stack(),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 36,
-                                            height: 23,
-                                            child: Stack(
-                                              children: [
-                                                Positioned(
-                                                  left: 3,
-                                                  top: 4,
-                                                  child: Container(
-                                                    width: 30.85,
-                                                    height: 13.95,
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    decoration: BoxDecoration(),
-                                                    child: Stack(),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // -----------------------------------------------------------------
               // アプリタイトル「Motteko」
               // -----------------------------------------------------------------
               Positioned(
@@ -522,7 +327,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   child: Image.asset(
-                    'assets/icons/app_icon.png',
+                    'assets/icons/Motteko_rogo.png',
                     fit: BoxFit.cover,
                   ),
                 ),

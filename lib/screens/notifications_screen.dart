@@ -24,7 +24,7 @@ class NotificationsScreen extends StatelessWidget {
                     style: TextStyle(
                       color: Color(0xFFFF7B00),
                       fontSize: 32,
-                      fontFamily: 'LINESeedJP',
+                      fontFamily: 'Zen Maru Gothic',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -96,7 +96,7 @@ class NotificationsScreen extends StatelessWidget {
             style: TextStyle(
               color: Color(0xFF6B7280),
               fontSize: 12,
-              fontFamily: 'LINESeedJP',
+              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -178,7 +178,7 @@ class NotificationsScreen extends StatelessWidget {
                       style: const TextStyle(
                         color: Color(0xFF374151),
                         fontSize: 14,
-                        fontFamily: 'LINESeedJP',
+                        fontFamily: 'Zen Maru Gothic',
                         fontWeight: FontWeight.w400,
                         height: 1.20,
                       ),
@@ -191,7 +191,7 @@ class NotificationsScreen extends StatelessWidget {
                         style: const TextStyle(
                           color: Color(0xFF374151),
                           fontSize: 12,
-                          fontFamily: 'LINESeedJP',
+                          fontFamily: 'Zen Maru Gothic',
                           fontWeight: FontWeight.w400,
                           height: 1.20,
                         ),
@@ -214,7 +214,7 @@ class NotificationsScreen extends StatelessWidget {
                           style: TextStyle(
                             color: badgeTextColor,
                             fontSize: 8,
-                            fontFamily: 'LINESeedJP',
+                            fontFamily: 'Zen Maru Gothic',
                             fontWeight: FontWeight.w700,
                             height: 1.0,
                           ),
