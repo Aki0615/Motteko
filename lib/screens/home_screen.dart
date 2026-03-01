@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 32,
-                              fontFamily: 'LINESeedJP',
+                              fontFamily: 'Zen Maru Gothic',
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -101,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,
-                          fontFamily: 'LINESeedJP',
+                          fontFamily: 'Zen Maru Gothic',
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -110,7 +110,7 @@ class HomeScreen extends StatelessWidget {
                         style: const TextStyle(
                           color: Color(0xFFFF7B00),
                           fontSize: 25,
-                          fontFamily: 'LINESeedJP',
+                          fontFamily: 'Zen Maru Gothic',
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -167,7 +167,7 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
-                        fontFamily: 'LINESeedJP',
+                        fontFamily: 'Zen Maru Gothic',
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -180,7 +180,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           color: Color(0xFF3A55AE),
                           fontSize: 16,
-                          fontFamily: 'LINESeedJP',
+                          fontFamily: 'Zen Maru Gothic',
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -252,7 +252,7 @@ class HomeScreen extends StatelessWidget {
             style: const TextStyle(
               color: Colors.black,
               fontSize: 12,
-              fontFamily: 'LINESeedJP',
+              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -261,7 +261,7 @@ class HomeScreen extends StatelessWidget {
             style: const TextStyle(
               color: Color(0xFFFF7B00),
               fontSize: 20,
-              fontFamily: 'LINESeedJP',
+              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -270,7 +270,7 @@ class HomeScreen extends StatelessWidget {
             style: const TextStyle(
               color: Colors.black,
               fontSize: 12,
-              fontFamily: 'LINESeedJP',
+              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -297,7 +297,7 @@ class HomeScreen extends StatelessWidget {
             style: TextStyle(
               color: Colors.black,
               fontSize: 12,
-              fontFamily: 'LINESeedJP',
+              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -317,7 +317,7 @@ class HomeScreen extends StatelessWidget {
             style: const TextStyle(
               color: Colors.black,
               fontSize: 12,
-              fontFamily: 'LINESeedJP',
+              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -367,7 +367,7 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(
                 color: Color(0xFF6B7280),
                 fontSize: 14,
-                fontFamily: 'LINESeedJP',
+                fontFamily: 'Zen Maru Gothic',
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -441,7 +441,7 @@ class HomeScreen extends StatelessWidget {
                   style: const TextStyle(
                     color: Color(0xFF374151),
                     fontSize: 14,
-                    fontFamily: 'LINESeedJP',
+                    fontFamily: 'Zen Maru Gothic',
                     fontWeight: FontWeight.w400,
                     height: 1.20,
                   ),
@@ -454,7 +454,7 @@ class HomeScreen extends StatelessWidget {
                     style: const TextStyle(
                       color: Color(0xFF374151),
                       fontSize: 12,
-                      fontFamily: 'LINESeedJP',
+                      fontFamily: 'Zen Maru Gothic',
                       fontWeight: FontWeight.w400,
                       height: 1.20,
                     ),
@@ -477,7 +477,7 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(
                         color: badgeTextColor,
                         fontSize: 8,
-                        fontFamily: 'LINESeedJP',
+                        fontFamily: 'Zen Maru Gothic',
                         fontWeight: FontWeight.w700,
                         height: 1.0,
                       ),

@@ -30,7 +30,7 @@ class ItemsScreen extends StatelessWidget {
                     style: TextStyle(
                       color: Color(0xFFFF7B00),
                       fontSize: 32,
-                      fontFamily: 'LINESeedJP',
+                      fontFamily: 'Zen Maru Gothic',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -100,7 +100,7 @@ class ItemsScreen extends StatelessWidget {
             style: TextStyle(
               color: Color(0xFF6B7280),
               fontSize: 12,
-              fontFamily: 'LINESeedJP',
+              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -177,7 +177,7 @@ class ItemsScreen extends StatelessWidget {
                             style: TextStyle(
                               color: const Color(0xFF111827),
                               fontSize: 18,
-                              fontFamily: 'LINESeedJP',
+                              fontFamily: 'Zen Maru Gothic',
                               fontWeight: FontWeight.w700,
                               height: 1.20,
                             ),
@@ -215,7 +215,7 @@ class ItemsScreen extends StatelessWidget {
                                       style: const TextStyle(
                                         color: Color(0xFF111827),
                                         fontSize: 14,
-                                        fontFamily: 'LINESeedJP',
+                                        fontFamily: 'Zen Maru Gothic',
                                       ),
                                       cursorColor: const Color(0xFFFF7B00),
                                       cursorWidth: 2,
@@ -225,7 +225,7 @@ class ItemsScreen extends StatelessWidget {
                                         hintStyle: TextStyle(
                                           color: Color(0xFF6B7280),
                                           fontSize: 14,
-                                          fontFamily: 'LINESeedJP',
+                                          fontFamily: 'Zen Maru Gothic',
                                           fontWeight: FontWeight.w400,
                                         ),
                                         contentPadding: EdgeInsets.symmetric(
@@ -283,7 +283,7 @@ class ItemsScreen extends StatelessWidget {
                                       style: const TextStyle(
                                         color: Color(0xFF111827),
                                         fontSize: 14,
-                                        fontFamily: 'LINESeedJP',
+                                        fontFamily: 'Zen Maru Gothic',
                                       ),
                                       cursorColor: const Color(0xFFFF7B00),
                                       decoration: const InputDecoration(
@@ -291,7 +291,7 @@ class ItemsScreen extends StatelessWidget {
                                         hintStyle: TextStyle(
                                           color: Color(0xFF6B7280),
                                           fontSize: 14,
-                                          fontFamily: 'LINESeedJP',
+                                          fontFamily: 'Zen Maru Gothic',
                                           fontWeight: FontWeight.w400,
                                         ),
                                         contentPadding: EdgeInsets.symmetric(
@@ -409,7 +409,7 @@ class ItemsScreen extends StatelessWidget {
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 12,
-                                          fontFamily: 'LINESeedJP',
+                                          fontFamily: 'Zen Maru Gothic',
                                           fontWeight: FontWeight.w400,
                                           height: 1.20,
                                         ),

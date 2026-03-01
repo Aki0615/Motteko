@@ -149,8 +149,8 @@ class AppTheme {
   // ===========================================================================
 
   /// アプリ全体で使用するフォントファミリー名
-  /// LINE Seed JPフォントを使用
-  static const String fontFamily = 'LINESeedJP';
+  /// Zen Maru Gothicフォントを使用
+  static const String fontFamily = 'Zen Maru Gothic';
 
   // ===========================================================================
   // テキストスタイル（TextTheme）の構築

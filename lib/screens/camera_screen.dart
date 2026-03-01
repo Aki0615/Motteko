@@ -58,7 +58,7 @@ class CameraScreen extends StatelessWidget {
                     style: TextStyle(
                       color: Color(0xFFFF7B00),
                       fontSize: 32,
-                      fontFamily: 'LINESeedJP',
+                      fontFamily: 'Zen Maru Gothic',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -137,7 +137,7 @@ class CameraScreen extends StatelessWidget {
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
-                                    fontFamily: 'LINESeedJP',
+                                    fontFamily: 'Zen Maru Gothic',
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -169,7 +169,7 @@ class CameraScreen extends StatelessWidget {
             style: TextStyle(
               color: Color(0xFF9CA3AF),
               fontSize: 14,
-              fontFamily: 'LINESeedJP',
+              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -205,7 +205,7 @@ class CameraScreen extends StatelessWidget {
                 style: TextStyle(
                   color: Color(0xFF6B7280),
                   fontSize: 14,
-                  fontFamily: 'LINESeedJP',
+                  fontFamily: 'Zen Maru Gothic',
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -268,7 +268,7 @@ class CameraScreen extends StatelessWidget {
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
-                      fontFamily: 'LINESeedJP',
+                      fontFamily: 'Zen Maru Gothic',
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.center,

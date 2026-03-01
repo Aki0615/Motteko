@@ -307,7 +307,7 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontFamily: 'LINESeedJP',
+                fontFamily: 'Zen Maru Gothic',
                 fontSize: 9,
                 fontWeight: FontWeight.w400,
                 // 選択時: オレンジ、非選択時: グレー

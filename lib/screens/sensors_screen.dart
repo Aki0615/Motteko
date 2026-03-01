@@ -26,7 +26,7 @@ class SensorsScreen extends StatelessWidget {
                     style: TextStyle(
                       color: Color(0xFFFF7B00),
                       fontSize: 32,
-                      fontFamily: 'LINESeedJP',
+                      fontFamily: 'Zen Maru Gothic',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -64,7 +64,7 @@ class SensorsScreen extends StatelessWidget {
                             style: TextStyle(
                               color: Color(0xFF111827),
                               fontSize: 16,
-                              fontFamily: 'LINESeedJP',
+                              fontFamily: 'Zen Maru Gothic',
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -74,7 +74,7 @@ class SensorsScreen extends StatelessWidget {
                             style: TextStyle(
                               color: Color(0xFF374151),
                               fontSize: 14,
-                              fontFamily: 'LINESeedJP',
+                              fontFamily: 'Zen Maru Gothic',
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -142,7 +142,7 @@ class SensorsScreen extends StatelessWidget {
                             style: TextStyle(
                               color: Color(0xFF111827),
                               fontSize: 16,
-                              fontFamily: 'LINESeedJP',
+                              fontFamily: 'Zen Maru Gothic',
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -167,7 +167,7 @@ class SensorsScreen extends StatelessWidget {
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
-                                  fontFamily: 'LINESeedJP',
+                                  fontFamily: 'Zen Maru Gothic',
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
@@ -219,7 +219,7 @@ class SensorsScreen extends StatelessWidget {
                                 style: TextStyle(
                                   color: Color(0xFF374151),
                                   fontSize: 12,
-                                  fontFamily: 'LINESeedJP',
+                                  fontFamily: 'Zen Maru Gothic',
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
@@ -229,7 +229,7 @@ class SensorsScreen extends StatelessWidget {
                                 style: const TextStyle(
                                   color: Color(0xFF374151),
                                   fontSize: 12,
-                                  fontFamily: 'LINESeedJP',
+                                  fontFamily: 'Zen Maru Gothic',
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
