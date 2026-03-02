@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/app_state.dart';
 
 /// ホーム画面
@@ -11,219 +12,244 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
-    final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
+      width: double.infinity,
+      height: double.infinity,
       color: Colors.white,
       child: Stack(
         children: [
-          // === 背景グラデーションヘッダー ===
+          // オレンジ背景ヘッダー
           Positioned(
             left: 0,
             top: 0,
             right: 0,
-            height: screenHeight * 0.5, // 画面の約50%
             child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment(0.83, 0.13),
-                  end: Alignment(0.84, 0.90),
-                  colors: [
-                    Color(0xFFFF7B00),
-                    Color(0xFFFF9A40),
-                    Color(0xFFFFB870),
-                    Color(0xFFFFDAC4),
-                  ],
-                  stops: [0.0, 0.35, 0.65, 1.0],
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+              height: 367,
+              decoration: ShapeDecoration(
+                color: const Color(0xFFFF7B00),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 2),
                 ),
               ),
             ),
           ),
 
-          // === ヘッダータイトル「ホーム」 ===
+          // 装飾円（左下）
           Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: SizedBox(
-                  height: 60,
-                  child: Row(
+            left: -9,
+            top: 303,
+            child: Container(
+              width: 59,
+              height: 59,
+              decoration: ShapeDecoration(
+                color: const Color(0x7FFFDAC4),
+                shape: OvalBorder(
+                  side: BorderSide(
+                    width: 2,
+                    color: const Color(0xFFFF932F),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // 装飾円（右上）
+          Positioned(
+            left: 307,
+            top: 131,
+            child: Container(
+              width: 119,
+              height: 119,
+              decoration: ShapeDecoration(
+                color: const Color(0x7FFFDAC4),
+                shape: OvalBorder(
+                  side: BorderSide(
+                    width: 2,
+                    color: const Color(0xFFFF932F),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // ヘッダー「ホーム」テキスト + アイコン
+          Positioned(
+            left: 24,
+            top: 54,
+            right: 24,
+            child: SizedBox(
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // 「ホーム」テキスト
+                  Text(
+                    'ホーム',
+                    style: GoogleFonts.zenMaruGothic(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w900,
+                      height: 0.80,
+                    ),
+                  ),
+                  // 設定アイコン
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: 設定への遷移処理
+                    },
+                    child: Image.asset(
+                      'assets/icons/setting_icon.png',
+                      width: 38,
+                      height: 38,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // 連続日数バブル（大）
+          Positioned(
+            left: 133,
+            top: 119,
+            child: Container(
+              width: 112.50,
+              height: 112.50,
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 2, color: Colors.black),
+                  borderRadius: BorderRadius.circular(56.25),
+                ),
+                shadows: [
+                  BoxShadow(
+                    color: Color(0xFF000000),
+                    blurRadius: 0,
+                    offset: Offset(3, 4.50),
+                    spreadRadius: 0,
+                  )
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '連続日数',
+                    style: GoogleFonts.zenMaruGothic(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      height: 1.20,
+                    ),
+                  ),
+                  Text(
+                    '${appState.consecutiveDaysWithoutForgetting}',
+                    style: GoogleFonts.zenMaruGothic(
+                      color: const Color(0xFFFF7B00),
+                      fontSize: 36,
+                      fontWeight: FontWeight.w900,
+                      height: 0.80,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // 登録バブル（小）
+          Positioned(
+            left: 62,
+            top: 222,
+            child: _buildSmallStatBubble(
+              label: '登録',
+              value: '${appState.items.length}',
+              unit: '個',
+            ),
+          ),
+
+          // 通知バブル（小）
+          Positioned(
+            left: 144,
+            top: 222,
+            child: _buildSmallStatBubble(
+              label: '通知',
+              value: '3',
+              unit: '件',
+            ),
+          ),
+
+          // センサーバブル（小）
+          Positioned(
+            left: 224,
+            top: 222,
+            child: _buildSensorBubble(appState),
+          ),
+
+          // 最近の通知セクション
+          Positioned(
+            left: 40,
+            top: 397,
+            right: 40,
+            bottom: 100,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // タイトル行
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // 中央のタイトル
-                      const Expanded(
-                        child: Center(
-                          child: Text(
-                            'ホーム',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontFamily: 'Zen Maru Gothic',
-                              fontWeight: FontWeight.w700,
-                            ),
+                      Text(
+                        '最近の通知',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Text(
+                          'すべて表示',
+                          style: GoogleFonts.zenMaruGothic(
+                            color: const Color(0xFF3A55AE),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            height: 1.20,
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ),
-            ),
-          ),
-
-          // === 統計円エリア ===
-          Positioned(
-            top: 120,
-            left: 0,
-            right: 0,
-            child: Column(
-              children: [
-                // 大きな円（連続日数）
-                Container(
-                  width: 112.5,
-                  height: 112.5,
-                  decoration: const ShapeDecoration(
-                    color: Colors.white,
-                    shape: OvalBorder(),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        '連続日数',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontFamily: 'Zen Maru Gothic',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        '${appState.consecutiveDaysWithoutForgetting}',
-                        style: const TextStyle(
-                          color: Color(0xFFFF7B00),
-                          fontSize: 25,
-                          fontFamily: 'Zen Maru Gothic',
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 30),
-                // 小さな統計円（3つ横並び）
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // 登録
-                      _buildSmallStatsCircle(
-                        label: '登録',
-                        value: '${appState.items.length}',
-                        unit: '個',
-                      ),
-                      // 確認（少し下にオフセット）
-                      Transform.translate(
-                        offset: const Offset(0, 30),
-                        child: _buildSmallStatsCircle(
-                          label: '確認',
-                          value:
-                              '${appState.items.where((i) => i.isRequired).length}',
-                          unit: '件',
-                        ),
-                      ),
-                      // センサー
-                      _buildSensorCircle(appState),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // === 最近の通知セクション ===
-          Positioned(
-            top: screenHeight * 0.52,
-            left: 24,
-            right: 24,
-            bottom: 100,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // タイトル行
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      '最近の通知',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: 'Zen Maru Gothic',
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // すべて表示のアクション
-                      },
-                      child: const Text(
-                        'すべて表示',
-                        style: TextStyle(
-                          color: Color(0xFF3A55AE),
-                          fontSize: 16,
-                          fontFamily: 'Zen Maru Gothic',
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                // 通知リスト
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
+                  const SizedBox(height: 8),
+                  // 通知カードリスト
+                  StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('detections')
                         .orderBy('timestamp', descending: true)
                         .limit(3)
                         .snapshots(),
                     builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text('エラーが発生しました: ${snapshot.error}'),
-                        );
+                      if (snapshot.hasError ||
+                          snapshot.connectionState == ConnectionState.waiting) {
+                        return _buildPlaceholderNotifications();
                       }
-
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return _listEmptyNotification();
+                        return _buildPlaceholderNotifications();
                       }
-
-                      return ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          final doc = snapshot.data!.docs[index];
+                      return Column(
+                        children: snapshot.data!.docs.map((doc) {
                           final data = doc.data() as Map<String, dynamic>;
                           return _buildNotificationCard(data);
-                        },
+                        }).toList(),
                       );
                     },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -231,8 +257,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// 小さな統計円を構築するヘルパーメソッド
-  Widget _buildSmallStatsCircle({
+  // 小さな統計バブル
+  Widget _buildSmallStatBubble({
     required String label,
     required String value,
     required String unit,
@@ -240,105 +266,150 @@ class HomeScreen extends StatelessWidget {
     return Container(
       width: 90,
       height: 90,
-      decoration: const ShapeDecoration(
+      decoration: ShapeDecoration(
         color: Colors.white,
-        shape: OvalBorder(),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 12,
-              fontFamily: 'Zen Maru Gothic',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Color(0xFFFF7B00),
-              fontSize: 20,
-              fontFamily: 'Zen Maru Gothic',
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Text(
-            unit,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 12,
-              fontFamily: 'Zen Maru Gothic',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(width: 2, color: Colors.black),
+          borderRadius: BorderRadius.circular(45),
+        ),
+        shadows: [
+          BoxShadow(
+            color: Color(0xFF000000),
+            blurRadius: 0,
+            offset: Offset(3, 4.50),
+            spreadRadius: 0,
+          )
         ],
+      ),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.zenMaruGothic(
+                color: Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                height: 1.20,
+              ),
+            ),
+            Text(
+              value,
+              style: GoogleFonts.zenMaruGothic(
+                color: const Color(0xFFFF7B00),
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                height: 1,
+              ),
+            ),
+            Text(
+              unit,
+              style: GoogleFonts.zenMaruGothic(
+                color: Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                height: 1.20,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  /// センサー状態の円
-  Widget _buildSensorCircle(AppState appState) {
+  // センサーバブル
+  Widget _buildSensorBubble(AppState appState) {
     final isDetected = appState.sensorStatus.isPersonPresent;
     return Container(
       width: 90,
       height: 90,
-      decoration: const ShapeDecoration(
+      decoration: ShapeDecoration(
         color: Colors.white,
-        shape: OvalBorder(),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'センサー',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 12,
-              fontFamily: 'Zen Maru Gothic',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          isDetected
-              ? Icon(
-                  Icons.person,
-                  size: 24,
-                  color: const Color(0xFF22C55E),
-                )
-              : Image.asset(
-                  'assets/icons/sensor_off_icon.png',
-                  width: 24,
-                  height: 24,
-                ),
-          Text(
-            isDetected ? '検知中' : '未検知',
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 12,
-              fontFamily: 'Zen Maru Gothic',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(width: 2, color: Colors.black),
+          borderRadius: BorderRadius.circular(45),
+        ),
+        shadows: [
+          BoxShadow(
+            color: Color(0xFF000000),
+            blurRadius: 0,
+            offset: Offset(3, 4.50),
+            spreadRadius: 0,
+          )
         ],
+      ),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'センサー',
+              style: GoogleFonts.zenMaruGothic(
+                color: Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                height: 1.20,
+              ),
+            ),
+            isDetected
+                ? Icon(Icons.person, size: 24, color: const Color(0xFF22C55E))
+                : Icon(Icons.wifi_tethering_off,
+                    size: 24, color: const Color(0xFF6B7280)),
+            Text(
+              isDetected ? '検知中' : '未検知',
+              style: GoogleFonts.zenMaruGothic(
+                color: Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                height: 1.20,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  /// 空の通知カードリスト
-  Widget _listEmptyNotification() {
+  // プレースホルダー通知
+  Widget _buildPlaceholderNotifications() {
     return Column(
       children: [
-        _buildEmptyNotification(),
-        _buildEmptyNotification(),
-        _buildEmptyNotification(),
+        _buildPlaceholderCard(
+            '今日も忘れ物なし！！',
+            '2026/01/25 16:11:13',
+            '成功',
+            const Color(0xFFBEFFD6),
+            const Color(0xFF22C55E),
+            'assets/icons/success_icon.png'),
+        _buildPlaceholderCard(
+            '忘れ物をしている可能性があります。',
+            '2026/01/25 16:11:13',
+            '警告',
+            const Color(0xFFFFEFB2),
+            const Color(0xFFFFA500),
+            'assets/icons/warning_icon.png'),
+        _buildPlaceholderCard(
+            'センサーが人の動きを検知しました',
+            '2026/01/25 16:11:13',
+            '情報',
+            const Color(0xFFC1E5FF),
+            const Color(0xFF26A5FF),
+            'assets/icons/info_icon.png'),
       ],
     );
   }
 
-  /// 空の通知カードを構築するヘルパーメソッド
-  Widget _buildEmptyNotification() {
+  Widget _buildPlaceholderCard(
+    String message,
+    String date,
+    String badge,
+    Color badgeBg,
+    Color badgeColor,
+    String iconAsset,
+  ) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 8),
@@ -346,30 +417,67 @@ class HomeScreen extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
+          side: BorderSide(width: 2, color: Colors.black),
           borderRadius: BorderRadius.circular(8),
         ),
+        shadows: [
+          BoxShadow(
+            color: Color(0xFF000000),
+            blurRadius: 0,
+            offset: Offset(3, 4.50),
+            spreadRadius: 0,
+          )
+        ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: const BoxDecoration(
-              color: Color(0xFFE5E7EB),
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Text(
-              '通知はありません',
-              style: TextStyle(
-                color: Color(0xFF6B7280),
-                fontSize: 14,
-                fontFamily: 'Zen Maru Gothic',
-                fontWeight: FontWeight.w400,
-              ),
+          Image.asset(iconAsset, width: 24, height: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  message,
+                  style: GoogleFonts.zenMaruGothic(
+                    color: const Color(0xFF374151),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    height: 1.20,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  date,
+                  style: GoogleFonts.zenMaruGothic(
+                    color: const Color(0xFF374151),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    height: 1.20,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 16,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: ShapeDecoration(
+                    color: badgeBg,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    badge,
+                    style: GoogleFonts.zenMaruGothic(
+                      color: badgeColor,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w900,
+                      height: 1.20,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -377,28 +485,24 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// 通知カードを構築するヘルパーメソッド
+  // 通知カード（実データ）
   Widget _buildNotificationCard(Map<String, dynamic> data) {
     Color badgeBgColor;
     Color badgeTextColor;
     String badgeText;
-    String iconAsset; // 画像アセットのパス
+    String iconAsset;
 
     final message = data['message'] as String? ?? '通知';
     final List<dynamic> missingItems =
         data['missing_items'] as List<dynamic>? ?? [];
     final Timestamp? timestamp = data['timestamp'] as Timestamp?;
 
-    // アイコン判定ロジック（異常なし＝成功）
-    // 1. missing_itemsがある場合は警告
     if (missingItems.isNotEmpty) {
-      badgeBgColor = const Color(0xFFFEF2F2);
-      badgeTextColor = const Color(0xFFDC2626);
-      badgeText = '忘れ物あり';
+      badgeBgColor = const Color(0xFFFFEFB2);
+      badgeTextColor = const Color(0xFFFFA500);
+      badgeText = '警告';
       iconAsset = 'assets/icons/warning_icon.png';
-    }
-    // 2. それ以外（missing_itemsが空）はすべて成功
-    else {
+    } else {
       badgeBgColor = const Color(0xFFBEFFD6);
       badgeTextColor = const Color(0xFF22C55E);
       badgeText = '成功';
@@ -412,55 +516,48 @@ class HomeScreen extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            width: 1,
-            color: Color(0xFFE5E7EB),
-          ),
+          side: BorderSide(width: 2, color: Colors.black),
           borderRadius: BorderRadius.circular(8),
         ),
+        shadows: [
+          BoxShadow(
+            color: Color(0xFF000000),
+            blurRadius: 0,
+            offset: Offset(3, 4.50),
+            spreadRadius: 0,
+          )
+        ],
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // アイコン
-          Image.asset(
-            iconAsset,
-            width: 30,
-            height: 30,
-          ),
+          Image.asset(iconAsset, width: 24, height: 24),
           const SizedBox(width: 12),
-          // テキストエリア
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // メッセージ
                 Text(
                   message,
-                  style: const TextStyle(
-                    color: Color(0xFF374151),
+                  style: GoogleFonts.zenMaruGothic(
+                    color: const Color(0xFF374151),
                     fontSize: 14,
-                    fontFamily: 'Zen Maru Gothic',
                     fontWeight: FontWeight.w400,
                     height: 1.20,
                   ),
                 ),
-                const SizedBox(height: 4),
-                // 日時
+                const SizedBox(height: 2),
                 if (timestamp != null)
                   Text(
                     _formatDateTime(timestamp.toDate()),
-                    style: const TextStyle(
-                      color: Color(0xFF374151),
+                    style: GoogleFonts.zenMaruGothic(
+                      color: const Color(0xFF374151),
                       fontSize: 12,
-                      fontFamily: 'Zen Maru Gothic',
                       fontWeight: FontWeight.w400,
                       height: 1.20,
                     ),
                   ),
-                const SizedBox(height: 6),
-                // バッジ
+                const SizedBox(height: 4),
                 Container(
                   height: 16,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -470,17 +567,13 @@ class HomeScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Center(
-                    widthFactor: 1,
-                    child: Text(
-                      badgeText,
-                      style: TextStyle(
-                        color: badgeTextColor,
-                        fontSize: 8,
-                        fontFamily: 'Zen Maru Gothic',
-                        fontWeight: FontWeight.w700,
-                        height: 1.0,
-                      ),
+                  child: Text(
+                    badgeText,
+                    style: GoogleFonts.zenMaruGothic(
+                      color: badgeTextColor,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w900,
+                      height: 1.20,
                     ),
                   ),
                 ),
