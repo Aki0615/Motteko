@@ -55,6 +55,29 @@ class LoginScreen extends StatelessWidget {
               ),
 
               // -----------------------------------------------------------------
+              // Rectangle1593: 画面下2/3のベージュ背景
+              // -----------------------------------------------------------------
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 280,
+                bottom: 0,
+                child: Container(
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFFFFDAC4),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 2,
+                      color: const Color(0xFF000000)),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // -----------------------------------------------------------------
               // 「すでにアカウントをお持ちの方」セクションの区切り線
               // -----------------------------------------------------------------
               Positioned(
