@@ -66,8 +66,8 @@ class LoginScreen extends StatelessWidget {
                   decoration: ShapeDecoration(
                     color: const Color(0xFFFFDAC4),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2,
-                      color: const Color(0xFF000000)),
+                      side:
+                          BorderSide(width: 2, color: const Color(0xFF000000)),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(40),
                         topRight: Radius.circular(40),
@@ -139,8 +139,8 @@ class LoginScreen extends StatelessWidget {
                 top: 531,
                 child: GestureDetector(
                   onTap: () {
-                    // サインイン処理（将来的に実装）
-                    context.go('/');
+                    // サインイン画面へ遷移
+                    context.go('/sign-in');
                   },
                   child: Container(
                     height: 60,

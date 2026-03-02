@@ -25,6 +25,7 @@ import '../screens/sensors_screen.dart';
 import '../screens/notifications_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/login_form_screen.dart';
+import '../screens/sign_in_screen.dart';
 
 // =============================================================================
 // グローバル変数
@@ -76,6 +77,14 @@ class AppRouter {
       GoRoute(
         path: '/login-form',
         builder: (context, state) => const LoginFormScreen(),
+      ),
+
+      // -----------------------------------------------------------------------
+      // サインイン（新規登録）画面（ナビゲーションバーなし）
+      // -----------------------------------------------------------------------
+      GoRoute(
+        path: '/sign-in',
+        builder: (context, state) => const SignInScreen(),
       ),
 
       // -----------------------------------------------------------------------

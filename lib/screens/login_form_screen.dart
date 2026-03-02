@@ -14,8 +14,23 @@ import 'package:google_fonts/google_fonts.dart';
 /// Figmaデザインを忠実に再現したログインフォーム画面。
 /// メールアドレス・パスワード入力、ログインボタン、
 /// Google/Apple認証ボタン、新規登録リンクを配置しています。
-class LoginFormScreen extends StatelessWidget {
+class LoginFormScreen extends StatefulWidget {
   const LoginFormScreen({super.key});
+
+  @override
+  State<LoginFormScreen> createState() => _LoginFormScreenState();
+}
+
+class _LoginFormScreenState extends State<LoginFormScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,24 +133,10 @@ class LoginFormScreen extends StatelessWidget {
               Positioned(
                 left: 46,
                 top: 334,
-                child: Container(
-                  width: 301,
-                  height: 60,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2.25),
-                      borderRadius: BorderRadius.circular(22.50),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0xFF000000),
-                        blurRadius: 0,
-                        offset: Offset(3, 4.50),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
+                child: _buildInputField(
+                  controller: _emailController,
+                  hintText: 'メールアドレスを入力',
+                  keyboardType: TextInputType.emailAddress,
                 ),
               ),
 
@@ -145,24 +146,10 @@ class LoginFormScreen extends StatelessWidget {
               Positioned(
                 left: 46,
                 top: 446,
-                child: Container(
-                  width: 301,
-                  height: 60,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2.25),
-                      borderRadius: BorderRadius.circular(22.50),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0xFF000000),
-                        blurRadius: 0,
-                        offset: Offset(3, 4.50),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
+                child: _buildInputField(
+                  controller: _passwordController,
+                  hintText: 'パスワードを入力',
+                  obscureText: true,
                 ),
               ),
 
@@ -456,6 +443,49 @@ class LoginFormScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String hintText,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return SizedBox(
+      width: 301,
+      height: 60,
+      child: Material(
+        color: Colors.transparent,
+        child: TextField(
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          style: GoogleFonts.zenMaruGothic(
+            color: Colors.black,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: GoogleFonts.zenMaruGothic(
+              color: const Color(0xFF6B7280),
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(22.50),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ),
