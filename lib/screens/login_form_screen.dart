@@ -7,7 +7,9 @@
 // =============================================================================
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 /// ログインフォーム画面ウィジェット
 ///
@@ -120,6 +122,10 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                           fontWeight: FontWeight.w900,
                           height: 1.20,
                         ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            context.go('/sign-in');
+                          },
                       ),
                     ],
                   ),

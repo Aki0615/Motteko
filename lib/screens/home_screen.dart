@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/app_state.dart';
 
 /// ホーム画面
@@ -97,7 +98,7 @@ class HomeScreen extends StatelessWidget {
                   // 設定アイコン
                   GestureDetector(
                     onTap: () {
-                      // TODO: 設定への遷移処理
+                      context.go('/settings');
                     },
                     child: Image.asset(
                       'assets/icons/setting_icon.png',
