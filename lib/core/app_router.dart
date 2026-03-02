@@ -26,6 +26,7 @@ import '../screens/notifications_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/login_form_screen.dart';
 import '../screens/sign_in_screen.dart';
+import '../screens/settings_screen.dart';
 
 // =============================================================================
 // グローバル変数
@@ -136,6 +137,13 @@ class AppRouter {
             builder: (context, state) => const NotificationsScreen(),
           ),
         ],
+      ),
+
+      // 設定画面（タブバーなし）
+      // パス: /settings
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
   );
