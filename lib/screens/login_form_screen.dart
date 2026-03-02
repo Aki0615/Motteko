@@ -34,6 +34,31 @@ class LoginFormScreen extends StatelessWidget {
           child: Stack(
             children: [
               // -----------------------------------------------------------------
+              // Rectangle1593: 画面下部のベージュ背景
+              // -----------------------------------------------------------------
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 140,
+                bottom: 0,
+                child: Container(
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFFFFDAC4),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 2,
+                        color: const Color(0xFF000000),
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // -----------------------------------------------------------------
               // 「パスワードを忘れた方はこちら」テキスト
               // -----------------------------------------------------------------
               Positioned(
@@ -57,34 +82,33 @@ class LoginFormScreen extends StatelessWidget {
               // 「アカウントがない方は新規登録」テキスト
               // -----------------------------------------------------------------
               Positioned(
-                left: 84,
+                left: 46,
+                right: 46,
                 top: 767,
-                child: SizedBox(
-                  width: 225,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'アカウントがない方は',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFFB9BFC9),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            height: 1.20,
-                          ),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'アカウントがない方は',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: const Color(0xFFB9BFC9),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
                         ),
-                        TextSpan(
-                          text: '新規登録',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFFFF6100),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            height: 1.20,
-                          ),
+                      ),
+                      TextSpan(
+                        text: '新規登録',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: const Color(0xFFFF6100),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
 
@@ -97,7 +121,6 @@ class LoginFormScreen extends StatelessWidget {
                 child: Container(
                   width: 301,
                   height: 60,
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -111,23 +134,6 @@ class LoginFormScreen extends StatelessWidget {
                         offset: Offset(3, 4.50),
                         spreadRadius: 0,
                       )
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 21,
-                        top: 21,
-                        child: Text(
-                          'あああああ',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFF6B7280),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            height: 1.20,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -142,7 +148,6 @@ class LoginFormScreen extends StatelessWidget {
                 child: Container(
                   width: 301,
                   height: 60,
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -156,23 +161,6 @@ class LoginFormScreen extends StatelessWidget {
                         offset: Offset(3, 4.50),
                         spreadRadius: 0,
                       )
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 21,
-                        top: 21,
-                        child: Text(
-                          'あああああ',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFF6B7280),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            height: 1.20,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -234,16 +222,13 @@ class LoginFormScreen extends StatelessWidget {
                 left: 46,
                 top: 682,
                 child: Container(
-                  width: 130,
+                  width: 150,
                   height: 60,
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  decoration: ShapeDecoration(
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2.25),
-                      borderRadius: BorderRadius.circular(22.50),
-                    ),
-                    shadows: [
+                    border: Border.all(width: 2.25, color: Colors.black),
+                    borderRadius: BorderRadius.circular(22.50),
+                    boxShadow: [
                       BoxShadow(
                         color: Color(0xFF000000),
                         blurRadius: 0,
@@ -253,12 +238,19 @@ class LoginFormScreen extends StatelessWidget {
                     ],
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        ' Google',
+                        'G',
+                        style: TextStyle(
+                          color: const Color(0xFFFF7B00),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Google',
                         style: GoogleFonts.zenMaruGothic(
                           color: Colors.black,
                           fontSize: 16,
@@ -278,16 +270,13 @@ class LoginFormScreen extends StatelessWidget {
                 left: 217,
                 top: 682,
                 child: Container(
-                  width: 130,
+                  width: 150,
                   height: 60,
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  decoration: ShapeDecoration(
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2.25),
-                      borderRadius: BorderRadius.circular(22.50),
-                    ),
-                    shadows: [
+                    border: Border.all(width: 2.25, color: Colors.black),
+                    borderRadius: BorderRadius.circular(22.50),
+                    boxShadow: [
                       BoxShadow(
                         color: Color(0xFF000000),
                         blurRadius: 0,
@@ -297,19 +286,16 @@ class LoginFormScreen extends StatelessWidget {
                     ],
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 16.84,
-                        height: 20,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(),
-                        child: Stack(),
+                      Icon(
+                        Icons.apple,
+                        color: Colors.black,
+                        size: 22,
                       ),
+                      const SizedBox(width: 4),
                       Text(
-                        ' Apple',
+                        'Apple',
                         style: GoogleFonts.zenMaruGothic(
                           color: Colors.black,
                           fontSize: 16,
