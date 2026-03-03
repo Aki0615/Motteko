@@ -27,6 +27,7 @@ import '../screens/login_screen.dart';
 import '../screens/login_form_screen.dart';
 import '../screens/sign_in_screen.dart';
 import '../screens/settings_screen.dart';
+import '../screens/wifi_screen.dart';
 
 // =============================================================================
 // グローバル変数
@@ -144,6 +145,13 @@ class AppRouter {
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsScreen(),
+      ),
+
+      // Wi-Fi設定画面（タブバーなし）
+      // パス: /wifi
+      GoRoute(
+        path: '/wifi',
+        builder: (context, state) => const WifiScreen(),
       ),
     ],
   );

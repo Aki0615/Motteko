@@ -179,9 +179,11 @@ class SettingsScreen extends StatelessWidget {
               child: _buildSettingsCard(
                 children: [
                   _buildSettingsItem(
+                    context: context,
                     iconColor: const Color(0xFF26A5FF),
                     icon: Icons.wifi,
                     label: 'Wi-Fi',
+                    onTap: () => context.go('/wifi'),
                   ),
                   _buildDivider(),
                   _buildSettingsItem(
@@ -351,15 +353,15 @@ class SettingsScreen extends StatelessWidget {
 
   // 設定アイテム（アイコン + ラベル）
   Widget _buildSettingsItem({
+    BuildContext? context,
     required Color iconColor,
     required IconData icon,
     required String label,
+    VoidCallback? onTap,
   }) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        // TODO: 各設定画面への遷移
-      },
+      onTap: onTap ?? () {},
       child: SizedBox(
         height: 48,
         child: Row(
