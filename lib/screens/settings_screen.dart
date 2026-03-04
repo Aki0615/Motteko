@@ -190,6 +190,7 @@ class SettingsScreen extends StatelessWidget {
                     iconColor: const Color(0xFF26A5FF),
                     icon: Icons.bluetooth,
                     label: 'Bluetooth',
+                    onTap: () => context.go('/bluetooth'),
                   ),
                 ],
               ),
@@ -205,61 +206,26 @@ class SettingsScreen extends StatelessWidget {
               child: _buildSettingsCard(
                 children: [
                   _buildSettingsItem(
+                    iconColor: const Color(0xFFFF7B00),
+                    icon: Icons.description_outlined,
+                    label: '利用規約',
+                    onTap: () => context.go('/terms-of-service'),
+                  ),
+                  _buildDivider(),
+                  _buildSettingsItem(
                     iconColor: const Color(0xFFF44F4F),
                     icon: Icons.notifications_outlined,
                     label: '通知',
+                    onTap: () => context.go('/notification-settings'),
                   ),
                   _buildDivider(),
                   _buildSettingsItem(
                     iconColor: const Color(0xFF26A5FF),
                     icon: Icons.shield_outlined,
                     label: 'プライバシー',
+                    onTap: () => context.go('/privacy-settings'),
                   ),
                 ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // ============================================================
-            // 利用規約
-            // ============================================================
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: GestureDetector(
-                onTap: () {
-                  // TODO: 利用規約ページへ遷移
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 64,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2, color: Colors.black),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0xFF000000),
-                        blurRadius: 0,
-                        offset: Offset(2, 3),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      '利用規約',
-                      style: GoogleFonts.zenMaruGothic(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
-                        height: 1.20,
-                      ),
-                    ),
-                  ),
-                ),
               ),
             ),
 
@@ -272,8 +238,61 @@ class SettingsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 28),
               child: GestureDetector(
                 onTap: () {
-                  // TODO: ログアウト処理
-                  context.go('/login');
+                  showDialog(
+                    context: context,
+                    builder: (dialogContext) {
+                      return AlertDialog(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(width: 2, color: Colors.black),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        title: Text(
+                          'ログアウト',
+                          style: GoogleFonts.zenMaruGothic(
+                            color: Colors.black,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        content: Text(
+                          '本当にログアウトしますか？',
+                          style: GoogleFonts.zenMaruGothic(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(),
+                            child: Text(
+                              'キャンセル',
+                              style: GoogleFonts.zenMaruGothic(
+                                color: const Color(0xFFB9BFC9),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                              context.go('/login');
+                            },
+                            child: Text(
+                              'ログアウト',
+                              style: GoogleFonts.zenMaruGothic(
+                                color: const Color(0xFFEF4444),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 child: Container(
                   width: double.infinity,
