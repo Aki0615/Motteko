@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../services/auth_service.dart';
 
 /// ログインフォーム画面ウィジェット
 ///
@@ -24,6 +25,8 @@ class LoginFormScreen extends StatefulWidget {
 }
 
 class _LoginFormScreenState extends State<LoginFormScreen> {
+  bool _isLoading = false;
+  final _authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -341,39 +344,79 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
               Positioned(
                 left: 88,
                 top: 558,
-                child: Container(
-                  height: 60,
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFF7B00),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2.25),
-                      borderRadius: BorderRadius.circular(22.50),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0xFF000000),
-                        blurRadius: 0,
-                        offset: Offset(3, 4.50),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'ログイン→',
-                        style: GoogleFonts.zenMaruGothic(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                          height: 1.20,
-                        ),
+                child: GestureDetector(
+                  onTap: _isLoading
+                      ? null
+                      : () async {
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text;
+
+                          if (email.isEmpty || password.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('メールアドレスとパスワードを入力してください'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          setState(() => _isLoading = true);
+                          try {
+                            await _authService.signIn(
+                              email: email,
+                              password: password,
+                            );
+                            if (mounted) context.go('/');
+                          } catch (e) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e
+                                      .toString()
+                                      .replaceFirst('Exception: ', '')),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          } finally {
+                            if (mounted) setState(() => _isLoading = false);
+                          }
+                        },
+                  child: Container(
+                    height: 60,
+                    padding: const EdgeInsets.symmetric(horizontal: 48),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFFF7B00),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 2.25),
+                        borderRadius: BorderRadius.circular(22.50),
                       ),
-                    ],
+                      shadows: [
+                        BoxShadow(
+                          color: Color(0xFF000000),
+                          blurRadius: 0,
+                          offset: Offset(3, 4.50),
+                          spreadRadius: 0,
+                        )
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'ログイン→',
+                          style: GoogleFonts.zenMaruGothic(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                            height: 1.20,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
