@@ -1,8 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class CameraScreen extends StatelessWidget {
+class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
+
+  @override
+  State<CameraScreen> createState() => _CameraScreenState();
+}
+
+class _CameraScreenState extends State<CameraScreen> {
+  String? _deviceId;
+  int _timestamp = DateTime.now().millisecondsSinceEpoch;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDeviceId();
+  }
+
+  Future<void> _loadDeviceId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _deviceId = prefs.getString('motteko_device_id');
+    });
+  }
+
+  void _refreshImage() {
+    setState(() {
+      _timestamp = DateTime.now().millisecondsSinceEpoch;
+    });
+  }
 
   /// Firestoreに撮影リクエストを送信
   Future<void> _sendTakePhotoCommand(BuildContext context) async {
@@ -145,6 +173,39 @@ class CameraScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+
+                        const SizedBox(height: 16),
+
+                        // 更新ボタン
+                        GestureDetector(
+                          onTap: _refreshImage,
+                          child: Container(
+                            height: 40,
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFF6B7280),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '最新の画像を読み込む',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontFamily: 'Zen Maru Gothic',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   },
@@ -177,107 +238,65 @@ class CameraScreen extends StatelessWidget {
       );
     }
 
-    // ユーザー指定のdetections監視ロジック
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('detections')
-          .orderBy('timestamp', descending: true)
-          .limit(1)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-              child: CircularProgressIndicator(color: Colors.white));
-        }
-
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.videocam_off_outlined,
-                size: 48,
-                color: Color(0xFF6B7280),
-              ),
-              SizedBox(height: 16),
-              Text(
-                '写真はまだありません',
-                style: TextStyle(
-                  color: Color(0xFF6B7280),
-                  fontSize: 14,
-                  fontFamily: 'Zen Maru Gothic',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          );
-        }
-
-        final doc = snapshot.data!.docs.first;
-        final data = doc.data() as Map<String, dynamic>;
-        final imageUrl = data['image_url'] as String?;
-        final message = data['message'] as String? ?? '';
-
-        if (imageUrl == null || imageUrl.isEmpty) {
-          return const Center(
-              child:
-                  Text('画像URLがありません', style: TextStyle(color: Colors.white)));
-        }
-
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            // 画像
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return const Center(
-                    child: Icon(Icons.broken_image,
-                        size: 48, color: Color(0xFF6B7280)),
-                  );
-                },
-              ),
+    if (_deviceId == null) {
+      return const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.device_unknown,
+            size: 48,
+            color: Color(0xFF6B7280),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'デバイスが登録されていません\nWi-Fi設定から登録してください',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0xFF6B7280),
+              fontSize: 14,
+              fontFamily: 'Zen Maru Gothic',
+              fontWeight: FontWeight.w400,
             ),
+          ),
+        ],
+      );
+    }
 
-            // メッセージ（オーバーレイ表示）
-            if (message.isNotEmpty)
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(8),
-                    ),
+    // デバイスIDに基づくURL (キャッシュバスティングのためtimestampを付与)
+    final imageUrl =
+        'https://firebasestorage.googleapis.com/v0/b/matsuriba-max.firebasestorage.app/o/inbox%2F$_deviceId.jpg?alt=media&t=$_timestamp';
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // 画像
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.broken_image, size: 48, color: Color(0xFF6B7280)),
+                  SizedBox(height: 8),
+                  Text(
+                    'まだ画像がありません',
+                    style: TextStyle(color: Color(0xFF6B7280)),
                   ),
-                  child: Text(
-                    message,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontFamily: 'Zen Maru Gothic',
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
+                ],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

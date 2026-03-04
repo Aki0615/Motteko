@@ -33,6 +33,7 @@ import '../screens/bluetooth_screen.dart';
 import '../screens/notification_settings_screen.dart';
 import '../screens/privacy_settings_screen.dart';
 import '../screens/terms_of_service_screen.dart';
+import '../screens/device_id_input_screen.dart';
 
 // =============================================================================
 // グローバル変数
@@ -167,6 +168,22 @@ class AppRouter {
           final networkName = state.uri.queryParameters['name'] ?? '';
           return WifiPasswordScreen(networkName: networkName);
         },
+      ),
+
+      // ユーザー情報設定画面（仮）
+      GoRoute(
+        path: '/profile-setup',
+        builder: (context, state) {
+          // TODO: プロフィール設定画面を実装する
+          return const Scaffold(body: Center(child: Text('プロフィール設定画面')));
+        },
+      ),
+
+      // デバイスID入力画面（タブバーなし）
+      // パス: /device-id-input
+      GoRoute(
+        path: '/device-id-input',
+        builder: (context, state) => const DeviceIdInputScreen(),
       ),
 
       // Bluetooth設定画面（タブバーなし）
