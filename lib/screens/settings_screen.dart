@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../services/auth_service.dart';
 
 /// 設定画面
 class SettingsScreen extends StatelessWidget {
@@ -276,9 +277,10 @@ class SettingsScreen extends StatelessWidget {
                             ),
                           ),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               Navigator.of(dialogContext).pop();
-                              context.go('/login');
+                              await AuthService().signOut();
+                              if (context.mounted) context.go('/login');
                             },
                             child: Text(
                               'ログアウト',

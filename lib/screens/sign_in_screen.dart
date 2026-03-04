@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/auth_service.dart';
 
 /// サインイン（新規登録）画面ウィジェット
 ///
@@ -24,6 +25,8 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   bool _isAgreed = false;
+  bool _isLoading = false;
+  final _authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmController = TextEditingController();
@@ -334,10 +337,70 @@ class _SignInScreenState extends State<SignInScreen> {
                 left: 88,
                 top: 741,
                 child: GestureDetector(
-                  onTap: () {
-                    // サインイン処理（将来的に実装）
-                    context.go('/');
-                  },
+                  onTap: _isLoading
+                      ? null
+                      : () async {
+                          // バリデーション
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text;
+                          final passwordConfirm =
+                              _passwordConfirmController.text;
+                          final nickname = _nicknameController.text.trim();
+
+                          if (email.isEmpty ||
+                              password.isEmpty ||
+                              passwordConfirm.isEmpty ||
+                              nickname.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('すべての項目を入力してください'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+                          if (password != passwordConfirm) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('パスワードが一致しません'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+                          if (!_isAgreed) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('利用規約に同意してください'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          setState(() => _isLoading = true);
+                          try {
+                            await _authService.signUp(
+                              email: email,
+                              password: password,
+                              nickname: nickname,
+                            );
+                            if (mounted) context.go('/');
+                          } catch (e) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e
+                                      .toString()
+                                      .replaceFirst('Exception: ', '')),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          } finally {
+                            if (mounted) setState(() => _isLoading = false);
+                          }
+                        },
                   child: Container(
                     height: 60,
                     padding: const EdgeInsets.symmetric(horizontal: 48),
