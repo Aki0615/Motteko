@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-/// Wi-Fi設定画面
-class WifiScreen extends StatelessWidget {
-  const WifiScreen({super.key});
+/// Bluetooth設定画面
+class BluetoothScreen extends StatelessWidget {
+  const BluetoothScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +51,9 @@ class WifiScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  // 「Wi-Fi」テキスト
+                  // 「Bluetooth」テキスト
                   Text(
-                    'Wi-Fi',
+                    'Bluetooth',
                     style: GoogleFonts.zenMaruGothic(
                       color: const Color(0xFFFF7B00),
                       fontSize: 32,
@@ -68,7 +68,7 @@ class WifiScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // ============================================================
-            // 接続済みWi-Fiカード
+            // 接続済みBluetoothカード
             // ============================================================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -112,11 +112,11 @@ class WifiScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      child:
-                          const Icon(Icons.wifi, size: 24, color: Colors.white),
+                      child: const Icon(Icons.bluetooth,
+                          size: 24, color: Colors.white),
                     ),
                     const SizedBox(width: 16),
-                    // Wi-Fi名と接続状態
+                    // デバイス名と接続状態
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +131,7 @@ class WifiScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Mywifi_5G',
+                          'MyBluetooth',
                           style: GoogleFonts.zenMaruGothic(
                             color: Colors.black,
                             fontSize: 20,
@@ -149,12 +149,12 @@ class WifiScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // ============================================================
-            // ほかのネットワーク セクション
+            // ほかのデバイス セクション
             // ============================================================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Text(
-                'ほかのネットワーク',
+                'ほかのデバイス',
                 style: GoogleFonts.zenMaruGothic(
                   color: const Color(0xFF6B7280),
                   fontSize: 14,
@@ -187,9 +187,9 @@ class WifiScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildNetworkItem('Mywifi_5G', context),
+                    _buildDeviceItem('Mywifi_5G'),
                     _buildDivider(),
-                    _buildNetworkItem('Mywifi_5G', context),
+                    _buildDeviceItem('Mywifi_5G'),
                   ],
                 ),
               ),
@@ -202,19 +202,17 @@ class WifiScreen extends StatelessWidget {
     );
   }
 
-  // ネットワークアイテム
-  Widget _buildNetworkItem(String name, BuildContext context) {
+  // デバイスアイテム
+  Widget _buildDeviceItem(String name) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        context.go('/wifi-password?name=${Uri.encodeComponent(name)}');
+        // TODO: デバイス接続処理
       },
       child: SizedBox(
         height: 48,
         child: Row(
           children: [
-            Icon(Icons.wifi, size: 24, color: Colors.black54),
-            const SizedBox(width: 16),
             Text(
               name,
               style: GoogleFonts.zenMaruGothic(

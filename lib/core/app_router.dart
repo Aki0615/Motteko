@@ -28,6 +28,11 @@ import '../screens/login_form_screen.dart';
 import '../screens/sign_in_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/wifi_screen.dart';
+import '../screens/wifi_password_screen.dart';
+import '../screens/bluetooth_screen.dart';
+import '../screens/notification_settings_screen.dart';
+import '../screens/privacy_settings_screen.dart';
+import '../screens/terms_of_service_screen.dart';
 
 // =============================================================================
 // グローバル変数
@@ -152,6 +157,44 @@ class AppRouter {
       GoRoute(
         path: '/wifi',
         builder: (context, state) => const WifiScreen(),
+      ),
+
+      // Wi-Fiパスワード入力画面（タブバーなし）
+      // パス: /wifi-password
+      GoRoute(
+        path: '/wifi-password',
+        builder: (context, state) {
+          final networkName = state.uri.queryParameters['name'] ?? '';
+          return WifiPasswordScreen(networkName: networkName);
+        },
+      ),
+
+      // Bluetooth設定画面（タブバーなし）
+      // パス: /bluetooth
+      GoRoute(
+        path: '/bluetooth',
+        builder: (context, state) => const BluetoothScreen(),
+      ),
+
+      // 通知設定画面（タブバーなし）
+      // パス: /notification-settings
+      GoRoute(
+        path: '/notification-settings',
+        builder: (context, state) => const NotificationSettingsScreen(),
+      ),
+
+      // プライバシー設定画面（タブバーなし）
+      // パス: /privacy-settings
+      GoRoute(
+        path: '/privacy-settings',
+        builder: (context, state) => const PrivacySettingsScreen(),
+      ),
+
+      // 利用規約画面（タブバーなし）
+      // パス: /terms-of-service
+      GoRoute(
+        path: '/terms-of-service',
+        builder: (context, state) => const TermsOfServiceScreen(),
       ),
     ],
   );

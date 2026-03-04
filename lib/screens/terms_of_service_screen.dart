@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-/// Wi-Fi設定画面
-class WifiScreen extends StatelessWidget {
-  const WifiScreen({super.key});
+/// 利用規約画面
+class TermsOfServiceScreen extends StatelessWidget {
+  const TermsOfServiceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Colors.white,
-      child: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,7 +29,6 @@ class WifiScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // 戻るボタン
                   GestureDetector(
                     onTap: () => context.go('/settings'),
                     child: Container(
@@ -51,9 +48,8 @@ class WifiScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  // 「Wi-Fi」テキスト
                   Text(
-                    'Wi-Fi',
+                    '利用規約',
                     style: GoogleFonts.zenMaruGothic(
                       color: const Color(0xFFFF7B00),
                       fontSize: 32,
@@ -68,15 +64,15 @@ class WifiScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // ============================================================
-            // 接続済みWi-Fiカード
+            // 利用規約バージョンカード
             // ============================================================
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
+              padding: const EdgeInsets.symmetric(horizontal: 26),
               child: Container(
                 width: double.infinity,
-                height: 88,
+                height: 70,
                 decoration: ShapeDecoration(
-                  color: const Color(0xFFA9FFC8),
+                  color: Colors.white,
                   shape: RoundedRectangleBorder(
                     side: BorderSide(width: 2, color: Colors.black),
                     borderRadius: BorderRadius.circular(8),
@@ -92,13 +88,13 @@ class WifiScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const SizedBox(width: 16),
-                    // 緑アイコンボックス
+                    const SizedBox(width: 14),
+                    // オレンジアイコンボックス
                     Container(
                       width: 40,
                       height: 40,
                       decoration: ShapeDecoration(
-                        color: const Color(0xFF22C55E),
+                        color: const Color(0xFFFF7B00),
                         shape: RoundedRectangleBorder(
                           side: BorderSide(width: 1.50, color: Colors.black),
                           borderRadius: BorderRadius.circular(8),
@@ -112,31 +108,34 @@ class WifiScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      child:
-                          const Icon(Icons.wifi, size: 24, color: Colors.white),
+                      child: const Icon(
+                        Icons.description_outlined,
+                        size: 24,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(width: 16),
-                    // Wi-Fi名と接続状態
+                    // バージョン情報
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '接続済み',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFF22C55E),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            height: 1.29,
-                          ),
-                        ),
-                        Text(
-                          'Mywifi_5G',
+                          '利用規約 ver 1.0.0',
                           style: GoogleFonts.zenMaruGothic(
                             color: Colors.black,
                             fontSize: 20,
                             fontWeight: FontWeight.w900,
                             height: 1.20,
+                          ),
+                        ),
+                        Text(
+                          '最終更新： 2026年1月1日',
+                          style: GoogleFonts.zenMaruGothic(
+                            color: const Color(0xFFB9BFC9),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            height: 1.53,
                           ),
                         ),
                       ],
@@ -149,23 +148,10 @@ class WifiScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // ============================================================
-            // ほかのネットワーク セクション
+            // 利用規約本文
             // ============================================================
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Text(
-                'ほかのネットワーク',
-                style: GoogleFonts.zenMaruGothic(
-                  color: const Color(0xFF6B7280),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  height: 1.20,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
+              padding: const EdgeInsets.symmetric(horizontal: 26),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -185,11 +171,38 @@ class WifiScreen extends StatelessWidget {
                   ],
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildNetworkItem('Mywifi_5G', context),
-                    _buildDivider(),
-                    _buildNetworkItem('Mywifi_5G', context),
+                    // 第1条
+                    _buildArticleTitle('第1条 サービスの概要'),
+                    const SizedBox(height: 8),
+                    _buildArticleBody(
+                      '本アプリ「Motteko」は、IoTセンサーを活用した忘れ物防止サービスです。ユーザーは本規約に同意した上でサービスをご利用ください。',
+                    ),
+                    const SizedBox(height: 16),
+
+                    // 第2条
+                    _buildArticleTitle('第2条 アカウント'),
+                    const SizedBox(height: 8),
+                    _buildArticleBody(
+                      'アカウントの登録・管理はユーザー自身の責任で行なってください。第三者への譲渡・貸与は禁止します。',
+                    ),
+                    const SizedBox(height: 16),
+
+                    // 第3条
+                    _buildArticleTitle('第3条 禁止事項'),
+                    const SizedBox(height: 8),
+                    _buildArticleBody(
+                      '不正アクセス・逆アンセブル・サービスの商用利用・他社への迷惑行為は固く禁じます。',
+                    ),
+                    const SizedBox(height: 16),
+
+                    // 第4条
+                    _buildArticleTitle('第4条 免責事項'),
+                    const SizedBox(height: 8),
+                    _buildArticleBody(
+                      '本サービスの利用により生じた損害について、私たちは一切の責任を負いません。',
+                    ),
                   ],
                 ),
               ),
@@ -202,42 +215,28 @@ class WifiScreen extends StatelessWidget {
     );
   }
 
-  // ネットワークアイテム
-  Widget _buildNetworkItem(String name, BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        context.go('/wifi-password?name=${Uri.encodeComponent(name)}');
-      },
-      child: SizedBox(
-        height: 48,
-        child: Row(
-          children: [
-            Icon(Icons.wifi, size: 24, color: Colors.black54),
-            const SizedBox(width: 16),
-            Text(
-              name,
-              style: GoogleFonts.zenMaruGothic(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                height: 1.20,
-              ),
-            ),
-          ],
-        ),
+  // 条文タイトル
+  Widget _buildArticleTitle(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.zenMaruGothic(
+        color: Colors.black,
+        fontSize: 14,
+        fontWeight: FontWeight.w900,
+        height: 1.20,
       ),
     );
   }
 
-  // 区切り線
-  Widget _buildDivider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Container(
-        width: double.infinity,
-        height: 2,
-        color: const Color(0xFFB9BFC9),
+  // 条文本文
+  Widget _buildArticleBody(String body) {
+    return Text(
+      body,
+      style: GoogleFonts.zenMaruGothic(
+        color: Colors.black,
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        height: 1.53,
       ),
     );
   }
