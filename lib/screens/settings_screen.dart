@@ -9,6 +9,11 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = AuthService().currentUser;
+    final nickname = user?.displayName ?? '未設定';
+    final email = user?.email ?? '未設定';
+    final initial = nickname.isNotEmpty ? nickname[0] : '?';
+
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -115,7 +120,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          '山',
+                          initial,
                           style: GoogleFonts.zenMaruGothic(
                             color: Colors.white,
                             fontSize: 24,
@@ -132,7 +137,7 @@ class SettingsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '山田 太郎',
+                          nickname,
                           style: GoogleFonts.zenMaruGothic(
                             color: Colors.black,
                             fontSize: 20,
@@ -142,7 +147,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'yamada1222@gmail.com',
+                          email,
                           style: GoogleFonts.zenMaruGothic(
                             color: const Color(0xFF6B7280),
                             fontSize: 14,
