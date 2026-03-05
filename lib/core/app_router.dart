@@ -16,12 +16,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // 各画面のインポート
 import '../screens/home_screen.dart';
 import '../screens/items_screen.dart';
 import '../screens/camera_screen.dart';
-import '../screens/sensors_screen.dart';
+import '../screens/calendar_screen.dart';
 import '../screens/notifications_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/login_form_screen.dart';
@@ -130,11 +131,11 @@ class AppRouter {
             builder: (context, state) => const CameraScreen(),
           ),
 
-          // センサー画面（人感センサーの状態表示）
-          // パス: /sensors
+          // カレンダー画面（連続記録・カレンダー表示）
+          // パス: /calendar
           GoRoute(
-            path: '/sensors',
-            builder: (context, state) => const SensorsScreen(),
+            path: '/calendar',
+            builder: (context, state) => const CalendarScreen(),
           ),
 
           // 通知画面（通知履歴の表示）
@@ -230,7 +231,7 @@ class AppRouter {
 /// 0: ホーム（/）
 /// 1: 持ち物（/items）
 /// 2: カメラ（/camera）
-/// 3: センサー（/sensors）
+/// 3: カレンダー（/calendar）
 /// 4: 通知（/notifications）
 class ScaffoldWithBottomNavBar extends StatelessWidget {
   /// 表示するメインコンテンツ（各画面のウィジェット）
@@ -263,16 +264,16 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
                     side: const BorderSide(
-                      width: 1,
-                      color: Color(0xFFE8EEF4),
+                      width: 1.5,
+                      color: Colors.black,
                     ),
                     borderRadius: BorderRadius.circular(60),
                   ),
                   shadows: const [
                     BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
+                      color: Color(0xFF000000),
+                      blurRadius: 0,
+                      offset: Offset(3, 4.5),
                       spreadRadius: 0,
                     )
                   ],
@@ -294,8 +295,8 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
                       context: context,
                       index: 1,
                       selectedIndex: selectedIndex,
-                      icon: Icons.inventory_2_outlined,
-                      selectedIcon: Icons.inventory_2,
+                      icon: Icons.work_outline,
+                      selectedIcon: Icons.work,
                       label: '持ち物',
                     ),
                     // カメラタブ
@@ -303,18 +304,18 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
                       context: context,
                       index: 2,
                       selectedIndex: selectedIndex,
-                      icon: Icons.photo_camera_outlined,
-                      selectedIcon: Icons.photo_camera,
+                      icon: Icons.videocam_outlined,
+                      selectedIcon: Icons.videocam,
                       label: 'カメラ',
                     ),
-                    // センサータブ
+                    // カレンダータブ
                     _buildNavItem(
                       context: context,
                       index: 3,
                       selectedIndex: selectedIndex,
-                      icon: Icons.sensors_outlined,
-                      selectedIcon: Icons.sensors,
-                      label: 'センサー',
+                      icon: Icons.calendar_today_outlined,
+                      selectedIcon: Icons.calendar_today,
+                      label: 'カレンダー',
                     ),
                     // 通知タブ
                     _buildNavItem(
@@ -369,36 +370,29 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
       child: Container(
         width: 52,
         height: 52,
-        decoration: ShapeDecoration(
-          // 選択時: オレンジ背景、非選択時: 透明
-          color: isSelected ? const Color(0xFFFFDAC4) : Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(26),
-          ),
-        ),
+        decoration: isSelected
+            ? const ShapeDecoration(
+                color: Color(0xFFFF7B00),
+                shape: CircleBorder(),
+              )
+            : const BoxDecoration(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              // 選択時: 塗りつぶしアイコン、非選択時: 線画アイコン
               isSelected ? selectedIcon : icon,
-              // 選択時: オレンジ、非選択時: グレー
-              color: isSelected
-                  ? const Color(0xFFFF7B00)
-                  : const Color(0xFF6B7280),
-              size: 18,
+              color: isSelected ? Colors.white : const Color(0xFF6B7280),
+              size: 20,
             ),
+            const SizedBox(height: 2),
             Text(
               label,
-              style: TextStyle(
-                fontFamily: 'Zen Maru Gothic',
-                fontSize: 9,
-                fontWeight: FontWeight.w400,
-                // 選択時: オレンジ、非選択時: グレー
-                color: isSelected
-                    ? const Color(0xFFFF7B00)
-                    : const Color(0xFF6B7280),
+              style: GoogleFonts.zenMaruGothic(
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+                color: isSelected ? Colors.white : const Color(0xFF6B7280),
+                height: 1.20,
               ),
             ),
           ],
@@ -418,7 +412,7 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
     // URLに基づいてインデックスを返す
     if (location.startsWith('/items')) return 1; // 持ち物画面
     if (location.startsWith('/camera')) return 2; // カメラ画面
-    if (location.startsWith('/sensors')) return 3; // センサー画面
+    if (location.startsWith('/calendar')) return 3; // カレンダー画面
     if (location.startsWith('/notifications')) return 4; // 通知画面
     return 0; // デフォルトはホーム画面
   }
@@ -440,7 +434,7 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
         context.go('/camera'); // カメラ画面
         break;
       case 3:
-        context.go('/sensors'); // センサー画面
+        context.go('/calendar'); // カレンダー画面
         break;
       case 4:
         context.go('/notifications'); // 通知画面
