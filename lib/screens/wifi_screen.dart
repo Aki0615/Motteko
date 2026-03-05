@@ -1,19 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../services/ble_config_service.dart';
 
-/// Wi-Fi設定画面
-class WifiScreen extends StatelessWidget {
+/// Wi-Fi設定画面（SSID・パスワード手入力方式）
+class WifiScreen extends StatefulWidget {
   const WifiScreen({super.key});
+
+  @override
+  State<WifiScreen> createState() => _WifiScreenState();
+}
+
+class _WifiScreenState extends State<WifiScreen> {
+  final TextEditingController _ssidController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final BleConfigService _bleService = BleConfigService();
+  bool _obscurePassword = true;
+  bool _isConnecting = false;
+
+  @override
+  void dispose() {
+    _ssidController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendWifiConfig() async {
+    final ssid = _ssidController.text.trim();
+    final password = _passwordController.text;
+
+    if (ssid.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('SSIDを入力してください'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    if (password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('パスワードを入力してください'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isConnecting = true);
+
+    try {
+      await _bleService.sendWifiInfo(ssid, password);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Wi-Fi設定を送信しました！'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        context.push('/device-id-input');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceFirst('Exception: ', '')),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isConnecting = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.white,
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,14 +95,13 @@ class WifiScreen extends StatelessWidget {
                 height: 60,
                 margin: const EdgeInsets.only(top: 48),
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(width: 2, color: Colors.black),
                   ),
                 ),
                 child: Row(
                   children: [
-                    // 戻るボタン
                     GestureDetector(
                       onTap: () => context.go('/settings'),
                       child: Container(
@@ -53,7 +121,6 @@ class WifiScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    // 「Wi-Fi」テキスト
                     Text(
                       'Wi-Fi',
                       style: GoogleFonts.zenMaruGothic(
@@ -67,132 +134,208 @@ class WifiScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 40),
+
+              // Wi-Fiアイコン
+              Center(
+                child: Icon(
+                  Icons.wifi,
+                  size: 96,
+                  color: const Color(0xFF26A5FF),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // 説明テキスト
+              Center(
+                child: SizedBox(
+                  width: 280,
+                  child: Text(
+                    'M5Stackに接続するWi-Fiの\nSSIDとパスワードを入力してください。',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.zenMaruGothic(
+                      color: const Color(0xFF6B7280),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      height: 1.40,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 32),
 
               // ============================================================
-              // 接続済みWi-Fiカード
+              // SSID入力フィールド
               // ============================================================
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: Container(
-                  width: double.infinity,
-                  height: 88,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFA9FFC8),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2, color: Colors.black),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0xFF000000),
-                        blurRadius: 0,
-                        offset: Offset(2, 3),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 16),
-                      // 緑アイコンボックス
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFF22C55E),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(width: 1.50, color: Colors.black),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          shadows: [
-                            BoxShadow(
-                              color: Color(0xFF000000),
-                              blurRadius: 0,
-                              offset: Offset(2, 3),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: const Icon(Icons.wifi,
-                            size: 24, color: Colors.white),
+                padding: const EdgeInsets.symmetric(horizontal: 57),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'SSID（ネットワーク名）',
+                      style: GoogleFonts.zenMaruGothic(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        height: 1.20,
                       ),
-                      const SizedBox(width: 16),
-                      // Wi-Fi名と接続状態
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF3F4F6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextField(
+                        controller: _ssidController,
+                        style: GoogleFonts.zenMaruGothic(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                          hintText: '例: MyWiFi_5G',
+                          hintStyle: GoogleFonts.zenMaruGothic(
+                            color: const Color(0xFFB9BFC9),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ============================================================
+              // パスワード入力フィールド
+              // ============================================================
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 57),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'パスワード',
+                      style: GoogleFonts.zenMaruGothic(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        height: 1.20,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF3F4F6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
                         children: [
-                          Text(
-                            '接続済み',
-                            style: GoogleFonts.zenMaruGothic(
-                              color: const Color(0xFF22C55E),
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              height: 1.29,
+                          Expanded(
+                            child: TextField(
+                              controller: _passwordController,
+                              obscureText: _obscurePassword,
+                              style: GoogleFonts.zenMaruGothic(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                hintText: 'パスワードを入力',
+                                hintStyle: GoogleFonts.zenMaruGothic(
+                                  color: const Color(0xFFB9BFC9),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ),
-                          Text(
-                            'Mywifi_5G',
-                            style: GoogleFonts.zenMaruGothic(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                              height: 1.20,
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                size: 24,
+                                color: const Color(0xFFB9BFC9),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // ============================================================
-              // ほかのネットワーク セクション
-              // ============================================================
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text(
-                  'ほかのネットワーク',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFF6B7280),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    height: 1.20,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2, color: Colors.black),
-                      borderRadius: BorderRadius.circular(8),
                     ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0xFF000000),
-                        blurRadius: 0,
-                        offset: Offset(2, 3),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildNetworkItem('Mywifi_5G', context),
-                      _buildDivider(),
-                      _buildNetworkItem('Mywifi_5G', context),
-                    ],
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              // ============================================================
+              // 送信ボタン
+              // ============================================================
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 57),
+                child: GestureDetector(
+                  onTap: _isConnecting ? null : _sendWifiConfig,
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: ShapeDecoration(
+                      color:
+                          _isConnecting ? Colors.grey : const Color(0xFFFF7B00),
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(width: 2, color: Colors.black),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      shadows: const [
+                        BoxShadow(
+                          color: Color(0xFF000000),
+                          blurRadius: 0,
+                          offset: Offset(2, 3),
+                          spreadRadius: 0,
+                        )
+                      ],
+                    ),
+                    child: Center(
+                      child: _isConnecting
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                          : Text(
+                              'M5Stackに送信',
+                              style: GoogleFonts.zenMaruGothic(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                height: 1.20,
+                              ),
+                            ),
+                    ),
                   ),
                 ),
               ),
@@ -201,46 +344,6 @@ class WifiScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // ネットワークアイテム
-  Widget _buildNetworkItem(String name, BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        context.go('/wifi-password?name=${Uri.encodeComponent(name)}');
-      },
-      child: SizedBox(
-        height: 48,
-        child: Row(
-          children: [
-            Icon(Icons.wifi, size: 24, color: Colors.black54),
-            const SizedBox(width: 16),
-            Text(
-              name,
-              style: GoogleFonts.zenMaruGothic(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                height: 1.20,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 区切り線
-  Widget _buildDivider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Container(
-        width: double.infinity,
-        height: 2,
-        color: const Color(0xFFB9BFC9),
       ),
     );
   }
