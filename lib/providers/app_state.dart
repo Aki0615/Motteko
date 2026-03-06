@@ -8,6 +8,8 @@ import '../models/item_model.dart';
 import '../models/sensor_status.dart';
 import '../models/notification_model.dart';
 import '../services/notification_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AppState extends ChangeNotifier {
   // 持ち物リスト
@@ -194,11 +196,40 @@ class AppState extends ChangeNotifier {
     await prefs.setInt('consecutiveDays', _consecutiveDaysWithoutForgetting);
   }
 
+  // ==========================================
+  // 💡 追加：Firestoreへ持ち物リストを同期するメソッド
+  // ==========================================
+  Future<void> _syncEssentialItemsToFirestore() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        // アイテムの全情報をそのままリスト（配列）にする
+        final List<Map<String, dynamic>> itemsList = _items.map((item) => {
+          'id': item.id,
+          'name': item.name,
+          'description': item.description, // AIに特徴を伝えられる！
+          'isRequired': item.isRequired,
+        }).toList();
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'essential_items': itemsList, // 丸ごと上書き保存
+        });
+        print("✅ Firestoreに詳細データ付きで同期しました！");
+      } catch (e) {
+        print("❌ Firestore同期エラー: $e");
+      }
+    }
+  }
+
   // === 持ち物管理 ===
 
   void addItem(ItemModel item) {
     _items.add(item);
     _saveData();
+    _syncEssentialItemsToFirestore(); // 💡 追加
     notifyListeners();
   }
 
@@ -207,6 +238,7 @@ class AppState extends ChangeNotifier {
     if (index != -1) {
       _items[index] = updatedItem;
       _saveData();
+      _syncEssentialItemsToFirestore(); // 💡 追加
       notifyListeners();
     }
   }
@@ -214,6 +246,7 @@ class AppState extends ChangeNotifier {
   void removeItem(String id) {
     _items.removeWhere((item) => item.id == id);
     _saveData();
+    _syncEssentialItemsToFirestore(); // 💡 追加
     notifyListeners();
   }
 
