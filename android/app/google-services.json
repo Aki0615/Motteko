@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "732989522720",
+    "project_id": "matsuriba-max",
+    "storage_bucket": "matsuriba-max.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732989522720:android:7cd780fcced93e84d70d45",
+        "android_client_info": {
+          "package_name": "com.example.study"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "732989522720-dfceejmtnbbkdhnrk51cv09cvirhf3gr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBTAr2khBTPMrmSzJbsufSmCZPOsiOD5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "732989522720-dfceejmtnbbkdhnrk51cv09cvirhf3gr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "732989522720-l4vdii7gcdheb5hlqu1ud3g8thppn8ba.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.study"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
