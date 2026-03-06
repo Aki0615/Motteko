@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Firebase Authentication サービス
 class AuthService {
@@ -27,6 +28,20 @@ class AuthService {
       // ニックネームをdisplayNameに設定
       await credential.user?.updateDisplayName(nickname);
       await credential.user?.reload();
+
+      // Firestoreにユーザーの初期データを作成
+      final uid = credential.user?.uid;
+      if (uid != null) {
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'name': nickname,
+          'current_mode': '',
+          'essential_items': [],
+          'fcm_token': '',
+          'item_features': [],
+          'scene_items': [],
+        });
+      }
+
       return credential;
     } on FirebaseAuthException catch (e) {
       throw Exception(_getErrorMessage(e.code));
