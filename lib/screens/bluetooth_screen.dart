@@ -14,6 +14,7 @@ class BluetoothScreen extends StatefulWidget {
 
 class _BluetoothScreenState extends State<BluetoothScreen> {
   List<ScanResult> _scanResults = [];
+  List<BluetoothDevice> _connectedDevices = [];
   bool _isScanning = false;
   StreamSubscription<List<ScanResult>>? _scanSubscription;
   StreamSubscription<bool>? _isScanningSubscription;
@@ -21,6 +22,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
   @override
   void initState() {
     super.initState();
+    _getConnectedDevices();
 
     // スキャン状態の監視
     _isScanningSubscription = FlutterBluePlus.isScanning.listen((scanning) {
@@ -58,7 +60,16 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     super.dispose();
   }
 
+  void _getConnectedDevices() {
+    if (mounted) {
+      setState(() {
+        _connectedDevices = FlutterBluePlus.connectedDevices;
+      });
+    }
+  }
+
   Future<void> _startScan() async {
+    _getConnectedDevices();
     try {
       // Bluetoothがオンか確認
       final adapterState = await FlutterBluePlus.adapterState.first;
@@ -257,13 +268,34 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                       ],
                     ),
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
-                    itemCount: _scanResults.length,
-                    itemBuilder: (context, index) {
-                      final result = _scanResults[index];
-                      return _buildDeviceCard(result);
-                    },
+                : ListView(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
+                    children: [
+                      // 接続済みデバイスの表示
+                      if (_connectedDevices.isNotEmpty) ...[
+                        ..._connectedDevices
+                            .map((device) => _buildConnectedDeviceCard(device))
+                            .toList(),
+                        const SizedBox(height: 16),
+                        Text(
+                          'ほかのデバイス',
+                          style: GoogleFonts.zenMaruGothic(
+                            color: const Color(0xFF6B7280),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            height: 1.20,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                      // スキャンで見つかった他のデバイス
+                      ..._scanResults
+                          .where((r) => !_connectedDevices
+                              .any((c) => c.remoteId == r.device.remoteId))
+                          .map((r) => _buildDeviceCard(r))
+                          .toList(),
+                    ],
                   ),
           ),
         ],
@@ -289,12 +321,22 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(width: 1.5, color: const Color(0xFFE5E7EB)),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 2, color: Colors.black),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        shadows: const [
+          BoxShadow(
+            color: Color(0xFF000000),
+            blurRadius: 0,
+            offset: Offset(3, 4.50),
+            spreadRadius: 0,
+          )
+        ],
       ),
       child: Row(
         children: [
@@ -358,6 +400,87 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConnectedDeviceCard(BluetoothDevice device) {
+    final deviceName =
+        device.platformName.isNotEmpty ? device.platformName : '不明なデバイス';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: ShapeDecoration(
+        color: const Color(0xFFA7F3D0), // 薄い緑色
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 2, color: Colors.black),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        shadows: const [
+          BoxShadow(
+            color: Color(0xFF000000),
+            blurRadius: 0,
+            offset: Offset(3, 4.50),
+            spreadRadius: 0,
+          )
+        ],
+      ),
+      child: Row(
+        children: [
+          // 緑色のBluetoothアイコン背景
+          Container(
+            width: 40,
+            height: 40,
+            decoration: ShapeDecoration(
+              color: const Color(0xFF10B981), // 濃い緑
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(width: 2, color: Colors.black),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              shadows: const [
+                BoxShadow(
+                  color: Color(0xFF000000),
+                  blurRadius: 0,
+                  offset: Offset(2, 2.5),
+                  spreadRadius: 0,
+                )
+              ],
+            ),
+            child: const Icon(
+              Icons.bluetooth,
+              size: 24,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 16),
+          // デバイス情報
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '接続済み',
+                  style: GoogleFonts.zenMaruGothic(
+                    color: const Color(0xFF059669),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  deviceName,
+                  style: GoogleFonts.zenMaruGothic(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    height: 1.20,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ],
       ),
