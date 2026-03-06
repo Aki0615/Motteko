@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -14,21 +15,24 @@ class NotificationsScreen extends StatelessWidget {
           children: [
             // ヘッダー部分
             Container(
-              height: 60,
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '通知履歴',
-                    style: TextStyle(
-                      color: Color(0xFFFF7B00),
-                      fontSize: 32,
-                      fontFamily: 'Zen Maru Gothic',
-                      fontWeight: FontWeight.w700,
-                    ),
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(28, 24, 24, 20),
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    width: 2,
+                    color: Colors.black,
                   ),
-                ],
+                ),
+              ),
+              child: Text(
+                '通知履歴',
+                style: GoogleFonts.zenMaruGothic(
+                  color: const Color(0xFFFF7B00),
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  height: 0.90,
+                ),
               ),
             ),
 
@@ -80,9 +84,21 @@ class NotificationsScreen extends StatelessWidget {
           Container(
             width: 80,
             height: 80,
-            decoration: const BoxDecoration(
-              color: Color(0xFFF4F6F7),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF4F6F7),
               shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.black,
+                width: 1.50,
+              ),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0xFF000000),
+                  blurRadius: 0,
+                  offset: Offset(2, 3),
+                  spreadRadius: 0,
+                )
+              ],
             ),
             child: const Icon(
               Icons.notifications_none,
@@ -91,12 +107,11 @@ class NotificationsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             '通知はありません',
-            style: TextStyle(
-              color: Color(0xFF6B7280),
+            style: GoogleFonts.zenMaruGothic(
+              color: const Color(0xFF6B7280),
               fontSize: 12,
-              fontFamily: 'Zen Maru Gothic',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -110,7 +125,7 @@ class NotificationsScreen extends StatelessWidget {
     final String message = data['message'] as String? ?? '通知';
     final Timestamp? timestamp = data['timestamp'] as Timestamp?;
     final String timestampStr = timestamp != null
-        ? DateFormat('yyyy/MM/dd HH:mm').format(timestamp.toDate())
+        ? DateFormat('yyyy/MM/dd HH:mm:ss').format(timestamp.toDate())
         : '';
     final List<dynamic> missingItems =
         data['missing_items'] as List<dynamic>? ?? [];
@@ -119,21 +134,27 @@ class NotificationsScreen extends StatelessWidget {
     Color badgeBgColor;
     Color badgeTextColor;
     String badgeText;
-    String iconAsset; // 画像アセット
+    String iconAsset;
 
-    // アイコン判定ロジック（異常なし＝成功）
-    // 1. missing_itemsがある場合は警告
-    if (missingItems.isNotEmpty) {
-      badgeBgColor = const Color(0xFFFEF2F2);
-      badgeTextColor = const Color(0xFFDC2626);
-      badgeText = '忘れ物あり';
+    // 1. missing_itemsがある、またはメッセージに「忘れ物」を検知した場合は警告
+    if (missingItems.isNotEmpty || message.contains('忘れ物')) {
+      badgeBgColor = const Color(0xFFFFEFB2);
+      badgeTextColor = const Color(0xFFFFA500);
+      badgeText = '警告';
       iconAsset = 'assets/icons/warning_icon.png';
     }
-    // 2. それ以外（missing_itemsが空）はすべて成功
+    // 2. センサーによる情報など
+    else if (message.contains('検知')) {
+      badgeBgColor = const Color(0xFFC1E5FF);
+      badgeTextColor = const Color(0xFF26A5FF);
+      badgeText = '情報';
+      iconAsset = 'assets/icons/info_icon.png';
+    }
+    // 3. それ以外（成功など）
     else {
-      badgeBgColor = const Color(0xFFDCFCE7);
-      badgeTextColor = const Color(0xFF16A34A);
-      badgeText = '完了';
+      badgeBgColor = const Color(0xFFBEFFD6);
+      badgeTextColor = const Color(0xFF22C55E);
+      badgeText = '成功';
       iconAsset = 'assets/icons/success_icon.png';
     }
 
@@ -141,62 +162,67 @@ class NotificationsScreen extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
           side: const BorderSide(
-            width: 1,
-            color: Color(0xFFE5E7EB),
+            width: 1.50,
+            color: Colors.black,
           ),
           borderRadius: BorderRadius.circular(8),
         ),
+        shadows: const [
+          BoxShadow(
+            color: Color(0xFF000000),
+            blurRadius: 0,
+            offset: Offset(2, 3),
+            spreadRadius: 0,
+          )
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // アイコン
               Image.asset(
                 iconAsset,
-                width: 30,
-                height: 30,
+                width: 32,
+                height: 32,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 16),
               // テキストエリア
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // メッセージ
                     Text(
                       message,
-                      style: const TextStyle(
-                        color: Color(0xFF374151),
+                      style: GoogleFonts.zenMaruGothic(
+                        color: const Color(0xFF374151),
                         fontSize: 14,
-                        fontFamily: 'Zen Maru Gothic',
                         fontWeight: FontWeight.w400,
                         height: 1.20,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    // 日時（あれば表示）
+                    // 日時
                     if (timestampStr.isNotEmpty)
                       Text(
                         timestampStr,
-                        style: const TextStyle(
-                          color: Color(0xFF374151),
+                        style: GoogleFonts.zenMaruGothic(
+                          color: const Color(0xFF374151),
                           fontSize: 12,
-                          fontFamily: 'Zen Maru Gothic',
                           fontWeight: FontWeight.w400,
                           height: 1.20,
                         ),
                       ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     // バッジ
                     Container(
                       height: 16,
@@ -207,18 +233,20 @@ class NotificationsScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Center(
-                        widthFactor: 1,
-                        child: Text(
-                          badgeText,
-                          style: TextStyle(
-                            color: badgeTextColor,
-                            fontSize: 8,
-                            fontFamily: 'Zen Maru Gothic',
-                            fontWeight: FontWeight.w700,
-                            height: 1.0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            badgeText,
+                            style: GoogleFonts.zenMaruGothic(
+                              color: badgeTextColor,
+                              fontSize: 8,
+                              fontWeight: FontWeight.w900,
+                              height: 1.20,
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ],
@@ -228,7 +256,7 @@ class NotificationsScreen extends StatelessWidget {
           ),
           // 画像があれば表示
           if (imageUrl != null && imageUrl.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
