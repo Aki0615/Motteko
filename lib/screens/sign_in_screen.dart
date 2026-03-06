@@ -44,439 +44,374 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          width: 393,
-          height: 852,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: const Color(0xFFFF7B00),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(45),
-            ),
-          ),
-          child: Stack(
-            children: [
-              // -----------------------------------------------------------------
-              // Rectangle1593: 画面下部のベージュ背景
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 140,
-                bottom: 0,
-                child: Container(
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFFDAC4),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 2,
-                        color: const Color(0xFF000000),
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // 「ようこそ！仲間になろう」テキスト
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 184,
-                child: Text.rich(
-                  TextSpan(
+      backgroundColor: const Color(0xFFFF7B00),
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            // ヘッダー部分（戻るボタン、タイトル、ロゴ）
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 16, right: 30, top: 10, bottom: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
                     children: [
-                      TextSpan(
-                        text: 'ようこそ！\n',
-                        style: GoogleFonts.zenMaruGothic(
-                          color: Colors.black,
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          height: 1.09,
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios,
+                            color: Colors.white),
+                        onPressed: () => context.pop(),
                       ),
-                      TextSpan(
-                        text: '仲間になろう',
+                      Text(
+                        'サインイン',
                         style: GoogleFonts.zenMaruGothic(
-                          color: const Color(0xFFFF6100),
+                          color: Colors.white,
                           fontSize: 32,
                           fontWeight: FontWeight.w900,
-                          height: 1.09,
+                          height: 0.90,
                         ),
                       ),
                     ],
                   ),
-                ),
+                  Text(
+                    'Motteko',
+                    style: GoogleFonts.zenMaruGothic(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      height: 1.44,
+                    ),
+                  ),
+                ],
               ),
+            ),
 
-              // -----------------------------------------------------------------
-              // 「メールアドレス」ラベル
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 262,
-                child: Text(
-                  'メールアドレス',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    height: 1.20,
+            // 下部のベージュ背景フォーム
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: const ShapeDecoration(
+                  color: Color(0xFFFFDAC4),
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 2,
+                      color: Color(0xFF000000),
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    ),
                   ),
                 ),
-              ),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 「ようこそ！仲間になろう」テキスト
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'ようこそ！\n',
+                              style: GoogleFonts.zenMaruGothic(
+                                color: Colors.black,
+                                fontSize: 32,
+                                fontWeight: FontWeight.w900,
+                                height: 1.09,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '仲間になろう',
+                              style: GoogleFonts.zenMaruGothic(
+                                color: const Color(0xFFFF6100),
+                                fontSize: 32,
+                                fontWeight: FontWeight.w900,
+                                height: 1.09,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 32),
 
-              // -----------------------------------------------------------------
-              // メールアドレス入力フィールド
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 294,
-                child: _buildInputField(
-                  controller: _emailController,
-                  hintText: 'メールアドレスを入力',
-                  keyboardType: TextInputType.emailAddress,
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // 「パスワード」ラベル
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 375,
-                child: Text(
-                  'パスワード',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    height: 1.20,
-                  ),
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // パスワード入力フィールド
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 410,
-                child: _buildInputField(
-                  controller: _passwordController,
-                  hintText: 'パスワードを入力',
-                  obscureText: true,
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // 「パスワード(確認)」ラベル
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 485,
-                child: Text(
-                  'パスワード(確認)',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    height: 1.20,
-                  ),
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // パスワード(確認)入力フィールド
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 517,
-                child: _buildInputField(
-                  controller: _passwordConfirmController,
-                  hintText: 'パスワードを再入力',
-                  obscureText: true,
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // 「ニックネーム」ラベル
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 592,
-                child: Text(
-                  'ニックネーム',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    height: 1.20,
-                  ),
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // ニックネーム入力フィールド
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 46,
-                top: 624,
-                child: _buildInputField(
-                  controller: _nicknameController,
-                  hintText: 'ニックネームを入力',
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // 利用規約チェックボックス
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 40,
-                top: 695,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isAgreed = !_isAgreed;
-                    });
-                  },
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: ShapeDecoration(
-                      color: _isAgreed ? const Color(0xFFFF7B00) : Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          width: 1,
+                      // 「メールアドレス」ラベルと入力
+                      Text(
+                        'メールアドレス',
+                        style: GoogleFonts.zenMaruGothic(
                           color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
                         ),
-                        borderRadius: BorderRadius.circular(4),
                       ),
-                      shadows: [
-                        BoxShadow(
-                          color: Color(0xFF000000),
-                          blurRadius: 0,
-                          offset: Offset(2, 2),
-                          spreadRadius: 0,
-                        )
-                      ],
-                    ),
-                    child: _isAgreed
-                        ? Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 16,
-                          )
-                        : null,
-                  ),
-                ),
-              ),
+                      const SizedBox(height: 8),
+                      _buildInputField(
+                        controller: _emailController,
+                        hintText: 'メールアドレスを入力',
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 16),
 
-              // -----------------------------------------------------------------
-              // 「利用規約とプライバシーポリシーに同意します」テキスト
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 67,
-                top: 695,
-                child: SizedBox(
-                  width: 301,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '利用規約',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFFFF6100),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            height: 1.37,
-                          ),
+                      // 「パスワード」ラベルと入力
+                      Text(
+                        'パスワード',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
                         ),
-                        TextSpan(
-                          text: 'と',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFFB9BFC9),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            height: 1.37,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'プライバシーポリシー',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFFFF6100),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            height: 1.37,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'に同意します',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFFB9BFC9),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            height: 1.37,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildInputField(
+                        controller: _passwordController,
+                        hintText: 'パスワードを入力',
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 16),
 
-              // -----------------------------------------------------------------
-              // 「はじめる→」ボタン
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 88,
-                top: 741,
-                child: GestureDetector(
-                  onTap: _isLoading
-                      ? null
-                      : () async {
-                          // バリデーション
-                          final email = _emailController.text.trim();
-                          final password = _passwordController.text;
-                          final passwordConfirm =
-                              _passwordConfirmController.text;
-                          final nickname = _nicknameController.text.trim();
+                      // 「パスワード(確認)」ラベルと入力
+                      Text(
+                        'パスワード(確認)',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildInputField(
+                        controller: _passwordConfirmController,
+                        hintText: 'パスワードを再入力',
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 16),
 
-                          if (email.isEmpty ||
-                              password.isEmpty ||
-                              passwordConfirm.isEmpty ||
-                              nickname.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('すべての項目を入力してください'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                            return;
-                          }
-                          if (password != passwordConfirm) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('パスワードが一致しません'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                            return;
-                          }
-                          if (!_isAgreed) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('利用規約に同意してください'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                            return;
-                          }
+                      // 「ニックネーム」ラベルと入力
+                      Text(
+                        'ニックネーム',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildInputField(
+                        controller: _nicknameController,
+                        hintText: 'ニックネームを入力',
+                      ),
+                      const SizedBox(height: 24),
 
-                          setState(() => _isLoading = true);
-                          try {
-                            await _authService.signUp(
-                              email: email,
-                              password: password,
-                              nickname: nickname,
-                            );
-                            if (mounted) context.go('/');
-                          } catch (e) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(e
-                                      .toString()
-                                      .replaceFirst('Exception: ', '')),
-                                  backgroundColor: Colors.red,
+                      // 利用規約チェックボックス
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isAgreed = !_isAgreed;
+                              });
+                            },
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              margin: const EdgeInsets.only(top: 2, right: 8),
+                              decoration: ShapeDecoration(
+                                color: _isAgreed
+                                    ? const Color(0xFFFF7B00)
+                                    : Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                    width: 1,
+                                    color: Colors.black,
+                                  ),
+                                  borderRadius: BorderRadius.circular(4),
                                 ),
-                              );
-                            }
-                          } finally {
-                            if (mounted) setState(() => _isLoading = false);
-                          }
-                        },
-                  child: Container(
-                    height: 60,
-                    padding: const EdgeInsets.symmetric(horizontal: 48),
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFFF7B00),
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 2.25),
-                        borderRadius: BorderRadius.circular(22.50),
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Color(0xFF000000),
+                                    blurRadius: 0,
+                                    offset: Offset(2, 2),
+                                    spreadRadius: 0,
+                                  )
+                                ],
+                              ),
+                              child: _isAgreed
+                                  ? const Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 16,
+                                    )
+                                  : null,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '利用規約',
+                                    style: GoogleFonts.zenMaruGothic(
+                                      color: const Color(0xFFFF6100),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
+                                      height: 1.37,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: 'と',
+                                    style: GoogleFonts.zenMaruGothic(
+                                      color: const Color(0xFFB9BFC9),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
+                                      height: 1.37,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: 'プライバシーポリシー',
+                                    style: GoogleFonts.zenMaruGothic(
+                                      color: const Color(0xFFFF6100),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
+                                      height: 1.37,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: 'に同意します',
+                                    style: GoogleFonts.zenMaruGothic(
+                                      color: const Color(0xFFB9BFC9),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
+                                      height: 1.37,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      shadows: [
-                        BoxShadow(
-                          color: Color(0xFF000000),
-                          blurRadius: 0,
-                          offset: Offset(3, 4.50),
-                          spreadRadius: 0,
-                        )
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'はじめる→',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                            height: 1.20,
+                      const SizedBox(height: 32),
+
+                      // 「はじめる→」ボタン
+                      Center(
+                        child: GestureDetector(
+                          onTap: _isLoading ? null : _handleSignUp,
+                          child: Container(
+                            height: 60,
+                            padding: const EdgeInsets.symmetric(horizontal: 48),
+                            decoration: ShapeDecoration(
+                              color: const Color(0xFFFF7B00),
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(width: 2.25),
+                                borderRadius: BorderRadius.circular(22.50),
+                              ),
+                              shadows: const [
+                                BoxShadow(
+                                  color: Color(0xFF000000),
+                                  blurRadius: 0,
+                                  offset: Offset(3, 4.50),
+                                  spreadRadius: 0,
+                                )
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _isLoading ? '接続中...' : 'はじめる→',
+                                  style: GoogleFonts.zenMaruGothic(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w900,
+                                    height: 1.20,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
                 ),
               ),
-
-              // -----------------------------------------------------------------
-              // 「サインイン」タイトル
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 27,
-                top: 75,
-                child: Text(
-                  'サインイン',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    height: 0.90,
-                  ),
-                ),
-              ),
-
-              // -----------------------------------------------------------------
-              // 「Motteko」ロゴテキスト
-              // -----------------------------------------------------------------
-              Positioned(
-                left: 297,
-                top: 83,
-                child: Text(
-                  'Motteko',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    height: 1.44,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Future<void> _handleSignUp() async {
+    // バリデーション
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final passwordConfirm = _passwordConfirmController.text;
+    final nickname = _nicknameController.text.trim();
+
+    if (email.isEmpty ||
+        password.isEmpty ||
+        passwordConfirm.isEmpty ||
+        nickname.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('すべての項目を入力してください'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    if (password != passwordConfirm) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('パスワードが一致しません'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    if (!_isAgreed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('利用規約に同意してください'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await _authService.signUp(
+        email: email,
+        password: password,
+        nickname: nickname,
+      );
+      if (mounted) context.go('/');
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceFirst('Exception: ', '')),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Widget _buildInputField({
