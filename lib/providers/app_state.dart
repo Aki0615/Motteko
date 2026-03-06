@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
+import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/item_model.dart';
 import '../models/sensor_status.dart';
 import '../models/notification_model.dart';
@@ -18,19 +21,125 @@ class AppState extends ChangeNotifier {
 
   // 連続忘れ物なし日数
   int _consecutiveDaysWithoutForgetting = 0;
+  Set<DateTime> _successDates = {};
+
+  // 今までの通知総数（または現在のデータ件数）
+  int _notificationCount = 0;
 
   // カメラの状態
   bool _isCameraActive = false;
+
+  // --- Firestore から取得するユーザーデータ ---
+  String _userName = '';
+  String _currentMode = '';
+  List<String> _essentialItemNames = [];
+
+  StreamSubscription<DocumentSnapshot>? _userSubscription;
+  StreamSubscription<QuerySnapshot>? _detectionsSubscription;
 
   // ゲッター
   List<ItemModel> get items => _items;
   SensorStatus get sensorStatus => _sensorStatus;
   List<NotificationModel> get notifications => _notifications;
   int get consecutiveDaysWithoutForgetting => _consecutiveDaysWithoutForgetting;
+  Set<DateTime> get successDates => _successDates;
+  int get notificationCount => _notificationCount;
   bool get isCameraActive => _isCameraActive;
+
+  String get userName => _userName;
+  String get currentMode => _currentMode;
+  List<String> get essentialItemNames => _essentialItemNames;
 
   AppState() {
     _loadData();
+    _initAuthListener();
+  }
+
+  @override
+  void dispose() {
+    _userSubscription?.cancel();
+    _detectionsSubscription?.cancel();
+    super.dispose();
+  }
+
+  // Authのログイン状態を監視し、Firestoreを購読する
+  void _initAuthListener() {
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      _userSubscription?.cancel();
+      if (user != null) {
+        _userSubscription = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .snapshots()
+            .listen((snapshot) {
+          if (snapshot.exists) {
+            final data = snapshot.data();
+            if (data != null) {
+              _userName = data['name'] as String? ?? '';
+              _currentMode = data['current_mode'] as String? ?? '';
+
+              final essentials = data['essential_items'];
+              _essentialItemNames = (essentials as List<dynamic>?)
+                      ?.map((e) => e.toString())
+                      .toList() ??
+                  [];
+
+              notifyListeners();
+            }
+          }
+        });
+
+        // 検出履歴の購読 (連続日数・成功日の計算)
+        _detectionsSubscription = FirebaseFirestore.instance
+            .collection('detections')
+            .snapshots()
+            .listen((snapshot) {
+          Set<DateTime> successes = {};
+          for (var doc in snapshot.docs) {
+            final data = doc.data() as Map<String, dynamic>;
+            final timestamp = data['timestamp'] as Timestamp?;
+            final missingItems = data['missing_items'] as List<dynamic>? ?? [];
+            final message = data['message'] as String? ?? '';
+
+            if (timestamp != null) {
+              bool isWarning =
+                  missingItems.isNotEmpty || message.contains('忘れ物');
+              if (!isWarning) {
+                final dt = timestamp.toDate();
+                successes.add(DateTime(dt.year, dt.month, dt.day));
+              }
+            }
+          }
+
+          int streak = 0;
+          final today = DateTime.now();
+          DateTime checkDate = DateTime(today.year, today.month, today.day);
+
+          if (!successes.contains(checkDate)) {
+            checkDate = checkDate.subtract(const Duration(days: 1));
+          }
+          while (successes.contains(checkDate)) {
+            streak++;
+            checkDate = checkDate.subtract(const Duration(days: 1));
+          }
+
+          _successDates = successes;
+          _consecutiveDaysWithoutForgetting = streak;
+          _notificationCount = snapshot.docs.length; // 通知件数を保存
+          notifyListeners();
+        });
+      } else {
+        // ログアウト時
+        _userName = '';
+        _currentMode = '';
+        _essentialItemNames = [];
+        _successDates = {};
+        _consecutiveDaysWithoutForgetting = 0;
+        _notificationCount = 0;
+        _detectionsSubscription?.cancel();
+        notifyListeners();
+      }
+    });
   }
 
   // データの読み込み
