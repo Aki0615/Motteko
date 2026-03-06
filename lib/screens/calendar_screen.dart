@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../providers/app_state.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -10,10 +12,6 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   late DateTime _currentMonth;
-  final int _streakDays = 0; // TODO: 実際のデータから取得
-
-  // TODO: 実際の忘れ物なしの日付データ
-  final Set<DateTime> _successDates = {};
 
   @override
   void initState() {
@@ -141,14 +139,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      _streakDays.toString().padLeft(3, '0'),
-                      style: GoogleFonts.zenMaruGothic(
-                        color: Colors.black,
-                        fontSize: 64,
-                        fontWeight: FontWeight.w900,
-                        height: 1.0,
-                      ),
+                    Consumer<AppState>(
+                      builder: (context, appState, child) {
+                        return Text(
+                          appState.consecutiveDaysWithoutForgetting
+                              .toString()
+                              .padLeft(3, '0'),
+                          style: GoogleFonts.zenMaruGothic(
+                            color: Colors.black,
+                            fontSize: 64,
+                            fontWeight: FontWeight.w900,
+                            height: 1.0,
+                          ),
+                        );
+                      },
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
@@ -393,117 +397,187 @@ class _CalendarScreenState extends State<CalendarScreen> {
         DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
     final firstDayWeekday =
         DateTime(_currentMonth.year, _currentMonth.month, 1).weekday % 7;
-
-    // 前月の日数
     final prevMonthDays =
         DateTime(_currentMonth.year, _currentMonth.month, 0).day;
 
-    List<Widget> rows = [];
+    return Consumer<AppState>(
+      builder: (context, appState, child) {
+        final successDates = appState.successDates;
 
-    int dayCounter = 1;
-    int nextMonthDay = 1;
+        List<Widget> rows = [];
+        int dayCounter = 1;
+        int nextMonthDay = 1;
 
-    // 最大6行
-    for (int week = 0; week < 5; week++) {
-      List<Widget> cells = [];
-      for (int day = 0; day < 7; day++) {
-        final cellIndex = week * 7 + day;
+        for (int week = 0; week < 6; week++) {
+          List<Map<String, dynamic>> weekDays = [];
 
-        if (cellIndex < firstDayWeekday) {
-          // 前月の日付
-          final prevDay = prevMonthDays - firstDayWeekday + cellIndex + 1;
-          cells.add(_buildDateCell(prevDay, isCurrentMonth: false));
-        } else if (dayCounter <= daysInMonth) {
-          // 当月の日付
-          final date =
-              DateTime(_currentMonth.year, _currentMonth.month, dayCounter);
-          final isSuccess =
-              _successDates.contains(DateTime(date.year, date.month, date.day));
-          cells.add(_buildDateCell(dayCounter,
-              isCurrentMonth: true, isSuccess: isSuccess));
-          dayCounter++;
-        } else {
-          // 次月の日付
-          cells.add(_buildDateCell(nextMonthDay, isCurrentMonth: false));
-          nextMonthDay++;
+          for (int day = 0; day < 7; day++) {
+            final cellIndex = week * 7 + day;
+
+            if (cellIndex < firstDayWeekday) {
+              final prevDay = prevMonthDays - firstDayWeekday + cellIndex + 1;
+              weekDays.add({
+                'day': prevDay,
+                'isCurrentMonth': false,
+                'isSuccess': false
+              });
+            } else if (dayCounter <= daysInMonth) {
+              final date =
+                  DateTime(_currentMonth.year, _currentMonth.month, dayCounter);
+              final isSuccess = successDates
+                  .contains(DateTime(date.year, date.month, date.day));
+              weekDays.add({
+                'day': dayCounter,
+                'isCurrentMonth': true,
+                'isSuccess': isSuccess
+              });
+              dayCounter++;
+            } else {
+              weekDays.add({
+                'day': nextMonthDay,
+                'isCurrentMonth': false,
+                'isSuccess': false
+              });
+              nextMonthDay++;
+            }
+          }
+
+          List<Widget> cells = [];
+          for (int i = 0; i < 7; i++) {
+            final info = weekDays[i];
+            bool currentIsSuccess = info['isSuccess'];
+            bool connectedLeft = i > 0 && weekDays[i - 1]['isSuccess'];
+            bool connectedRight = i < 6 && weekDays[i + 1]['isSuccess'];
+
+            cells.add(Expanded(
+              child: _buildDateCell(
+                info['day'],
+                isCurrentMonth: info['isCurrentMonth'],
+                isSuccess: currentIsSuccess,
+                connectedLeft: connectedLeft,
+                connectedRight: connectedRight,
+              ),
+            ));
+          }
+
+          rows.add(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(
+                children: cells,
+              ),
+            ),
+          );
+
+          if (dayCounter > daysInMonth) break;
         }
-      }
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: cells,
-          ),
-        ),
-      );
 
-      if (dayCounter > daysInMonth && week >= 3) break;
-    }
-
-    return Column(children: rows);
+        return Column(children: rows);
+      },
+    );
   }
 
   // 個別の日付セル
   Widget _buildDateCell(int day,
-      {required bool isCurrentMonth, bool isSuccess = false}) {
-    Color textColor;
-    if (!isCurrentMonth) {
-      textColor = const Color(0xFFB9BFC9);
-    } else {
-      textColor = Colors.black;
-    }
+      {required bool isCurrentMonth,
+      bool isSuccess = false,
+      bool connectedLeft = false,
+      bool connectedRight = false}) {
+    Color textColor = isCurrentMonth ? Colors.black : const Color(0xFFB9BFC9);
 
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: Center(
-        child: isSuccess
-            ? Container(
-                width: 35,
-                height: 35,
-                decoration: ShapeDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment(1.00, 0.51),
-                    end: Alignment(0.00, 0.51),
-                    colors: [Color(0xFFFF6100), Color(0xFFFF9E64)],
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80),
-                  ),
-                  shadows: const [
-                    BoxShadow(
-                      color: Color(0xFFEDB38E),
-                      blurRadius: 0,
-                      offset: Offset(2, 2.5),
-                      spreadRadius: 0,
-                    )
-                  ],
+    if (isSuccess) {
+      textColor = Colors.white;
+      if (!connectedLeft && !connectedRight) {
+        // 単独の成功日（丸いアイコン）
+        return SizedBox(
+          height: 35,
+          child: Center(
+            child: Container(
+              width: 35,
+              height: 35,
+              decoration: ShapeDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment(1.00, 0.51),
+                  end: Alignment(0.00, 0.51),
+                  colors: [Color(0xFFFF6100), Color(0xFFFF9E64)],
                 ),
-                child: Center(
-                  child: Text(
-                    '$day',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.zenMaruGothic(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      height: 1.20,
-                    ),
-                  ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(80),
                 ),
-              )
-            : Text(
-                '$day',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.zenMaruGothic(
-                  color: textColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                  height: 1.20,
+                shadows: const [
+                  BoxShadow(
+                    color: Color(0xFFEDB38E),
+                    blurRadius: 0,
+                    offset: Offset(2, 2.5),
+                    spreadRadius: 0,
+                  )
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  '$day',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.zenMaruGothic(
+                    color: textColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    height: 1.20,
+                  ),
                 ),
               ),
-      ),
-    );
+            ),
+          ),
+        );
+      } else {
+        // 連続成功日（繋がったピル型の背景）
+        return Container(
+          height: 35,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFF7B00),
+            borderRadius: BorderRadius.horizontal(
+              left: connectedLeft ? Radius.zero : const Radius.circular(17.5),
+              right: connectedRight ? Radius.zero : const Radius.circular(17.5),
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xFFEDB38E),
+                blurRadius: 0,
+                offset: Offset(2, 2.5),
+                spreadRadius: 0,
+              )
+            ],
+          ),
+          child: Center(
+            child: Text(
+              '$day',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.zenMaruGothic(
+                color: textColor,
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                height: 1.20,
+              ),
+            ),
+          ),
+        );
+      }
+    } else {
+      // 通常の日付テキスト
+      return SizedBox(
+        height: 35,
+        child: Center(
+          child: Text(
+            '$day',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.zenMaruGothic(
+              color: textColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+              height: 1.20,
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
