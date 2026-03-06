@@ -3,7 +3,8 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 /// M5StackへのWi-Fi設定用BLE通信サービス
 class BleConfigService {
-  static const String deviceName = "Motteko-Setup";
+  // ⚠️ 注意: 以下の名前とUUIDは、M5Stackの "secrets.h" の中身と完全に一致している必要があります！
+  static const String deviceName = "Motteko-Setup"; 
   static const String serviceUuidStr = "12345678-1234-5678-1234-56789abcdef0";
   static const String charUuidSsidStr = "12345678-1234-5678-1234-56789abcdef1";
   static const String charUuidPassStr = "12345678-1234-5678-1234-56789abcdef2";
@@ -12,60 +13,50 @@ class BleConfigService {
   final Guid charUuidSsid = Guid(charUuidSsidStr);
   final Guid charUuidPass = Guid(charUuidPassStr);
 
-  /// デバイスをスキャンしてSSIDとパスワードを書き込む
-  ///
-  /// 処理の流れ:
-  /// 1. デバイス名が一致するデバイスをスキャン
-  /// 2. 接続
-  /// 3. サービスを検索
-  /// 4. 指定されたキャラクタリスティックにSSID/パスワードを書き込み
-  /// 5. 切断
   Future<void> sendWifiInfo(String ssid, String password) async {
-    // 既にスキャン中なら停止
-    if (FlutterBluePlus.isScanningNow) {
-      await FlutterBluePlus.stopScan();
-    }
-
     BluetoothDevice? targetDevice;
 
-    // スキャン開始 (タイムアウト10秒)
-    await FlutterBluePlus.startScan(
-      withNames: [deviceName],
-      timeout: const Duration(seconds: 10),
-    );
+    // 前の画面で「すでに接続済み」のデバイスの中にいるかチェック
+    for (var device in FlutterBluePlus.connectedDevices) {
+      if (device.platformName == deviceName || device.advName == deviceName) {
+        targetDevice = device;
+        break;
+      }
+    }
 
-    // デバイスが見つかるまで待機
-    await for (final scanResults in FlutterBluePlus.scanResults) {
-      if (scanResults.isNotEmpty) {
-        for (final result in scanResults) {
-          if (result.device.advName == deviceName ||
-              result.device.platformName == deviceName) {
-            targetDevice = result.device;
+    // 接続済みの中にいなければ、スキャンして探す
+    if (targetDevice == null) {
+      if (FlutterBluePlus.isScanningNow) {
+        await FlutterBluePlus.stopScan();
+      }
+
+      final subscription = FlutterBluePlus.scanResults.listen((results) {
+        for (var r in results) {
+          if (r.device.platformName == deviceName || r.device.advName == deviceName) {
+            targetDevice = r.device;
+            FlutterBluePlus.stopScan(); // 見つかったらスキャンを強制終了
             break;
           }
         }
-      }
-      if (targetDevice != null) {
-        break; // 見つかったらスキャン完了
-      }
+      });
+
+      // 5秒間だけスキャンを実行（無限ループのフリーズを防止）
+      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+      await FlutterBluePlus.isScanning.where((val) => val == false).first;
+      subscription.cancel();
     }
 
-    await FlutterBluePlus.stopScan();
-
+    // それでも見つからなければエラー
     if (targetDevice == null) {
-      throw Exception('デバイス($deviceName)が見つかりませんでした。本体が設定モードになっているか確認してください。');
-    }
-
-    // デバイスに接続
-    try {
-      await targetDevice.connect(timeout: const Duration(seconds: 5));
-    } catch (e) {
-      throw Exception('デバイスへの接続に失敗しました: $e');
+      throw Exception('デバイス($deviceName)が見つかりませんでした。本体がBluetoothモードになっているか確認してください。');
     }
 
     try {
-      // サービスを検索
-      List<BluetoothService> services = await targetDevice.discoverServices();
+      // 「!」をつけてNullエラーを回避しつつ接続
+      await targetDevice!.connect(timeout: const Duration(seconds: 5));
+
+      // サービス（データの箱のまとまり）を検索
+      List<BluetoothService> services = await targetDevice!.discoverServices();
       BluetoothService? targetService;
 
       for (var service in services) {
@@ -76,7 +67,7 @@ class BleConfigService {
       }
 
       if (targetService == null) {
-        throw Exception('該当するBLEサービスが見つかりませんでした。');
+        throw Exception('BLEサービスが見つかりませんでした。アプリとM5StackのUUIDが一致しているか確認してください。');
       }
 
       BluetoothCharacteristic? ssidChar;
@@ -91,17 +82,21 @@ class BleConfigService {
       }
 
       if (ssidChar == null || passChar == null) {
-        throw Exception('データの書き込み口(Characteristic)が見つかりませんでした。');
+        throw Exception('書き込み先のCharacteristicが見つかりませんでした。');
       }
 
-      // SSIDを書き込み
+      // 1. SSIDを送信
       await ssidChar.write(utf8.encode(ssid), withoutResponse: false);
-
-      // パスワードを書き込み
+      
+      // 取りこぼし防止の0.5秒待機（ここが超重要！）
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // 2. パスワードを送信
       await passChar.write(utf8.encode(password), withoutResponse: false);
+
     } finally {
-      // 処理が終わったら必ず切断する
-      await targetDevice.disconnect();
+      // 処理が終わったら必ず切断する（安全のため ? を使用）
+      await targetDevice?.disconnect();
     }
   }
 }
