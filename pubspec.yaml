@@ -24,6 +24,7 @@ dependencies:
   http: ^1.2.0
   firebase_auth: ^5.7.0
   flutter_blue_plus: ^1.33.4
+  holiday_jp: ^0.0.8
 
 dev_dependencies:
   flutter_test:

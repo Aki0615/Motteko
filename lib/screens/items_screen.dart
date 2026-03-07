@@ -43,6 +43,25 @@ class ItemsScreen extends StatelessWidget {
                     height: 0.90,
                   ),
                 ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () => _showItemDialog(context, appState),
+                  child: Container(
+                    width: 35,
+                    height: 35,
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFFF7B00),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(45),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.add,
+                      size: 24,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -104,7 +123,7 @@ class ItemsScreen extends StatelessWidget {
           const SizedBox(height: 16),
           // 「＋ 最初のアイテムを追加」ボタン
           GestureDetector(
-            onTap: () => _showAddItemDialog(context, appState),
+            onTap: () => _showItemDialog(context, appState),
             child: Container(
               height: 50,
               padding: const EdgeInsets.only(
@@ -159,7 +178,8 @@ class ItemsScreen extends StatelessWidget {
             final item = appState.items[index];
             return ItemCard(
               item: item,
-              onTap: () => _showEditItemDialog(context, appState, item),
+              onTap: () =>
+                  _showItemDialog(context, appState, existingItem: item),
               onDelete: () => _showDeleteConfirmation(
                 context,
                 appState,
@@ -172,12 +192,17 @@ class ItemsScreen extends StatelessWidget {
     );
   }
 
-  void _showAddItemDialog(BuildContext context, AppState appState) {
-    final nameController = TextEditingController();
-    final descriptionController = TextEditingController();
 
-    // カテゴリの状態: 仕事=0, 野暮用=1, 遊び=2
-    int selectedCategory = 0;
+  void _showItemDialog(BuildContext context, AppState appState,
+      {ItemModel? existingItem}) {
+    final isEditing = existingItem != null;
+    final nameController =
+        TextEditingController(text: existingItem?.name ?? '');
+    final descriptionController =
+        TextEditingController(text: existingItem?.description ?? '');
+    bool isWeekday = existingItem?.isWeekday ?? false;
+    bool isWeekend = existingItem?.isWeekend ?? false;
+    bool isRequired = existingItem?.isRequired ?? false;
 
     showDialog(
       context: context,
@@ -197,7 +222,10 @@ class ItemsScreen extends StatelessWidget {
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
-                      side: const BorderSide(width: 2, color: Colors.black),
+                      side: const BorderSide(
+                        width: 2,
+                        color: Colors.black,
+                      ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     shadows: const [
@@ -213,9 +241,8 @@ class ItemsScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // タイトル
                       Text(
-                        '新しいアイテムを追加',
+                        isEditing ? 'アイテムを編集' : '新しいアイテムを追加',
                         style: GoogleFonts.zenMaruGothic(
                           color: const Color(0xFF111827),
                           fontSize: 18,
@@ -224,15 +251,13 @@ class ItemsScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-
-                      // 名前入力欄
                       Container(
-                        width: double.infinity,
+                        width: 204,
                         height: 44,
                         decoration: ShapeDecoration(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
-                            side: const BorderSide(width: 1.5),
+                            side: const BorderSide(width: 1.50),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           shadows: const [
@@ -246,7 +271,7 @@ class ItemsScreen extends StatelessWidget {
                         ),
                         child: TextField(
                           controller: nameController,
-                          autofocus: true,
+                          autofocus: !isEditing,
                           style: GoogleFonts.zenMaruGothic(
                             color: Colors.black,
                             fontSize: 14,
@@ -261,21 +286,19 @@ class ItemsScreen extends StatelessWidget {
                               fontWeight: FontWeight.w400,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
+                                horizontal: 21, vertical: 13),
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                       const SizedBox(height: 12),
-
-                      // 説明入力欄
                       Container(
-                        width: double.infinity,
+                        width: 204,
                         height: 44,
                         decoration: ShapeDecoration(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
-                            side: const BorderSide(width: 1.5),
+                            side: const BorderSide(width: 1.50),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           shadows: const [
@@ -303,49 +326,41 @@ class ItemsScreen extends StatelessWidget {
                               fontWeight: FontWeight.w400,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
+                                horizontal: 21, vertical: 13),
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                       const SizedBox(height: 16),
-
-                      // 仕事カテゴリ
-                      _buildCategoryToggle(
-                        title: '仕事',
-                        description: '毎日持っていくもの(連続記録が毎日反映される)',
-                        isSelected: selectedCategory == 0,
-                        onChanged: (value) {
-                          if (value) setState(() => selectedCategory = 0);
-                        },
-                      ),
-                      const SizedBox(height: 8),
-
-                      // 野暮用カテゴリ
-                      _buildCategoryToggle(
-                        title: '野暮用',
+                      _buildNewCategoryToggle(
+                        title: '平日',
                         description: '平日は持っていくもの(連続記録が平日のみ反映される)',
-                        isSelected: selectedCategory == 1,
-                        onChanged: (value) {
-                          if (value) setState(() => selectedCategory = 1);
-                        },
+                        titleColor: Colors.black,
+                        isSelected: isWeekday,
+                        onChanged: (value) => setState(() => isWeekday = value),
                       ),
                       const SizedBox(height: 8),
-
-                      // 遊びカテゴリ
-                      _buildCategoryToggle(
-                        title: '遊び',
+                      _buildNewCategoryToggle(
+                        title: '休日',
                         description: '土日祝に持っていくもの(連続記録が土日祝のみ反映される)',
-                        isSelected: selectedCategory == 2,
-                        onChanged: (value) {
-                          if (value) setState(() => selectedCategory = 2);
-                        },
+                        titleColor: Colors.black,
+                        isSelected: isWeekend,
+                        onChanged: (value) => setState(() => isWeekend = value),
                       ),
-                      const SizedBox(height: 12),
-
-                      // 警告テキスト
+                      const SizedBox(height: 8),
+                      _buildNewCategoryToggle(
+                        title: '必須アイテム',
+                        description: '毎日持ち歩くものは\nONにしてください',
+                        titleColor: const Color(0xFFFF7B00),
+                        isSelected: isRequired,
+                        onChanged: (value) =>
+                            setState(() => isRequired = value),
+                      ),
+                      const SizedBox(height: 16),
                       Text(
-                        '※これ以降、このアイテムの概要は編集できない',
+                        isEditing
+                            ? '※更新後、カテゴリの設定が変わるので注意してください'
+                            : '※これ以降、このアイテムの概要は編集できない',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.zenMaruGothic(
                           color: const Color(0xFFFF0000),
@@ -354,109 +369,116 @@ class ItemsScreen extends StatelessWidget {
                           height: 1.44,
                         ),
                       ),
-                      const SizedBox(height: 8),
-
-                      // ボタン行
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // キャンセルボタン
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Container(
-                              height: 32,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              decoration: ShapeDecoration(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                    width: 1.5,
-                                    color: Colors.black,
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: 204,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                height: 32,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    side: const BorderSide(
+                                      width: 1.50,
+                                      color: Colors.black,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  borderRadius: BorderRadius.circular(10),
+                                  shadows: const [
+                                    BoxShadow(
+                                      color: Color(0xFF000000),
+                                      blurRadius: 0,
+                                      offset: Offset(2, 3),
+                                      spreadRadius: 0,
+                                    )
+                                  ],
                                 ),
-                                shadows: const [
-                                  BoxShadow(
-                                    color: Color(0xFF000000),
-                                    blurRadius: 0,
-                                    offset: Offset(2, 3),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'キャンセル',
-                                  style: GoogleFonts.zenMaruGothic(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.20,
+                                child: Center(
+                                  child: Text(
+                                    'キャンセル',
+                                    style: GoogleFonts.zenMaruGothic(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.20,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          // 追加ボタン
-                          GestureDetector(
-                            onTap: () {
-                              if (nameController.text.trim().isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('名前を入力してください')),
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                              onTap: () {
+                                if (nameController.text.trim().isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('名前を入力してください')),
+                                  );
+                                  return;
+                                }
+
+                                final newItem = ItemModel(
+                                  id: isEditing
+                                      ? existingItem.id
+                                      : DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString(),
+                                  name: nameController.text.trim(),
+                                  description: descriptionController.text.trim(),
+                                  isRequired: isRequired,
+                                  isWeekday: isWeekday,
+                                  isWeekend: isWeekend,
                                 );
-                                return;
-                              }
 
-                              final newItem = ItemModel(
-                                id: DateTime.now()
-                                    .millisecondsSinceEpoch
-                                    .toString(),
-                                name: nameController.text.trim(),
-                                description: descriptionController.text.trim(),
-                                isRequired: true,
-                              );
-
-                              appState.addItem(newItem);
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              height: 32,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              decoration: ShapeDecoration(
-                                color: const Color(0xFFFF7B00),
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                    width: 1.5,
-                                    color: Colors.black,
+                                if (isEditing) {
+                                  appState.updateItem(existingItem.id, newItem);
+                                } else {
+                                  appState.addItem(newItem);
+                                }
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                height: 32,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFFF7B00),
+                                  shape: RoundedRectangleBorder(
+                                    side: const BorderSide(
+                                      width: 1.50,
+                                      color: Colors.black,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  borderRadius: BorderRadius.circular(10),
+                                  shadows: const [
+                                    BoxShadow(
+                                      color: Color(0xFF000000),
+                                      blurRadius: 0,
+                                      offset: Offset(2, 3),
+                                      spreadRadius: 0,
+                                    )
+                                  ],
                                 ),
-                                shadows: const [
-                                  BoxShadow(
-                                    color: Color(0xFF000000),
-                                    blurRadius: 0,
-                                    offset: Offset(2, 3),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '追加',
-                                  style: GoogleFonts.zenMaruGothic(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.20,
+                                child: Center(
+                                  child: Text(
+                                    isEditing ? '更新' : '追加',
+                                    style: GoogleFonts.zenMaruGothic(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.20,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -469,234 +491,60 @@ class ItemsScreen extends StatelessWidget {
     );
   }
 
-  // カテゴリトグルウィジェット
-  Widget _buildCategoryToggle({
+  Widget _buildNewCategoryToggle({
     required String title,
     required String description,
+    required Color titleColor,
     required bool isSelected,
     required ValueChanged<bool> onChanged,
   }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: '$title\n',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    height: 1.20,
-                  ),
-                ),
-                TextSpan(
-                  text: description,
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    height: 1.20,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 6),
-        SizedBox(
-          width: 51,
-          height: 31,
-          child: Switch(
-            value: isSelected,
-            activeColor: Colors.white,
-            activeTrackColor: const Color(0xFFFF7B00),
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: const Color(0xFFE5E7EB),
-            onChanged: onChanged,
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showEditItemDialog(
-      BuildContext context, AppState appState, ItemModel item) {
-    final nameController = TextEditingController(text: item.name);
-    final descriptionController = TextEditingController(text: item.description);
-    bool isRequired = item.isRequired;
-    final focusNode = FocusNode();
-
-    // ダイアログが表示された後にフォーカスを要求
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      focusNode.requestFocus();
-    });
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text(
-            'アイテムを編集',
-            style: TextStyle(
-              fontFamily: AppTheme.fontFamily,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textPrimary,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '名前',
-                  style: TextStyle(
-                    fontFamily: AppTheme.fontFamily,
-                    fontSize: 13,
-                    color: AppTheme.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                TextField(
-                  controller: nameController,
-                  focusNode: focusNode,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppTheme.gray300),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppTheme.gray300),
+    return SizedBox(
+      width: 204,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: title + '\n',
+                    style: GoogleFonts.zenMaruGothic(
+                      color: titleColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      height: 1.20,
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '説明',
-                  style: TextStyle(
-                    fontFamily: AppTheme.fontFamily,
-                    fontSize: 13,
-                    color: AppTheme.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppTheme.gray300),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppTheme.gray300),
+                  TextSpan(
+                    text: description,
+                    style: GoogleFonts.zenMaruGothic(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      height: 1.20,
                     ),
                   ),
-                  maxLines: 2,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        '必須アイテム',
-                        style: TextStyle(
-                          fontFamily: AppTheme.fontFamily,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textPrimary,
-                        ),
-                      ),
-                    ),
-                    Switch(
-                      value: isRequired,
-                      activeColor: AppTheme.primaryOrange,
-                      onChanged: (value) {
-                        setState(() {
-                          isRequired = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppTheme.primaryOrange),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: const Text(
-                  'キャンセル',
-                  style: TextStyle(
-                    fontFamily: AppTheme.fontFamily,
-                    fontSize: 13,
-                    color: AppTheme.primaryOrange,
-                  ),
-                ),
+                ],
               ),
             ),
-            TextButton(
-              onPressed: () {
-                if (nameController.text.trim().isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('名前を入力してください')),
-                  );
-                  return;
-                }
-
-                final updatedItem = item.copyWith(
-                  name: nameController.text.trim(),
-                  description: descriptionController.text.trim(),
-                  isRequired: isRequired,
-                );
-
-                appState.updateItem(item.id, updatedItem);
-                Navigator.pop(context);
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryOrange,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: const Text(
-                  '更新',
-                  style: TextStyle(
-                    fontFamily: AppTheme.fontFamily,
-                    fontSize: 13,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+          ),
+          const SizedBox(width: 6),
+          SizedBox(
+            width: 51,
+            height: 31,
+            child: Switch(
+              value: isSelected,
+              activeColor: Colors.white,
+              activeTrackColor: const Color(0xFFFF7B00),
+              inactiveThumbColor: Colors.white,
+              inactiveTrackColor: const Color(0xFFE5E7EB),
+              onChanged: onChanged,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

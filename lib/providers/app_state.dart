@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/item_model.dart';
 import '../models/sensor_status.dart';
 import '../models/notification_model.dart';
+import 'package:holiday_jp/holiday_jp.dart' as holiday_jp;
 import '../services/notification_service.dart';
 
 class AppState extends ChangeNotifier {
@@ -36,6 +37,7 @@ class AppState extends ChangeNotifier {
 
   StreamSubscription<DocumentSnapshot>? _userSubscription;
   StreamSubscription<QuerySnapshot>? _detectionsSubscription;
+  List<QueryDocumentSnapshot> _detectionDocs = [];
 
   // ゲッター
   List<ItemModel> get items => _items;
@@ -94,38 +96,8 @@ class AppState extends ChangeNotifier {
             .collection('detections')
             .snapshots()
             .listen((snapshot) {
-          Set<DateTime> successes = {};
-          for (var doc in snapshot.docs) {
-            final data = doc.data() as Map<String, dynamic>;
-            final timestamp = data['timestamp'] as Timestamp?;
-            final missingItems = data['missing_items'] as List<dynamic>? ?? [];
-            final message = data['message'] as String? ?? '';
-
-            if (timestamp != null) {
-              bool isWarning =
-                  missingItems.isNotEmpty || message.contains('忘れ物');
-              if (!isWarning) {
-                final dt = timestamp.toDate();
-                successes.add(DateTime(dt.year, dt.month, dt.day));
-              }
-            }
-          }
-
-          int streak = 0;
-          final today = DateTime.now();
-          DateTime checkDate = DateTime(today.year, today.month, today.day);
-
-          if (!successes.contains(checkDate)) {
-            checkDate = checkDate.subtract(const Duration(days: 1));
-          }
-          while (successes.contains(checkDate)) {
-            streak++;
-            checkDate = checkDate.subtract(const Duration(days: 1));
-          }
-
-          _successDates = successes;
-          _consecutiveDaysWithoutForgetting = streak;
-          _notificationCount = snapshot.docs.length; // 通知件数を保存
+          _detectionDocs = snapshot.docs;
+          _calculateStreaks();
           notifyListeners();
         });
       } else {
@@ -136,6 +108,7 @@ class AppState extends ChangeNotifier {
         _successDates = {};
         _consecutiveDaysWithoutForgetting = 0;
         _notificationCount = 0;
+        _detectionDocs = [];
         _detectionsSubscription?.cancel();
         notifyListeners();
       }
@@ -194,11 +167,97 @@ class AppState extends ChangeNotifier {
     await prefs.setInt('consecutiveDays', _consecutiveDaysWithoutForgetting);
   }
 
+  // Firestoreの必須アイテム同期
+  Future<void> _syncEssentialItemsToFirestore() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final itemNames = _items.map((e) => e.name).toList();
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'essential_items': itemNames,
+        });
+      } catch (e) {
+        debugPrint('Error syncing essential items: $e');
+      }
+    }
+  }
+
+  // カレンダーと連続記録の再計算
+  void _calculateStreaks() {
+    Set<DateTime> successes = {};
+    for (var doc in _detectionDocs) {
+      final data = doc.data() as Map<String, dynamic>;
+      final timestamp = data['timestamp'] as Timestamp?;
+      final missingItems = data['missing_items'] as List<dynamic>? ?? [];
+      final message = data['message'] as String? ?? '';
+
+      if (timestamp != null) {
+        final dt = timestamp.toDate();
+        bool hasRequiredMissingItem = false;
+
+        for (var missingName in missingItems) {
+          final itemDef = _items.cast<ItemModel?>().firstWhere(
+                (item) => item?.name == missingName.toString(),
+                orElse: () => null,
+              );
+
+          if (itemDef != null) {
+            bool isHoliday = holiday_jp.isHoliday(dt);
+            bool isWeekendDay = dt.weekday == DateTime.saturday ||
+                dt.weekday == DateTime.sunday;
+            bool isRestDay = isWeekendDay || isHoliday;
+            bool isWorkDay = !isRestDay;
+
+            if (itemDef.isRequired) {
+              hasRequiredMissingItem = true;
+            } else if (itemDef.isWeekday && isWorkDay) {
+              hasRequiredMissingItem = true;
+            } else if (itemDef.isWeekend && isRestDay) {
+              hasRequiredMissingItem = true;
+            }
+          } else {
+            // ローカル定義に存在しないアイテムの場合
+            // 安全側に倒して警告扱いにする（削除前の記録なども踏まえて）
+            hasRequiredMissingItem = true;
+          }
+        }
+
+        bool isWarning = hasRequiredMissingItem ||
+            (missingItems.isEmpty && message.contains('忘れ物'));
+
+        if (!isWarning) {
+          successes.add(DateTime(dt.year, dt.month, dt.day));
+        }
+      }
+    }
+
+    int streak = 0;
+    final today = DateTime.now();
+    DateTime checkDate = DateTime(today.year, today.month, today.day);
+
+    if (!successes.contains(checkDate)) {
+      checkDate = checkDate.subtract(const Duration(days: 1));
+    }
+    while (successes.contains(checkDate)) {
+      streak++;
+      checkDate = checkDate.subtract(const Duration(days: 1));
+    }
+
+    _successDates = successes;
+    _consecutiveDaysWithoutForgetting = streak;
+    _notificationCount = _detectionDocs.length;
+  }
+
   // === 持ち物管理 ===
 
   void addItem(ItemModel item) {
     _items.add(item);
     _saveData();
+    _syncEssentialItemsToFirestore();
+    _calculateStreaks();
     notifyListeners();
   }
 
@@ -207,6 +266,8 @@ class AppState extends ChangeNotifier {
     if (index != -1) {
       _items[index] = updatedItem;
       _saveData();
+      _syncEssentialItemsToFirestore();
+      _calculateStreaks();
       notifyListeners();
     }
   }
@@ -214,6 +275,8 @@ class AppState extends ChangeNotifier {
   void removeItem(String id) {
     _items.removeWhere((item) => item.id == id);
     _saveData();
+    _syncEssentialItemsToFirestore();
+    _calculateStreaks();
     notifyListeners();
   }
 

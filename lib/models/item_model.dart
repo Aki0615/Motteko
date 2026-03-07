@@ -4,13 +4,17 @@ class ItemModel {
   final String description;
   final String? imageUrl;
   final bool isRequired;
+  final bool isWeekday;
+  final bool isWeekend;
 
   ItemModel({
     required this.id,
     required this.name,
     this.description = '',
     this.imageUrl,
-    this.isRequired = true,
+    this.isRequired = false,
+    this.isWeekday = false,
+    this.isWeekend = false,
   });
 
   // JSONからオブジェクトを生成
@@ -20,7 +24,9 @@ class ItemModel {
       name: json['name'] as String,
       description: json['description'] as String? ?? '',
       imageUrl: json['imageUrl'] as String?,
-      isRequired: json['isRequired'] as bool? ?? true,
+      isRequired: json['isRequired'] as bool? ?? false,
+      isWeekday: json['isWeekday'] as bool? ?? false,
+      isWeekend: json['isWeekend'] as bool? ?? false,
     );
   }
 
@@ -32,6 +38,8 @@ class ItemModel {
       'description': description,
       'imageUrl': imageUrl,
       'isRequired': isRequired,
+      'isWeekday': isWeekday,
+      'isWeekend': isWeekend,
     };
   }
 
@@ -42,6 +50,8 @@ class ItemModel {
     String? description,
     String? imageUrl,
     bool? isRequired,
+    bool? isWeekday,
+    bool? isWeekend,
   }) {
     return ItemModel(
       id: id ?? this.id,
@@ -49,6 +59,8 @@ class ItemModel {
       description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,
       isRequired: isRequired ?? this.isRequired,
+      isWeekday: isWeekday ?? this.isWeekday,
+      isWeekend: isWeekend ?? this.isWeekend,
     );
   }
 }
