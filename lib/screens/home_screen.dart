@@ -147,7 +147,7 @@ class HomeScreen extends StatelessWidget {
 
           // 連続日数バブル（大）
           Positioned(
-            left: 133,
+            left: 140.0, // 中央に寄せる
             top: 119,
             child: Container(
               width: 112.50,
@@ -195,8 +195,8 @@ class HomeScreen extends StatelessWidget {
 
           // 登録バブル（小）
           Positioned(
-            left: 62,
-            top: 222,
+            left: 45, // 等間隔に配置
+            top: 250, // 大バブルの下に配置（被らないようにする）
             child: _buildSmallStatBubble(
               label: '登録',
               value: '${appState.items.length}',
@@ -206,8 +206,8 @@ class HomeScreen extends StatelessWidget {
 
           // 通知バブル（小）
           Positioned(
-            left: 144,
-            top: 222,
+            left: 150, // 等間隔に配置
+            top: 250, // 大バブルの下に配置
             child: _buildSmallStatBubble(
               label: '通知',
               value: '${appState.notificationCount}',
@@ -217,8 +217,8 @@ class HomeScreen extends StatelessWidget {
 
           // センサーバブル（小）
           Positioned(
-            left: 224,
-            top: 222,
+            left: 255, // 等間隔に配置
+            top: 250, // 大バブルの下に配置
             child: _buildSensorBubble(appState),
           ),
 
