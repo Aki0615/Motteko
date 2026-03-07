@@ -92,43 +92,61 @@ class _CameraScreenState extends State<CameraScreen> {
               const SizedBox(height: 32),
 
               // ============================================================
-              // 撮影ボタン
+              // 撮影ボタン & 画像更新ボタン
               // ============================================================
-              GestureDetector(
-                onTap: _takePhoto,
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFF7B00),
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(width: 2, color: Colors.black),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 0,
-                        offset: Offset(3, 4.5),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: _takePhoto,
+                    child: Container(
+                      height: 48,
+                      width: 200, // Figmaデザインに合わせた横幅
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFFFF7B00),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24), // 丸みを強く
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
                         '写真を撮影',
                         style: GoogleFonts.zenMaruGothic(
                           color: Colors.white,
                           fontSize: 16,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        // _timestampは未使用になったため、直接setState内では何もしなくてもbuildが走る。
+                        // 画像URLのタイムスタンプ部分は DateTime.now().millisecondsSinceEpoch で再生成される。
+                      });
+                    },
+                    child: Container(
+                      height: 48,
+                      width: 280, // 少し幅広のグレーボタン
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFF6B7280), // グレー
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '最新の画像を読み込む',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 48),
