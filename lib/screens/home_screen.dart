@@ -289,7 +289,10 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          // 通知画面へ遷移
+                          context.go('/notifications');
+                        },
                         child: Text(
                           'すべて表示',
                           style: GoogleFonts.zenMaruGothic(
