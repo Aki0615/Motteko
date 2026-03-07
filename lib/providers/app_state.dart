@@ -9,8 +9,6 @@ import '../models/sensor_status.dart';
 import '../models/notification_model.dart';
 import 'package:holiday_jp/holiday_jp.dart' as holiday_jp;
 import '../services/notification_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class AppState extends ChangeNotifier {
   // 持ち物リスト
@@ -85,12 +83,13 @@ class AppState extends ChangeNotifier {
               final essentials = data['essential_items'];
               if (essentials is List) {
                 _items.clear(); // メモリ上のリストを一度リセットする
-                
+
                 for (var itemData in essentials) {
                   if (itemData is Map<String, dynamic>) {
                     // クラウドから詳細データ（Map）をItemModelに変換して復元
                     _items.add(ItemModel(
-                      id: itemData['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
+                      id: itemData['id'] ??
+                          DateTime.now().millisecondsSinceEpoch.toString(),
                       name: itemData['name'] ?? '',
                       description: itemData['description'] ?? '',
                       isRequired: itemData['isRequired'] ?? true,
@@ -128,8 +127,8 @@ class AppState extends ChangeNotifier {
         _currentMode = '';
         _essentialItemNames = [];
         _items.clear(); // 追加：持ち物リストを空にする
-        _saveData();    // 追加：空の状態をローカルに保存
-        
+        _saveData(); // 追加：空の状態をローカルに保存
+
         _successDates = {};
         _consecutiveDaysWithoutForgetting = 0;
         _notificationCount = 0;
@@ -200,14 +199,16 @@ class AppState extends ChangeNotifier {
     if (user != null) {
       try {
         // アイテムの全情報をそのままリスト（配列）にする
-        final List<Map<String, dynamic>> itemsList = _items.map((item) => {
-          'id': item.id,
-          'name': item.name,
-          'description': item.description, // AIに特徴を伝えられる！
-          'isRequired': item.isRequired,
-          'isWeekday': item.isWeekday,
-          'isWeekend': item.isWeekend,
-        }).toList();
+        final List<Map<String, dynamic>> itemsList = _items
+            .map((item) => {
+                  'id': item.id,
+                  'name': item.name,
+                  'description': item.description, // AIに特徴を伝えられる！
+                  'isRequired': item.isRequired,
+                  'isWeekday': item.isWeekday,
+                  'isWeekend': item.isWeekend,
+                })
+            .toList();
 
         await FirebaseFirestore.instance
             .collection('users')
@@ -302,12 +303,8 @@ class AppState extends ChangeNotifier {
     if (index != -1) {
       _items[index] = updatedItem;
       _saveData();
-<<<<<<< HEAD
       _syncEssentialItemsToFirestore();
       _calculateStreaks();
-=======
-      _syncEssentialItemsToFirestore(); // 💡 追加
->>>>>>> pr-1
       notifyListeners();
     }
   }
