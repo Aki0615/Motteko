@@ -74,6 +74,17 @@ class ItemsScreen extends StatelessWidget {
           ),
         ],
       ),
+      // ============================================================
+      // 追加：アイテムが1つ以上ある時に表示される右下の「＋」ボタン
+      // ============================================================
+      floatingActionButton: appState.items.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () => _showItemDialog(context, appState),
+              backgroundColor: const Color(0xFFFF7B00),
+              shape: const CircleBorder(),
+              child: const Icon(Icons.add, color: Colors.white, size: 30),
+            )
+          : null, // 空の時は画面中央のボタンがあるので非表示にする
     );
   }
 
@@ -191,7 +202,6 @@ class ItemsScreen extends StatelessWidget {
       ],
     );
   }
-
 
   void _showItemDialog(BuildContext context, AppState appState,
       {ItemModel? existingItem}) {
@@ -417,7 +427,8 @@ class ItemsScreen extends StatelessWidget {
                               onTap: () {
                                 if (nameController.text.trim().isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('名前を入力してください')),
+                                    const SnackBar(
+                                        content: Text('名前を入力してください')),
                                   );
                                   return;
                                 }
@@ -429,7 +440,8 @@ class ItemsScreen extends StatelessWidget {
                                           .millisecondsSinceEpoch
                                           .toString(),
                                   name: nameController.text.trim(),
-                                  description: descriptionController.text.trim(),
+                                  description:
+                                      descriptionController.text.trim(),
                                   isRequired: isRequired,
                                   isWeekday: isWeekday,
                                   isWeekend: isWeekend,
