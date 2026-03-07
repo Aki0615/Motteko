@@ -184,7 +184,6 @@ class _CameraScreenState extends State<CameraScreen> {
             'assets/icons/camera_off.png',
             width: 48,
             height: 48,
-            color: const Color(0xFF6B7280),
           ),
           const SizedBox(height: 8),
           Text(
@@ -218,7 +217,6 @@ class _CameraScreenState extends State<CameraScreen> {
               'assets/icons/camera_off.png',
               width: 48,
               height: 48,
-              color: const Color(0xFF6B7280),
             ),
             const SizedBox(height: 8),
             Text(
