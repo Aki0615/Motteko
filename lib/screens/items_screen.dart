@@ -347,7 +347,14 @@ class ItemsScreen extends StatelessWidget {
                         description: '平日は持っていくもの(連続記録が平日のみ反映される)',
                         titleColor: Colors.black,
                         isSelected: isWeekday,
-                        onChanged: (value) => setState(() => isWeekday = value),
+                        onChanged: (value) {
+                          setState(() {
+                            isWeekday = value;
+                            if (value) {
+                              isRequired = false; // 平日をオンにしたら必須をオフ
+                            }
+                          });
+                        },
                       ),
                       const SizedBox(height: 8),
                       _buildNewCategoryToggle(
@@ -355,7 +362,14 @@ class ItemsScreen extends StatelessWidget {
                         description: '土日祝に持っていくもの(連続記録が土日祝のみ反映される)',
                         titleColor: Colors.black,
                         isSelected: isWeekend,
-                        onChanged: (value) => setState(() => isWeekend = value),
+                        onChanged: (value) {
+                          setState(() {
+                            isWeekend = value;
+                            if (value) {
+                              isRequired = false; // 休日をオンにしたら必須をオフ
+                            }
+                          });
+                        },
                       ),
                       const SizedBox(height: 8),
                       _buildNewCategoryToggle(
@@ -363,8 +377,15 @@ class ItemsScreen extends StatelessWidget {
                         description: '毎日持ち歩くものは\nONにしてください',
                         titleColor: const Color(0xFFFF7B00),
                         isSelected: isRequired,
-                        onChanged: (value) =>
-                            setState(() => isRequired = value),
+                        onChanged: (value) {
+                          setState(() {
+                            isRequired = value;
+                            if (value) {
+                              isWeekday = false; // 必須をオンにしたら平日・休日をオフ
+                              isWeekend = false;
+                            }
+                          });
+                        },
                       ),
                       const SizedBox(height: 16),
                       Text(
