@@ -43,6 +43,21 @@ class ItemsScreen extends StatelessWidget {
                     height: 0.90,
                   ),
                 ),
+                const Spacer(), // 余白を自動計算して右端に寄せる
+                
+                // 右上の「＋」追加ボタン
+                GestureDetector(
+                  onTap: () => _showAddItemDialog(context, appState),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFF7B00),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.add, color: Colors.white),
+                  ),
+                ),
               ],
             ),
           ),
@@ -55,6 +70,17 @@ class ItemsScreen extends StatelessWidget {
           ),
         ],
       ),
+      // ============================================================
+      // 追加：アイテムが1つ以上ある時に表示される右下の「＋」ボタン
+      // ============================================================
+      floatingActionButton: appState.items.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () => _showAddItemDialog(context, appState),
+              backgroundColor: const Color(0xFFFF7B00),
+              shape: const CircleBorder(),
+              child: const Icon(Icons.add, color: Colors.white, size: 30),
+            )
+          : null, // 空の時は画面中央のボタンがあるので非表示にする
     );
   }
 

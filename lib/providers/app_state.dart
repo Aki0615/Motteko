@@ -81,10 +81,30 @@ class AppState extends ChangeNotifier {
               _currentMode = data['current_mode'] as String? ?? '';
 
               final essentials = data['essential_items'];
-              _essentialItemNames = (essentials as List<dynamic>?)
-                      ?.map((e) => e.toString())
-                      .toList() ??
-                  [];
+              if (essentials is List) {
+                _items.clear(); // メモリ上のリストを一度リセットする
+                
+                for (var itemData in essentials) {
+                  if (itemData is Map<String, dynamic>) {
+                    // クラウドから詳細データ（Map）をItemModelに変換して復元
+                    _items.add(ItemModel(
+                      id: itemData['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
+                      name: itemData['name'] ?? '',
+                      description: itemData['description'] ?? '',
+                      isRequired: itemData['isRequired'] ?? true,
+                    ));
+                  } else if (itemData is String) {
+                    // 古い形式（文字列のみ）で保存されていた場合の互換性対策
+                    _items.add(ItemModel(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      name: itemData,
+                      description: '',
+                      isRequired: true,
+                    ));
+                  }
+                }
+                _saveData(); // 復元したデータをスマホのローカルにも保存
+              }
 
               notifyListeners();
             }
@@ -135,6 +155,9 @@ class AppState extends ChangeNotifier {
         _userName = '';
         _currentMode = '';
         _essentialItemNames = [];
+        _items.clear(); // 追加：持ち物リストを空にする
+        _saveData();    // 追加：空の状態をローカルに保存
+        
         _successDates = {};
         _consecutiveDaysWithoutForgetting = 0;
         _notificationCount = 0;
