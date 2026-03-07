@@ -105,22 +105,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Container(
       width: double.infinity,
       height: 216,
-      clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 2, color: Colors.black),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0xFF000000),
-            blurRadius: 0,
-            offset: Offset(3, 4.5),
-            spreadRadius: 0,
-          )
-        ],
-      ),
       child: Stack(
         children: [
           // 背景画像
