@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// M5StackへのWi-Fi設定用BLE通信サービス
 class BleConfigService {
@@ -7,10 +8,12 @@ class BleConfigService {
   static const String serviceUuidStr = "12345678-1234-5678-1234-56789abcdef0";
   static const String charUuidSsidStr = "12345678-1234-5678-1234-56789abcdef1";
   static const String charUuidPassStr = "12345678-1234-5678-1234-56789abcdef2";
+  static const String charUuidUidStr = "12345678-1234-5678-1234-56789abcdef3";
 
   final Guid serviceUuid = Guid(serviceUuidStr);
   final Guid charUuidSsid = Guid(charUuidSsidStr);
   final Guid charUuidPass = Guid(charUuidPassStr);
+  final Guid charUuidUid = Guid(charUuidUidStr);
 
   /// デバイスをスキャンしてSSIDとパスワードを書き込む
   ///
@@ -81,12 +84,15 @@ class BleConfigService {
 
       BluetoothCharacteristic? ssidChar;
       BluetoothCharacteristic? passChar;
+      BluetoothCharacteristic? uidChar;
 
       for (var characteristic in targetService.characteristics) {
         if (characteristic.characteristicUuid == charUuidSsid) {
           ssidChar = characteristic;
         } else if (characteristic.characteristicUuid == charUuidPass) {
           passChar = characteristic;
+        } else if (characteristic.characteristicUuid == charUuidUid) {
+          uidChar = characteristic;
         }
       }
 
@@ -99,6 +105,60 @@ class BleConfigService {
 
       // パスワードを書き込み
       await passChar.write(utf8.encode(password), withoutResponse: false);
+
+      // UIDを書き込み(Characteristicが存在する場合)
+      if (uidChar != null) {
+        final uid = FirebaseAuth.instance.currentUser?.uid;
+        if (uid != null) {
+          await uidChar.write(utf8.encode(uid), withoutResponse: false);
+        }
+      }
+    } finally {
+      // 処理が終わったら必ず切断する
+      await targetDevice.disconnect();
+    }
+  }
+
+  /// 指定したデバイスにUIDだけを送信する
+  Future<void> sendUid(BluetoothDevice targetDevice) async {
+    try {
+      // 接続
+      await targetDevice.connect(timeout: const Duration(seconds: 5));
+
+      // サービスを検索
+      List<BluetoothService> services = await targetDevice.discoverServices();
+      BluetoothService? targetService;
+
+      for (var service in services) {
+        if (service.serviceUuid == serviceUuid) {
+          targetService = service;
+          break;
+        }
+      }
+
+      if (targetService == null) {
+        throw Exception('該当するBLEサービスが見つかりませんでした。');
+      }
+
+      BluetoothCharacteristic? uidChar;
+
+      for (var characteristic in targetService.characteristics) {
+        if (characteristic.characteristicUuid == charUuidUid) {
+          uidChar = characteristic;
+          break;
+        }
+      }
+
+      if (uidChar == null) {
+        throw Exception('UID送信用のCharacteristicが見つかりませんでした。');
+      }
+
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) {
+        throw Exception('ユーザーがログインしていません。');
+      }
+
+      await uidChar.write(utf8.encode(uid), withoutResponse: false);
     } finally {
       // 処理が終わったら必ず切断する
       await targetDevice.disconnect();

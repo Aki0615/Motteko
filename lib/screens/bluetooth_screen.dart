@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:async';
+import '../services/ble_config_service.dart';
 
 /// Bluetooth設定画面（付近のBLEデバイスをスキャン表示）
 class BluetoothScreen extends StatefulWidget {
@@ -13,6 +14,9 @@ class BluetoothScreen extends StatefulWidget {
 }
 
 class _BluetoothScreenState extends State<BluetoothScreen> {
+  final _bleService = BleConfigService();
+  bool _isConnecting = false;
+
   List<ScanResult> _scanResults = [];
   List<BluetoothDevice> _connectedDevices = [];
   bool _isScanning = false;
@@ -95,6 +99,41 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
             backgroundColor: Colors.red,
           ),
         );
+      }
+    }
+  }
+
+  Future<void> _connectAndSendUid(BluetoothDevice device) async {
+    if (_isConnecting) return;
+
+    setState(() => _isConnecting = true);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('デバイスに接続してUIDを送信しています...')),
+    );
+
+    try {
+      await _bleService.sendUid(device);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Firebase UIDの送信に成功しました！'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('エラー: ${e.toString().replaceAll("Exception: ", "")}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isConnecting = false);
       }
     }
   }
@@ -275,7 +314,10 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                       // 接続済みデバイスの表示
                       if (_connectedDevices.isNotEmpty) ...[
                         ..._connectedDevices
-                            .map((device) => _buildConnectedDeviceCard(device))
+                            .map((device) => GestureDetector(
+                                  onTap: () => _connectAndSendUid(device),
+                                  child: _buildConnectedDeviceCard(device),
+                                ))
                             .toList(),
                         const SizedBox(height: 16),
                         Text(
@@ -293,7 +335,10 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                       ..._scanResults
                           .where((r) => !_connectedDevices
                               .any((c) => c.remoteId == r.device.remoteId))
-                          .map((r) => _buildDeviceCard(r))
+                          .map((r) => GestureDetector(
+                                onTap: () => _connectAndSendUid(r.device),
+                                child: _buildDeviceCard(r),
+                              ))
                           .toList(),
                     ],
                   ),
