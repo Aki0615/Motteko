@@ -12,9 +12,6 @@ class AuthService {
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   /// 新規ユーザー登録（メール/パスワード）
-  ///
-  /// 成功時は [UserCredential] を返す。
-  /// 失敗時は日本語のエラーメッセージを持つ [Exception] をスロー。
   Future<UserCredential> signUp({
     required String email,
     required String password,
@@ -25,6 +22,7 @@ class AuthService {
         email: email,
         password: password,
       );
+      
       // ニックネームをdisplayNameに設定
       await credential.user?.updateDisplayName(nickname);
       await credential.user?.reload();
@@ -33,12 +31,16 @@ class AuthService {
       final uid = credential.user?.uid;
       if (uid != null) {
         await FirebaseFirestore.instance.collection('users').doc(uid).set({
-          'name': nickname,
-          'current_mode': '',
-          'essential_items': [],
-          'fcm_token': '',
-          'item_features': [],
-          'scene_items': [],
+          'uid': uid,                  // 検索用に保持
+          'name': nickname,            // 画面表示用
+          'email': email,              // 管理用
+          'current_mode': '',          // 既存項目
+          'is_home': true,             // 💡 追加：チームが実装した「外出/帰宅」ステータスの初期値
+          'essential_items': [],       // 💡 Pythonが読み取るリスト
+          'fcm_token': '',             // 通知用
+          'item_features': {},         // Map形式に変更（エラー防止）
+          'scene_items': {},           // Map形式に変更（エラー防止）
+          'created_at': FieldValue.serverTimestamp(), // 💡 追加：作成日時
         });
       }
 

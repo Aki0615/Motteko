@@ -9,6 +9,8 @@ import '../models/sensor_status.dart';
 import '../models/notification_model.dart';
 import 'package:holiday_jp/holiday_jp.dart' as holiday_jp;
 import '../services/notification_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AppState extends ChangeNotifier {
   // 持ち物リスト
@@ -167,20 +169,32 @@ class AppState extends ChangeNotifier {
     await prefs.setInt('consecutiveDays', _consecutiveDaysWithoutForgetting);
   }
 
-  // Firestoreの必須アイテム同期
+  // ==========================================
+  // 💡 追加：Firestoreへ持ち物リストを同期するメソッド
+  // ==========================================
   Future<void> _syncEssentialItemsToFirestore() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final itemNames = _items.map((e) => e.name).toList();
       try {
+        // アイテムの全情報をそのままリスト（配列）にする
+        final List<Map<String, dynamic>> itemsList = _items.map((item) => {
+          'id': item.id,
+          'name': item.name,
+          'description': item.description, // AIに特徴を伝えられる！
+          'isRequired': item.isRequired,
+          'isWeekday': item.isWeekday,
+          'isWeekend': item.isWeekend,
+        }).toList();
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update({
-          'essential_items': itemNames,
+          'essential_items': itemsList, // 丸ごと上書き保存
         });
+        debugPrint("✅ Firestoreに詳細データ付きで同期しました！");
       } catch (e) {
-        debugPrint('Error syncing essential items: $e');
+        debugPrint("❌ Firestore同期エラー: $e");
       }
     }
   }
@@ -250,7 +264,6 @@ class AppState extends ChangeNotifier {
     _consecutiveDaysWithoutForgetting = streak;
     _notificationCount = _detectionDocs.length;
   }
-
   // === 持ち物管理 ===
 
   void addItem(ItemModel item) {
@@ -266,8 +279,12 @@ class AppState extends ChangeNotifier {
     if (index != -1) {
       _items[index] = updatedItem;
       _saveData();
+<<<<<<< HEAD
       _syncEssentialItemsToFirestore();
       _calculateStreaks();
+=======
+      _syncEssentialItemsToFirestore(); // 💡 追加
+>>>>>>> pr-1
       notifyListeners();
     }
   }
