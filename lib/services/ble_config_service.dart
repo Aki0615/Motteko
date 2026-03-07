@@ -46,7 +46,11 @@ class BleConfigService {
 
       // 5秒間だけスキャンを実行（無限ループのフリーズを防止）
       await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
-      await FlutterBluePlus.isScanning.where((val) => val == false).first;
+
+      // スキャンがまだ実行中の場合のみ完了を待つ（見つかった場合は即座にstopScan()されているため待たない）
+      if (FlutterBluePlus.isScanningNow) {
+        await FlutterBluePlus.isScanning.where((val) => val == false).first;
+      }
       subscription.cancel();
     }
 
