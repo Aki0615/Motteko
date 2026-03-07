@@ -104,8 +104,17 @@ class _CameraScreenState extends State<CameraScreen> {
                       decoration: ShapeDecoration(
                         color: const Color(0xFFFF7B00),
                         shape: RoundedRectangleBorder(
+                          side: const BorderSide(width: 2, color: Colors.black),
                           borderRadius: BorderRadius.circular(24), // 丸みを強く
                         ),
+                        shadows: const [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 0,
+                            offset: Offset(3, 4.5),
+                            spreadRadius: 0,
+                          )
+                        ],
                       ),
                       alignment: Alignment.center,
                       child: Text(
@@ -132,8 +141,17 @@ class _CameraScreenState extends State<CameraScreen> {
                       decoration: ShapeDecoration(
                         color: const Color(0xFF6B7280), // グレー
                         shape: RoundedRectangleBorder(
+                          side: const BorderSide(width: 2, color: Colors.black),
                           borderRadius: BorderRadius.circular(24),
                         ),
+                        shadows: const [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 0,
+                            offset: Offset(3, 4.5),
+                            spreadRadius: 0,
+                          )
+                        ],
                       ),
                       alignment: Alignment.center,
                       child: Text(
