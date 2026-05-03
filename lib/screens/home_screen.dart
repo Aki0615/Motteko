@@ -468,46 +468,19 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 通知カード（実データ）
+  /// Firestoreの検出データから通知カードを構築する
   Widget _buildNotificationCard(Map<String, dynamic> data) {
-    // データから各種情報を取得
     final String message = data['message'] as String? ?? '通知';
     final Timestamp? timestamp = data['timestamp'] as Timestamp?;
-    final String timestampStr = timestamp != null
+    final String formattedTime = timestamp != null
         ? DateFormat('yyyy/MM/dd HH:mm:ss').format(timestamp.toDate())
         : '';
     final List<dynamic> missingItems =
         data['missing_items'] as List<dynamic>? ?? [];
-
-    // 通知メッセージに基づいてタイプを判定
-    Color badgeBgColor;
-    Color badgeTextColor;
-    String badgeText;
-    String iconAsset;
-
-    // 1. missing_itemsがある、またはメッセージに「忘れ物」を検知した場合は警告
-    if (missingItems.isNotEmpty || message.contains('忘れ物')) {
-      badgeBgColor = const Color(0xFFFFEFB2);
-      badgeTextColor = const Color(0xFFFFA500);
-      badgeText = '警告';
-      iconAsset = 'assets/icons/warning_icon.png';
-    }
-    // 2. センサーによる情報など
-    else if (message.contains('検知')) {
-      badgeBgColor = const Color(0xFFC1E5FF);
-      badgeTextColor = const Color(0xFF26A5FF);
-      badgeText = '情報';
-      iconAsset = 'assets/icons/info_icon.png';
-    }
-    // 3. それ以外（成功など）
-    else {
-      badgeBgColor = const Color(0xFFBEFFD6);
-      badgeTextColor = const Color(0xFF22C55E);
-      badgeText = '成功';
-      iconAsset = 'assets/icons/success_icon.png';
-    }
-
     final String? imageUrl = data['image_url'] as String?;
+
+    // 優先度: 忘れ物あり(警告) > センサー検知(情報) > それ以外(成功)
+    final badge = _determineBadgeStyle(message, missingItems);
 
     return Container(
       width: double.infinity,
@@ -516,10 +489,7 @@ class HomeScreen extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            width: 1.50,
-            color: Colors.black,
-          ),
+          side: const BorderSide(width: 1.50, color: Colors.black),
           borderRadius: BorderRadius.circular(8),
         ),
         shadows: const [
@@ -537,19 +507,12 @@ class HomeScreen extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // アイコン
-              Image.asset(
-                iconAsset,
-                width: 32,
-                height: 32,
-              ),
+              Image.asset(badge.iconAsset, width: 32, height: 32),
               const SizedBox(width: 16),
-              // テキストエリア
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // メッセージ
                     Text(
                       message,
                       style: GoogleFonts.zenMaruGothic(
@@ -560,10 +523,9 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    // 日時
-                    if (timestampStr.isNotEmpty)
+                    if (formattedTime.isNotEmpty)
                       Text(
-                        timestampStr,
+                        formattedTime,
                         style: GoogleFonts.zenMaruGothic(
                           color: const Color(0xFF374151),
                           fontSize: 12,
@@ -572,74 +534,125 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     const SizedBox(height: 8),
-                    // バッジ
-                    Container(
-                      height: 16,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: ShapeDecoration(
-                        color: badgeBgColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            badgeText,
-                            style: GoogleFonts.zenMaruGothic(
-                              color: badgeTextColor,
-                              fontSize: 8,
-                              fontWeight: FontWeight.w900,
-                              height: 1.20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    _buildBadge(badge),
                   ],
                 ),
               ),
             ],
           ),
-          // 画像があれば表示
           if (imageUrl != null && imageUrl.isNotEmpty) ...[
             const SizedBox(height: 16),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imageUrl,
-                width: double.infinity,
-                height: 200,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  height: 200,
-                  color: Colors.grey[200],
-                  child: const Center(
-                    child: Icon(Icons.broken_image, color: Colors.grey),
-                  ),
-                ),
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    height: 200,
-                    color: Colors.grey[100],
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            _buildDetectionImage(imageUrl),
           ],
         ],
       ),
     );
   }
+
+  /// 通知の種別をメッセージ内容から判定し、バッジスタイルを返す
+  ///
+  /// 優先度: 忘れ物あり(警告) > センサー検知(情報) > それ以外(成功)
+  _BadgeStyle _determineBadgeStyle(String message, List<dynamic> missingItems) {
+    if (missingItems.isNotEmpty || message.contains('忘れ物')) {
+      return _BadgeStyle(
+        backgroundColor: const Color(0xFFFFEFB2),
+        textColor: const Color(0xFFFFA500),
+        label: '警告',
+        iconAsset: 'assets/icons/warning_icon.png',
+      );
+    }
+    if (message.contains('検知')) {
+      return _BadgeStyle(
+        backgroundColor: const Color(0xFFC1E5FF),
+        textColor: const Color(0xFF26A5FF),
+        label: '情報',
+        iconAsset: 'assets/icons/info_icon.png',
+      );
+    }
+    return _BadgeStyle(
+      backgroundColor: const Color(0xFFBEFFD6),
+      textColor: const Color(0xFF22C55E),
+      label: '成功',
+      iconAsset: 'assets/icons/success_icon.png',
+    );
+  }
+
+  /// バッジ（警告/情報/成功）のウィジェット
+  Widget _buildBadge(_BadgeStyle badge) {
+    return Container(
+      height: 16,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: ShapeDecoration(
+        color: badge.backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            badge.label,
+            style: GoogleFonts.zenMaruGothic(
+              color: badge.textColor,
+              fontSize: 8,
+              fontWeight: FontWeight.w900,
+              height: 1.20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 検出画像の表示（読み込み中/エラー状態を含む）
+  Widget _buildDetectionImage(String imageUrl) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.network(
+        imageUrl,
+        width: double.infinity,
+        height: 200,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          height: 200,
+          color: Colors.grey[200],
+          child: const Center(
+            child: Icon(Icons.broken_image, color: Colors.grey),
+          ),
+        ),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            height: 200,
+            color: Colors.grey[100],
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// 通知バッジの表示スタイルを保持するデータクラス
+class _BadgeStyle {
+  final Color backgroundColor;
+  final Color textColor;
+  final String label;
+  final String iconAsset;
+
+  const _BadgeStyle({
+    required this.backgroundColor,
+    required this.textColor,
+    required this.label,
+    required this.iconAsset,
+  });
 }
