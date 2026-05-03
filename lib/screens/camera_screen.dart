@@ -202,10 +202,8 @@ class _CameraScreenState extends State<CameraScreen> {
         );
       }
 
-      // 画像更新のためにタイムスタンプを更新
-      setState(() {
-        // 画像URLのクエリパラメータに使用している _timestamp を更新
-      });
+      // buildを再実行して画像URLのタイムスタンプを更新し、キャッシュを回避する
+      setState(() {});
     } catch (e) {
       debugPrint('Error taking photo: $e');
     }

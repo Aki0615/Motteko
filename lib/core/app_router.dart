@@ -24,7 +24,7 @@ import '../screens/items_screen.dart';
 import '../screens/camera_screen.dart';
 import '../screens/calendar_screen.dart';
 import '../screens/notifications_screen.dart';
-import '../screens/welcome_screen.dart'; // Add
+import '../screens/welcome_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/login_form_screen.dart';
 import '../screens/sign_in_screen.dart';
@@ -184,7 +184,7 @@ class AppRouter {
       GoRoute(
         path: '/profile-setup',
         builder: (context, state) {
-          // TODO: プロフィール設定画面を実装する
+          // TODO(2026-05): プロフィール設定画面を専用Widgetとして実装する
           return const Scaffold(body: Center(child: Text('プロフィール設定画面')));
         },
       ),

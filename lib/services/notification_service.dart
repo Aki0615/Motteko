@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
-// import 'package:timezone/timezone.dart' as tz; // 不要
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -47,7 +47,7 @@ class NotificationService {
         // 通知タップ時の処理
         final String? payload = notificationResponse.payload;
         if (payload != null) {
-          // TODO: 必要に応じてナビゲーション処理などを実装
+          // TODO(2026-05): 通知タップ時にpayloadに応じた画面へ遷移する処理を実装
         }
       },
     );
@@ -154,7 +154,7 @@ class NotificationService {
       );
     } catch (e) {
       // 画像取得に失敗した場合は通常の通知を表示
-      print('Error showing big picture notification: $e');
+      debugPrint('Error showing big picture notification: $e');
       await showNotification(
           id: id, title: title, body: body, payload: payload);
     }

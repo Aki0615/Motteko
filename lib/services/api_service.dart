@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -27,7 +28,7 @@ class ApiService {
           return data['notifications'] as List;
         } else {
           // 想定外の形式だが、空リストでエラー回避
-          print('Unexpected JSON format: $data');
+          debugPrint('Unexpected JSON format: $data');
           return [];
         }
       } else {

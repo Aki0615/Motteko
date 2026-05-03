@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: '忘れん坊防止アプリ',
       theme: AppTheme.lightTheme(),
-      // darkTheme: AppTheme.darkTheme(), // 将来的に対応
+      // TODO(2026-05): ダークテーマ対応を検討
       themeMode: ThemeMode.light,
       routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
