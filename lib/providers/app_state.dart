@@ -223,59 +223,20 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  // カレンダーと連続記録の再計算
+  /// Firestoreの検出履歴からカレンダーの成功日と連続記録を再計算する。
+  ///
+  /// アルゴリズム:
+  /// 1. 各検出ドキュメントを走査し、その日が「成功」かどうかを判定
+  /// 2. 成功日 = 忘れ物の警告が出ていない日
+  /// 3. 今日（または昨日）から遡って連続する成功日数をカウント
   void _calculateStreaks() {
-    Set<DateTime> successes = {};
-    for (var doc in _detectionDocs) {
-      final data = doc.data() as Map<String, dynamic>;
-      final timestamp = data['timestamp'] as Timestamp?;
-      final missingItems = data['missing_items'] as List<dynamic>? ?? [];
-      final message = data['message'] as String? ?? '';
+    final successes = _collectSuccessDates();
 
-      if (timestamp != null) {
-        final dt = timestamp.toDate();
-        bool hasRequiredMissingItem = false;
-
-        for (var missingName in missingItems) {
-          final matchingItem = _items.cast<ItemModel?>().firstWhere(
-                (item) => item?.name == missingName.toString(),
-                orElse: () => null,
-              );
-
-          if (matchingItem != null) {
-            bool isHoliday = holiday_jp.isHoliday(dt);
-            bool isWeekendDay = dt.weekday == DateTime.saturday ||
-                dt.weekday == DateTime.sunday;
-            bool isRestDay = isWeekendDay || isHoliday;
-            bool isWorkDay = !isRestDay;
-
-            if (matchingItem.isRequired) {
-              hasRequiredMissingItem = true;
-            } else if (matchingItem.isWeekday && isWorkDay) {
-              hasRequiredMissingItem = true;
-            } else if (matchingItem.isWeekend && isRestDay) {
-              hasRequiredMissingItem = true;
-            }
-          } else {
-            // ローカル定義に存在しないアイテムの場合
-            // 安全側に倒して警告扱いにする（削除前の記録なども踏まえて）
-            hasRequiredMissingItem = true;
-          }
-        }
-
-        bool isWarning = hasRequiredMissingItem ||
-            (missingItems.isEmpty && message.contains('忘れ物'));
-
-        if (!isWarning) {
-          successes.add(DateTime(dt.year, dt.month, dt.day));
-        }
-      }
-    }
-
+    // 今日がまだ成功判定されていない場合は昨日から遡る
+    // （外出前など、まだ検出が行われていないケース）
     int streak = 0;
     final today = DateTime.now();
     DateTime checkDate = DateTime(today.year, today.month, today.day);
-
     if (!successes.contains(checkDate)) {
       checkDate = checkDate.subtract(const Duration(days: 1));
     }
@@ -287,6 +248,56 @@ class AppState extends ChangeNotifier {
     _successDates = successes;
     _consecutiveDaysWithoutForgetting = streak;
     _notificationCount = _detectionDocs.length;
+  }
+
+  /// 検出履歴から「忘れ物なし」の日付セットを収集する
+  Set<DateTime> _collectSuccessDates() {
+    Set<DateTime> successes = {};
+    for (var doc in _detectionDocs) {
+      final data = doc.data() as Map<String, dynamic>;
+      final timestamp = data['timestamp'] as Timestamp?;
+      if (timestamp == null) continue;
+
+      final missingItems = data['missing_items'] as List<dynamic>? ?? [];
+      final message = data['message'] as String? ?? '';
+      final dt = timestamp.toDate();
+
+      final isWarning = _hasRequiredMissingItems(missingItems, dt) ||
+          (missingItems.isEmpty && message.contains('忘れ物'));
+
+      if (!isWarning) {
+        successes.add(DateTime(dt.year, dt.month, dt.day));
+      }
+    }
+    return successes;
+  }
+
+  /// 忘れ物リストに「その日に持つべきアイテム」が含まれているか判定する。
+  ///
+  /// 判定ルール:
+  /// - 必須アイテム → 曜日に関係なく常に警告
+  /// - 平日アイテム → 平日（祝日除く）のみ警告
+  /// - 休日アイテム → 土日祝のみ警告
+  /// - ローカルに定義がないアイテム → 安全側に倒して警告扱い
+  ///   （アイテム削除前の古い検出記録に対応するため）
+  bool _hasRequiredMissingItems(List<dynamic> missingItems, DateTime date) {
+    final isRestDay = date.weekday == DateTime.saturday ||
+        date.weekday == DateTime.sunday ||
+        holiday_jp.isHoliday(date);
+
+    for (var missingName in missingItems) {
+      final matchingItem = _items.cast<ItemModel?>().firstWhere(
+            (item) => item?.name == missingName.toString(),
+            orElse: () => null,
+          );
+
+      if (matchingItem == null) return true;
+
+      if (matchingItem.isRequired) return true;
+      if (matchingItem.isWeekday && !isRestDay) return true;
+      if (matchingItem.isWeekend && isRestDay) return true;
+    }
+    return false;
   }
   // === 持ち物管理 ===
 
