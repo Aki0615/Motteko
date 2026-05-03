@@ -275,7 +275,7 @@ class _CameraScreenState extends State<CameraScreen> {
           .snapshots(),
       builder: (context, snapshot) {
         bool hasMissingItem = false;
-        String messageStr = '現在、カメラ内に物はない！偉い！';
+        String detectionMessage = '現在、カメラ内に物はない！偉い！';
         bool isLoading = !snapshot.hasData;
 
         if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
@@ -285,7 +285,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
           if (missingItems.isNotEmpty || message.contains('忘れ物')) {
             hasMissingItem = true;
-            messageStr = message.isNotEmpty ? message : '忘れ物があります！気をつけて！';
+            detectionMessage = message.isNotEmpty ? message : '忘れ物があります！気をつけて！';
           }
         }
 
@@ -325,7 +325,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    messageStr,
+                    detectionMessage,
                     style: GoogleFonts.zenMaruGothic(
                       color: const Color(0xFF374151), // 少し濃いめのグレー
                       fontSize: 14,

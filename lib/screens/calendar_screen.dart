@@ -341,8 +341,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   // 曜日の行
   Widget _buildWeekdayRow() {
-    final weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-    final weekdayColors = [
+    final dayLabels = ['日', '月', '火', '水', '木', '金', '土'];
+    // 日曜=赤、土曜=青、平日=グレーの配色
+    final dayLabelColors = [
       const Color(0xFFEF4444), // 日: 赤
       const Color(0xFF6B7280), // 月: グレー
       const Color(0xFF6B7280), // 火
@@ -360,10 +361,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
           return SizedBox(
             width: 40,
             child: Text(
-              weekdays[index],
+              dayLabels[index],
               textAlign: TextAlign.center,
               style: GoogleFonts.zenMaruGothic(
-                color: weekdayColors[index],
+                color: dayLabelColors[index],
                 fontSize: 16,
                 fontWeight: FontWeight.w900,
                 height: 1.20,

@@ -24,7 +24,7 @@ class AppState extends ChangeNotifier {
   int _consecutiveDaysWithoutForgetting = 0;
   Set<DateTime> _successDates = {};
 
-  // 今までの通知総数（または現在のデータ件数）
+  // Firestoreのdetectionsコレクションの総件数（ローカル通知の件数ではない）
   int _notificationCount = 0;
 
   // カメラの状態
@@ -82,7 +82,8 @@ class AppState extends ChangeNotifier {
 
               final essentials = data['essential_items'];
               if (essentials is List) {
-                _items.clear(); // メモリ上のリストを一度リセットする
+                // Firestoreの最新データで置き換えるためローカルキャッシュを破棄
+                _items.clear();
 
                 for (var itemData in essentials) {
                   if (itemData is Map<String, dynamic>) {
@@ -126,8 +127,8 @@ class AppState extends ChangeNotifier {
         _userName = '';
         _currentMode = '';
         _essentialItemNames = [];
-        _items.clear(); // 追加：持ち物リストを空にする
-        _saveData(); // 追加：空の状態をローカルに保存
+        _items.clear();
+        _saveData();
 
         _successDates = {};
         _consecutiveDaysWithoutForgetting = 0;
@@ -191,9 +192,8 @@ class AppState extends ChangeNotifier {
     await prefs.setInt('consecutiveDays', _consecutiveDaysWithoutForgetting);
   }
 
-  // ==========================================
-  // 💡 追加：Firestoreへ持ち物リストを同期するメソッド
-  // ==========================================
+  /// ローカルの持ち物リストをFirestoreに同期する。
+  /// addItem/updateItem/removeItemから呼ばれ、クラウドを最新に保つ。
   Future<void> _syncEssentialItemsToFirestore() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -203,7 +203,7 @@ class AppState extends ChangeNotifier {
             .map((item) => {
                   'id': item.id,
                   'name': item.name,
-                  'description': item.description, // AIに特徴を伝えられる！
+                  'description': item.description,
                   'isRequired': item.isRequired,
                   'isWeekday': item.isWeekday,
                   'isWeekend': item.isWeekend,
@@ -214,7 +214,7 @@ class AppState extends ChangeNotifier {
             .collection('users')
             .doc(user.uid)
             .update({
-          'essential_items': itemsList, // 丸ごと上書き保存
+          'essential_items': itemsList,
         });
         debugPrint("✅ Firestoreに詳細データ付きで同期しました！");
       } catch (e) {
@@ -237,23 +237,23 @@ class AppState extends ChangeNotifier {
         bool hasRequiredMissingItem = false;
 
         for (var missingName in missingItems) {
-          final itemDef = _items.cast<ItemModel?>().firstWhere(
+          final matchingItem = _items.cast<ItemModel?>().firstWhere(
                 (item) => item?.name == missingName.toString(),
                 orElse: () => null,
               );
 
-          if (itemDef != null) {
+          if (matchingItem != null) {
             bool isHoliday = holiday_jp.isHoliday(dt);
             bool isWeekendDay = dt.weekday == DateTime.saturday ||
                 dt.weekday == DateTime.sunday;
             bool isRestDay = isWeekendDay || isHoliday;
             bool isWorkDay = !isRestDay;
 
-            if (itemDef.isRequired) {
+            if (matchingItem.isRequired) {
               hasRequiredMissingItem = true;
-            } else if (itemDef.isWeekday && isWorkDay) {
+            } else if (matchingItem.isWeekday && isWorkDay) {
               hasRequiredMissingItem = true;
-            } else if (itemDef.isWeekend && isRestDay) {
+            } else if (matchingItem.isWeekend && isRestDay) {
               hasRequiredMissingItem = true;
             }
           } else {

@@ -12,7 +12,7 @@ class SettingsScreen extends StatelessWidget {
     final user = AuthService().currentUser;
     final nickname = user?.displayName ?? '未設定';
     final email = user?.email ?? '未設定';
-    final initial = nickname.isNotEmpty ? nickname[0] : '?';
+    final userInitial = nickname.isNotEmpty ? nickname[0] : '?';
 
     return Container(
       width: double.infinity,
@@ -120,7 +120,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          initial,
+                          userInitial,
                           style: GoogleFonts.zenMaruGothic(
                             color: Colors.white,
                             fontSize: 24,
