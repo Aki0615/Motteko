@@ -17,151 +17,134 @@ class BleConfigService {
   final Guid charUuidUid = Guid(charUuidUidStr);
 
   Future<void> sendWifiInfo(String ssid, String password) async {
-    BluetoothDevice? targetDevice;
-
-    // 前の画面で「すでに接続済み」のデバイスの中にいるかチェック
-    for (var device in FlutterBluePlus.connectedDevices) {
-      if (device.platformName == deviceName || device.advName == deviceName) {
-        targetDevice = device;
-        break;
-      }
-    }
-
-    // 接続済みの中にいなければ、スキャンして探す
-    if (targetDevice == null) {
-      if (FlutterBluePlus.isScanningNow) {
-        await FlutterBluePlus.stopScan();
-      }
-
-      final subscription = FlutterBluePlus.scanResults.listen((results) {
-        for (var r in results) {
-          if (r.device.platformName == deviceName ||
-              r.device.advName == deviceName) {
-            targetDevice = r.device;
-            FlutterBluePlus.stopScan(); // 見つかったらスキャンを強制終了
-            break;
-          }
-        }
-      });
-
-      // 5秒間だけスキャンを実行（無限ループのフリーズを防止）
-      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
-
-      // スキャンがまだ実行中の場合のみ完了を待つ（見つかった場合は即座にstopScan()されているため待たない）
-      if (FlutterBluePlus.isScanningNow) {
-        await FlutterBluePlus.isScanning.where((val) => val == false).first;
-      }
-      subscription.cancel();
-    }
-
-    // それでも見つからなければエラー
-    if (targetDevice == null) {
-      throw Exception(
-          'デバイス($deviceName)が見つかりませんでした。本体がBluetoothモードになっているか確認してください。');
-    }
-
+    final mottekoDevice = await _findMottekoDevice();
     try {
-      // 「!」をつけてNullエラーを回避しつつ接続
-      await targetDevice!.connect(timeout: const Duration(seconds: 5));
-
-      // サービス（データの箱のまとまり）を検索
-      List<BluetoothService> services = await targetDevice!.discoverServices();
-      BluetoothService? targetService;
-
-      for (var service in services) {
-        if (service.serviceUuid == serviceUuid) {
-          targetService = service;
-          break;
-        }
-      }
-
-      if (targetService == null) {
-        throw Exception('BLEサービスが見つかりませんでした。アプリとM5StackのUUIDが一致しているか確認してください。');
-      }
-
-      BluetoothCharacteristic? ssidChar;
-      BluetoothCharacteristic? passChar;
-      BluetoothCharacteristic? uidChar;
-
-      for (var characteristic in targetService.characteristics) {
-        if (characteristic.characteristicUuid == charUuidSsid) {
-          ssidChar = characteristic;
-        } else if (characteristic.characteristicUuid == charUuidPass) {
-          passChar = characteristic;
-        } else if (characteristic.characteristicUuid == charUuidUid) {
-          uidChar = characteristic;
-        }
-      }
-
-      if (ssidChar == null || passChar == null) {
-        throw Exception('書き込み先のCharacteristicが見つかりませんでした。');
-      }
-
-      // 1. SSIDを送信
-      await ssidChar.write(utf8.encode(ssid), withoutResponse: false);
-
-      // 取りこぼし防止の0.5秒待機（ここが超重要！）
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // 2. パスワードを送信
-      await passChar.write(utf8.encode(password), withoutResponse: false);
-
-      // UIDを書き込み(Characteristicが存在する場合)
-      if (uidChar != null) {
-        final uid = FirebaseAuth.instance.currentUser?.uid;
-        if (uid != null) {
-          await uidChar.write(utf8.encode(uid), withoutResponse: false);
-        }
-      }
+      await mottekoDevice.connect(timeout: const Duration(seconds: 5));
+      final configService = await _discoverConfigService(mottekoDevice);
+      await _writeWifiCredentials(configService, ssid, password);
+      await _sendUserIdIfAvailable(configService);
     } finally {
-      // 処理が終わったら必ず切断する（安全のため ? を使用）
-      await targetDevice?.disconnect();
+      await mottekoDevice.disconnect();
     }
   }
 
   /// 指定したデバイスにUIDだけを送信する
-  Future<void> sendUid(BluetoothDevice targetDevice) async {
+  Future<void> sendUid(BluetoothDevice device) async {
     try {
-      // 接続
-      await targetDevice.connect(timeout: const Duration(seconds: 5));
-
-      // サービスを検索
-      List<BluetoothService> services = await targetDevice.discoverServices();
-      BluetoothService? targetService;
-
-      for (var service in services) {
-        if (service.serviceUuid == serviceUuid) {
-          targetService = service;
-          break;
-        }
-      }
-
-      if (targetService == null) {
-        throw Exception('該当するBLEサービスが見つかりませんでした。');
-      }
-
-      BluetoothCharacteristic? uidChar;
-
-      for (var characteristic in targetService.characteristics) {
-        if (characteristic.characteristicUuid == charUuidUid) {
-          uidChar = characteristic;
-          break;
-        }
-      }
-
-      if (uidChar == null) {
-        throw Exception('UID送信用のCharacteristicが見つかりませんでした。');
-      }
+      await device.connect(timeout: const Duration(seconds: 5));
+      final configService = await _discoverConfigService(device);
 
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid == null) {
         throw Exception('ユーザーがログインしていません。');
       }
 
-      await uidChar.write(utf8.encode(uid), withoutResponse: false);
+      final uidCharacteristic = _findCharacteristic(configService, charUuidUid);
+      if (uidCharacteristic == null) {
+        throw Exception('UID送信用のCharacteristicが見つかりませんでした。');
+      }
+      await uidCharacteristic.write(utf8.encode(uid), withoutResponse: false);
     } finally {
-      // 処理が終わったら必ず切断する
-      await targetDevice.disconnect();
+      await device.disconnect();
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // プライベートヘルパーメソッド
+  // ---------------------------------------------------------------------------
+
+  /// 接続済みデバイスまたはBLEスキャンからMottekoデバイスを探す
+  Future<BluetoothDevice> _findMottekoDevice() async {
+    // まず接続済みデバイスの中を探す
+    for (var device in FlutterBluePlus.connectedDevices) {
+      if (device.platformName == deviceName || device.advName == deviceName) {
+        return device;
+      }
+    }
+
+    // 見つからなければBLEスキャンで探す
+    BluetoothDevice? foundDevice;
+
+    if (FlutterBluePlus.isScanningNow) {
+      await FlutterBluePlus.stopScan();
+    }
+
+    final scanSubscription = FlutterBluePlus.scanResults.listen((results) {
+      for (var result in results) {
+        if (result.device.platformName == deviceName ||
+            result.device.advName == deviceName) {
+          foundDevice = result.device;
+          FlutterBluePlus.stopScan();
+          break;
+        }
+      }
+    });
+
+    // UIブロックを防ぐため、スキャンは最大5秒に制限
+    await FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+
+    // デバイス発見時は即座にstopScan()されるため、まだスキャン中の場合のみ完了を待つ
+    if (FlutterBluePlus.isScanningNow) {
+      await FlutterBluePlus.isScanning.where((val) => val == false).first;
+    }
+    scanSubscription.cancel();
+
+    if (foundDevice == null) {
+      throw Exception(
+          'デバイス($deviceName)が見つかりませんでした。本体がBluetoothモードになっているか確認してください。');
+    }
+    return foundDevice!;
+  }
+
+  /// デバイスからMotteko設定用BLEサービスを検索する
+  Future<BluetoothService> _discoverConfigService(
+      BluetoothDevice device) async {
+    final services = await device.discoverServices();
+    for (var service in services) {
+      if (service.serviceUuid == serviceUuid) {
+        return service;
+      }
+    }
+    throw Exception('BLEサービスが見つかりませんでした。アプリとM5StackのUUIDが一致しているか確認してください。');
+  }
+
+  /// サービス内から指定UUIDのCharacteristicを探す（見つからなければnull）
+  BluetoothCharacteristic? _findCharacteristic(
+      BluetoothService service, Guid uuid) {
+    for (var characteristic in service.characteristics) {
+      if (characteristic.characteristicUuid == uuid) {
+        return characteristic;
+      }
+    }
+    return null;
+  }
+
+  /// SSIDとパスワードをBLE経由でデバイスに書き込む
+  Future<void> _writeWifiCredentials(
+      BluetoothService service, String ssid, String password) async {
+    final ssidCharacteristic = _findCharacteristic(service, charUuidSsid);
+    final passwordCharacteristic = _findCharacteristic(service, charUuidPass);
+
+    if (ssidCharacteristic == null || passwordCharacteristic == null) {
+      throw Exception('書き込み先のCharacteristicが見つかりませんでした。');
+    }
+
+    await ssidCharacteristic.write(utf8.encode(ssid), withoutResponse: false);
+    // M5Stack側のCharacteristic書き込み処理完了を待つ。
+    // この待機がないと次の書き込みがデバイス側で取りこぼされる。
+    await Future.delayed(const Duration(milliseconds: 500));
+    await passwordCharacteristic.write(utf8.encode(password),
+        withoutResponse: false);
+  }
+
+  /// Firebase UIDが取得可能であればデバイスに送信する
+  Future<void> _sendUserIdIfAvailable(BluetoothService service) async {
+    final uidCharacteristic = _findCharacteristic(service, charUuidUid);
+    if (uidCharacteristic == null) return;
+
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      await uidCharacteristic.write(utf8.encode(uid), withoutResponse: false);
     }
   }
 }
