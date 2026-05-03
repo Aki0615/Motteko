@@ -232,10 +232,7 @@ class ItemsScreen extends StatelessWidget {
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        width: 2,
-                        color: Colors.black,
-                      ),
+                      side: const BorderSide(width: 2, color: Colors.black),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     shadows: const [
@@ -261,130 +258,38 @@ class ItemsScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Container(
-                        width: 204,
-                        height: 44,
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(width: 1.50),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          shadows: const [
-                            BoxShadow(
-                              color: Color(0xFF000000),
-                              blurRadius: 0,
-                              offset: Offset(2, 3),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: TextField(
-                          controller: nameController,
-                          autofocus: !isEditing,
-                          style: GoogleFonts.zenMaruGothic(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          cursorColor: const Color(0xFFFF7B00),
-                          decoration: InputDecoration(
-                            hintText: '名前',
-                            hintStyle: GoogleFonts.zenMaruGothic(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 21, vertical: 13),
-                            border: InputBorder.none,
-                          ),
-                        ),
+                      _buildDialogTextField(
+                        controller: nameController,
+                        hintText: '名前',
+                        autofocus: !isEditing,
                       ),
                       const SizedBox(height: 12),
-                      Container(
-                        width: 204,
-                        height: 44,
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(width: 1.50),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          shadows: const [
-                            BoxShadow(
-                              color: Color(0xFF000000),
-                              blurRadius: 0,
-                              offset: Offset(2, 3),
-                              spreadRadius: 0,
-                            )
-                          ],
-                        ),
-                        child: TextField(
-                          controller: descriptionController,
-                          style: GoogleFonts.zenMaruGothic(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          cursorColor: const Color(0xFFFF7B00),
-                          decoration: InputDecoration(
-                            hintText: '説明',
-                            hintStyle: GoogleFonts.zenMaruGothic(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 21, vertical: 13),
-                            border: InputBorder.none,
-                          ),
-                        ),
+                      _buildDialogTextField(
+                        controller: descriptionController,
+                        hintText: '説明',
                       ),
                       const SizedBox(height: 16),
-                      _buildNewCategoryToggle(
-                        title: '平日',
-                        description: '平日は持っていくもの(連続記録が平日のみ反映される)',
-                        titleColor: Colors.black,
-                        isSelected: isWeekday,
-                        onChanged: (value) {
-                          setState(() {
-                            isWeekday = value;
-                            if (value) {
-                              isRequired = false; // 平日をオンにしたら必須をオフ
-                            }
-                          });
+                      // ビジネスルール: 必須/平日のみ/週末のみは排他的。
+                      // 1つをONにすると他がOFFになる。
+                      _buildCategoryToggles(
+                        isWeekday: isWeekday,
+                        isWeekend: isWeekend,
+                        isRequired: isRequired,
+                        setState: setState,
+                        onWeekdayChanged: (v) {
+                          isWeekday = v;
+                          if (v) isRequired = false;
                         },
-                      ),
-                      const SizedBox(height: 8),
-                      _buildNewCategoryToggle(
-                        title: '休日',
-                        description: '土日祝に持っていくもの(連続記録が土日祝のみ反映される)',
-                        titleColor: Colors.black,
-                        isSelected: isWeekend,
-                        onChanged: (value) {
-                          setState(() {
-                            isWeekend = value;
-                            if (value) {
-                              isRequired = false; // 休日をオンにしたら必須をオフ
-                            }
-                          });
+                        onWeekendChanged: (v) {
+                          isWeekend = v;
+                          if (v) isRequired = false;
                         },
-                      ),
-                      const SizedBox(height: 8),
-                      _buildNewCategoryToggle(
-                        title: '必須アイテム',
-                        description: '毎日持ち歩くものは\nONにしてください',
-                        titleColor: const Color(0xFFFF7B00),
-                        isSelected: isRequired,
-                        onChanged: (value) {
-                          setState(() {
-                            isRequired = value;
-                            if (value) {
-                              isWeekday = false; // 必須をオンにしたら平日・休日をオフ
-                              isWeekend = false;
-                            }
-                          });
+                        onRequiredChanged: (v) {
+                          isRequired = v;
+                          if (v) {
+                            isWeekday = false;
+                            isWeekend = false;
+                          }
                         },
                       ),
                       const SizedBox(height: 16),
@@ -401,116 +306,19 @@ class ItemsScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        width: 204,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () => Navigator.pop(context),
-                              child: Container(
-                                height: 32,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                decoration: ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                      width: 1.50,
-                                      color: Colors.black,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Color(0xFF000000),
-                                      blurRadius: 0,
-                                      offset: Offset(2, 3),
-                                      spreadRadius: 0,
-                                    )
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'キャンセル',
-                                    style: GoogleFonts.zenMaruGothic(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            GestureDetector(
-                              onTap: () {
-                                if (nameController.text.trim().isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('名前を入力してください')),
-                                  );
-                                  return;
-                                }
-
-                                final newItem = ItemModel(
-                                  id: isEditing
-                                      ? existingItem.id
-                                      : DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString(),
-                                  name: nameController.text.trim(),
-                                  description:
-                                      descriptionController.text.trim(),
-                                  isRequired: isRequired,
-                                  isWeekday: isWeekday,
-                                  isWeekend: isWeekend,
-                                );
-
-                                if (isEditing) {
-                                  appState.updateItem(existingItem.id, newItem);
-                                } else {
-                                  appState.addItem(newItem);
-                                }
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                height: 32,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFFFF7B00),
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                      width: 1.50,
-                                      color: Colors.black,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Color(0xFF000000),
-                                      blurRadius: 0,
-                                      offset: Offset(2, 3),
-                                      spreadRadius: 0,
-                                    )
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    isEditing ? '更新' : '追加',
-                                    style: GoogleFonts.zenMaruGothic(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      height: 1.20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                      _buildDialogActions(
+                        context: context,
+                        isEditing: isEditing,
+                        onSave: () => _handleSaveItem(
+                          context: context,
+                          appState: appState,
+                          nameController: nameController,
+                          descriptionController: descriptionController,
+                          isEditing: isEditing,
+                          existingItem: existingItem,
+                          isRequired: isRequired,
+                          isWeekday: isWeekday,
+                          isWeekend: isWeekend,
                         ),
                       ),
                     ],
@@ -522,6 +330,204 @@ class ItemsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// ダイアログ内のテキスト入力フィールド
+  Widget _buildDialogTextField({
+    required TextEditingController controller,
+    required String hintText,
+    bool autofocus = false,
+  }) {
+    return Container(
+      width: 204,
+      height: 44,
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1.50),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        shadows: const [
+          BoxShadow(
+            color: Color(0xFF000000),
+            blurRadius: 0,
+            offset: Offset(2, 3),
+            spreadRadius: 0,
+          )
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        autofocus: autofocus,
+        style: GoogleFonts.zenMaruGothic(
+          color: Colors.black,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
+        cursorColor: const Color(0xFFFF7B00),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: GoogleFonts.zenMaruGothic(
+            color: Colors.black,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 21, vertical: 13),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+
+  /// カテゴリトグル群（平日/休日/必須の排他選択）
+  Widget _buildCategoryToggles({
+    required bool isWeekday,
+    required bool isWeekend,
+    required bool isRequired,
+    required StateSetter setState,
+    required ValueChanged<bool> onWeekdayChanged,
+    required ValueChanged<bool> onWeekendChanged,
+    required ValueChanged<bool> onRequiredChanged,
+  }) {
+    return Column(
+      children: [
+        _buildNewCategoryToggle(
+          title: '平日',
+          description: '平日は持っていくもの(連続記録が平日のみ反映される)',
+          titleColor: Colors.black,
+          isSelected: isWeekday,
+          onChanged: (value) => setState(() => onWeekdayChanged(value)),
+        ),
+        const SizedBox(height: 8),
+        _buildNewCategoryToggle(
+          title: '休日',
+          description: '土日祝に持っていくもの(連続記録が土日祝のみ反映される)',
+          titleColor: Colors.black,
+          isSelected: isWeekend,
+          onChanged: (value) => setState(() => onWeekendChanged(value)),
+        ),
+        const SizedBox(height: 8),
+        _buildNewCategoryToggle(
+          title: '必須アイテム',
+          description: '毎日持ち歩くものは\nONにしてください',
+          titleColor: const Color(0xFFFF7B00),
+          isSelected: isRequired,
+          onChanged: (value) => setState(() => onRequiredChanged(value)),
+        ),
+      ],
+    );
+  }
+
+  /// ダイアログ下部のキャンセル・保存ボタン
+  Widget _buildDialogActions({
+    required BuildContext context,
+    required bool isEditing,
+    required VoidCallback onSave,
+  }) {
+    return SizedBox(
+      width: 204,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          _buildDialogButton(
+            label: 'キャンセル',
+            backgroundColor: Colors.white,
+            textColor: Colors.black,
+            onTap: () => Navigator.pop(context),
+          ),
+          const SizedBox(width: 10),
+          _buildDialogButton(
+            label: isEditing ? '更新' : '追加',
+            backgroundColor: const Color(0xFFFF7B00),
+            textColor: Colors.white,
+            fontSize: 12,
+            onTap: onSave,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// ダイアログ内の汎用ボタン
+  Widget _buildDialogButton({
+    required String label,
+    required Color backgroundColor,
+    required Color textColor,
+    required VoidCallback onTap,
+    double fontSize = 14,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 32,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: ShapeDecoration(
+          color: backgroundColor,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(width: 1.50, color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0xFF000000),
+              blurRadius: 0,
+              offset: Offset(2, 3),
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: GoogleFonts.zenMaruGothic(
+              color: textColor,
+              fontSize: fontSize,
+              fontWeight: FontWeight.w700,
+              height: 1.20,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// アイテムの保存処理（新規追加/既存更新）
+  void _handleSaveItem({
+    required BuildContext context,
+    required AppState appState,
+    required TextEditingController nameController,
+    required TextEditingController descriptionController,
+    required bool isEditing,
+    required ItemModel? existingItem,
+    required bool isRequired,
+    required bool isWeekday,
+    required bool isWeekend,
+  }) {
+    if (nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('名前を入力してください')),
+      );
+      return;
+    }
+
+    final newItem = ItemModel(
+      id: isEditing
+          ? existingItem!.id
+          : DateTime.now().millisecondsSinceEpoch.toString(),
+      name: nameController.text.trim(),
+      description: descriptionController.text.trim(),
+      isRequired: isRequired,
+      isWeekday: isWeekday,
+      isWeekend: isWeekend,
+    );
+
+    if (isEditing) {
+      appState.updateItem(existingItem!.id, newItem);
+    } else {
+      appState.addItem(newItem);
+    }
+    Navigator.pop(context);
   }
 
   Widget _buildNewCategoryToggle({
