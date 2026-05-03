@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import '../providers/app_state.dart';
+import '../widgets/notification_card.dart';
 
 /// ホーム画面
 /// アプリのメイン画面で、統計情報と最近の通知を表示します。
@@ -338,7 +338,7 @@ class HomeScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: snapshot.data!.docs.map((doc) {
                           final data = doc.data() as Map<String, dynamic>;
-                          return _buildNotificationCard(data);
+                          return NotificationCard(data: data);
                         }).toList(),
                       );
                     },
@@ -467,192 +467,4 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
-  /// Firestoreの検出データから通知カードを構築する
-  Widget _buildNotificationCard(Map<String, dynamic> data) {
-    final String message = data['message'] as String? ?? '通知';
-    final Timestamp? timestamp = data['timestamp'] as Timestamp?;
-    final String formattedTime = timestamp != null
-        ? DateFormat('yyyy/MM/dd HH:mm:ss').format(timestamp.toDate())
-        : '';
-    final List<dynamic> missingItems =
-        data['missing_items'] as List<dynamic>? ?? [];
-    final String? imageUrl = data['image_url'] as String?;
-
-    // 優先度: 忘れ物あり(警告) > センサー検知(情報) > それ以外(成功)
-    final badge = _determineBadgeStyle(message, missingItems);
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1.50, color: Colors.black),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0xFF000000),
-            blurRadius: 0,
-            offset: Offset(2, 3),
-            spreadRadius: 0,
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(badge.iconAsset, width: 32, height: 32),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      message,
-                      style: GoogleFonts.zenMaruGothic(
-                        color: const Color(0xFF374151),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        height: 1.20,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    if (formattedTime.isNotEmpty)
-                      Text(
-                        formattedTime,
-                        style: GoogleFonts.zenMaruGothic(
-                          color: const Color(0xFF374151),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          height: 1.20,
-                        ),
-                      ),
-                    const SizedBox(height: 8),
-                    _buildBadge(badge),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          if (imageUrl != null && imageUrl.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _buildDetectionImage(imageUrl),
-          ],
-        ],
-      ),
-    );
-  }
-
-  /// 通知の種別をメッセージ内容から判定し、バッジスタイルを返す
-  ///
-  /// 優先度: 忘れ物あり(警告) > センサー検知(情報) > それ以外(成功)
-  _BadgeStyle _determineBadgeStyle(String message, List<dynamic> missingItems) {
-    if (missingItems.isNotEmpty || message.contains('忘れ物')) {
-      return _BadgeStyle(
-        backgroundColor: const Color(0xFFFFEFB2),
-        textColor: const Color(0xFFFFA500),
-        label: '警告',
-        iconAsset: 'assets/icons/warning_icon.png',
-      );
-    }
-    if (message.contains('検知')) {
-      return _BadgeStyle(
-        backgroundColor: const Color(0xFFC1E5FF),
-        textColor: const Color(0xFF26A5FF),
-        label: '情報',
-        iconAsset: 'assets/icons/info_icon.png',
-      );
-    }
-    return _BadgeStyle(
-      backgroundColor: const Color(0xFFBEFFD6),
-      textColor: const Color(0xFF22C55E),
-      label: '成功',
-      iconAsset: 'assets/icons/success_icon.png',
-    );
-  }
-
-  /// バッジ（警告/情報/成功）のウィジェット
-  Widget _buildBadge(_BadgeStyle badge) {
-    return Container(
-      height: 16,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: ShapeDecoration(
-        color: badge.backgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            badge.label,
-            style: GoogleFonts.zenMaruGothic(
-              color: badge.textColor,
-              fontSize: 8,
-              fontWeight: FontWeight.w900,
-              height: 1.20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 検出画像の表示（読み込み中/エラー状態を含む）
-  Widget _buildDetectionImage(String imageUrl) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Image.network(
-        imageUrl,
-        width: double.infinity,
-        height: 200,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
-          height: 200,
-          color: Colors.grey[200],
-          child: const Center(
-            child: Icon(Icons.broken_image, color: Colors.grey),
-          ),
-        ),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            height: 200,
-            color: Colors.grey[100],
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-/// 通知バッジの表示スタイルを保持するデータクラス
-class _BadgeStyle {
-  final Color backgroundColor;
-  final Color textColor;
-  final String label;
-  final String iconAsset;
-
-  const _BadgeStyle({
-    required this.backgroundColor,
-    required this.textColor,
-    required this.label,
-    required this.iconAsset,
-  });
 }
