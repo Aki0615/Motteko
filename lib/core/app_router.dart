@@ -24,6 +24,7 @@ import '../screens/items_screen.dart';
 import '../screens/camera_screen.dart';
 import '../screens/calendar_screen.dart';
 import '../screens/notifications_screen.dart';
+import '../screens/welcome_screen.dart'; // Add
 import '../screens/login_screen.dart';
 import '../screens/login_form_screen.dart';
 import '../screens/sign_in_screen.dart';
@@ -68,10 +69,18 @@ class AppRouter {
     navigatorKey: _rootNavigatorKey,
 
     // アプリ起動時に最初に表示する画面のパス
-    initialLocation: '/login',
+    initialLocation: '/welcome',
 
     // ルート（画面）の定義
     routes: [
+      // -----------------------------------------------------------------------
+      // ウェルカム画面（ナビゲーションバーなし）
+      // -----------------------------------------------------------------------
+      GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const WelcomeScreen(),
+      ),
+
       // -----------------------------------------------------------------------
       // ログイン画面（ナビゲーションバーなし）
       // -----------------------------------------------------------------------
