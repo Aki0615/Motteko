@@ -26,6 +26,7 @@ dependencies:
   firebase_messaging: ^15.2.4
   flutter_blue_plus: ^1.33.4
   holiday_jp: ^0.0.8
+  confetti: ^0.8.0
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/app_state.dart';
+import '../widgets/streak_celebration.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -12,11 +14,31 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   late DateTime _currentMonth;
+  bool _hasCheckedEvents = false;
 
   @override
   void initState() {
     super.initState();
     _currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
+  }
+
+  void _checkStreakEvents(AppState appState) {
+    if (_hasCheckedEvents) return;
+    _hasCheckedEvents = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final milestone = appState.achievedMilestone;
+      if (milestone != null) {
+        StreakCelebrationDialog.show(context, milestone);
+      } else if (appState.isStreakBroken) {
+        StreakBrokenDialog.show(
+          context,
+          appState.previousStreak,
+          appState.maxStreak,
+        );
+      }
+    });
   }
 
   void _previousMonth() {
@@ -33,6 +55,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<AppState>();
+    _checkStreakEvents(appState);
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -102,70 +127,93 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   // 連続記録カード
   Widget _buildStreakCard() {
-    return Container(
-      width: double.infinity,
-      height: 216,
-      child: Stack(
-        children: [
-          // 背景画像
-          Positioned.fill(
-            child: Image.asset(
-              'assets/icons/streak_card_bg.png',
-              fit: BoxFit.fill,
-            ),
-          ),
-          // メインコンテンツ
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
+    return Consumer<AppState>(
+      builder: (context, appState, child) {
+        final streak = appState.consecutiveDaysWithoutForgetting;
+        final maxStreak = appState.maxStreak;
+
+        return Container(
+          width: double.infinity,
+          height: 216,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/icons/streak_card_bg.png',
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Center(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Consumer<AppState>(
-                      builder: (context, appState, child) {
-                        return Text(
-                          appState.consecutiveDaysWithoutForgetting
-                              .toString()
-                              .padLeft(3, '0'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          streak.toString().padLeft(3, '0'),
                           style: GoogleFonts.zenMaruGothic(
                             color: Colors.black,
                             fontSize: 64,
                             fontWeight: FontWeight.w900,
                             height: 1.0,
                           ),
-                        );
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        '日',
-                        style: GoogleFonts.zenMaruGothic(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
+                        )
+                            .animate(
+                              onPlay: (c) => c.forward(),
+                            )
+                            .scale(
+                              begin: const Offset(0.8, 0.8),
+                              end: const Offset(1.0, 1.0),
+                              duration: 600.ms,
+                              curve: Curves.elasticOut,
+                            ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            '日',
+                            style: GoogleFonts.zenMaruGothic(
+                              color: Colors.black,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
+                    const SizedBox(height: 4),
+                    Text(
+                      streak > 0 ? '連続忘れ物なし！！' : '今日から記録スタート！',
+                      style: GoogleFonts.zenMaruGothic(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        height: 1.20,
+                      ),
+                    )
+                        .animate()
+                        .fadeIn(duration: 500.ms, delay: 200.ms),
+                    if (maxStreak > 0 && maxStreak > streak) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        '🏆 最高記録: $maxStreak日',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.black54,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )
+                          .animate()
+                          .fadeIn(duration: 500.ms, delay: 400.ms),
+                    ],
                   ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  '連続忘れ物なし！！',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    height: 1.20,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

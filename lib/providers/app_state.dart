@@ -22,6 +22,8 @@ class AppState extends ChangeNotifier {
 
   // 連続忘れ物なし日数
   int _consecutiveDaysWithoutForgetting = 0;
+  int _maxStreak = 0;
+  int _previousStreak = -1;
   Set<DateTime> _successDates = {};
 
   // Firestoreのdetectionsコレクションの総件数（ローカル通知の件数ではない）
@@ -44,6 +46,8 @@ class AppState extends ChangeNotifier {
   SensorStatus get sensorStatus => _sensorStatus;
   List<NotificationModel> get notifications => _notifications;
   int get consecutiveDaysWithoutForgetting => _consecutiveDaysWithoutForgetting;
+  int get maxStreak => _maxStreak;
+  int get previousStreak => _previousStreak;
   Set<DateTime> get successDates => _successDates;
   int get notificationCount => _notificationCount;
   bool get isCameraActive => _isCameraActive;
@@ -167,6 +171,7 @@ class AppState extends ChangeNotifier {
 
     // 連続日数の読み込み
     _consecutiveDaysWithoutForgetting = prefs.getInt('consecutiveDays') ?? 0;
+    _maxStreak = prefs.getInt('maxStreak') ?? 0;
 
     notifyListeners();
   }
@@ -190,6 +195,7 @@ class AppState extends ChangeNotifier {
 
     // 連続日数の保存
     await prefs.setInt('consecutiveDays', _consecutiveDaysWithoutForgetting);
+    await prefs.setInt('maxStreak', _maxStreak);
   }
 
   /// ローカルの持ち物リストをFirestoreに同期する。
@@ -245,9 +251,14 @@ class AppState extends ChangeNotifier {
       checkDate = checkDate.subtract(const Duration(days: 1));
     }
 
+    _previousStreak = _consecutiveDaysWithoutForgetting;
     _successDates = successes;
     _consecutiveDaysWithoutForgetting = streak;
+    if (streak > _maxStreak) {
+      _maxStreak = streak;
+    }
     _notificationCount = _detectionDocs.length;
+    _saveData();
   }
 
   /// 検出履歴から「忘れ物なし」の日付セットを収集する
@@ -299,6 +310,21 @@ class AppState extends ChangeNotifier {
     }
     return false;
   }
+  static const milestones = [3, 7, 14, 30, 50, 100, 365];
+
+  int? get achievedMilestone {
+    if (_previousStreak < 0) return null;
+    for (final m in milestones) {
+      if (_previousStreak < m && _consecutiveDaysWithoutForgetting >= m) {
+        return m;
+      }
+    }
+    return null;
+  }
+
+  bool get isStreakBroken =>
+      _previousStreak > 0 && _consecutiveDaysWithoutForgetting == 0;
+
   // === 持ち物管理 ===
 
   void addItem(ItemModel item) {

@@ -3,17 +3,44 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/app_state.dart';
 import '../widgets/notification_card.dart';
+import '../widgets/streak_celebration.dart';
 
-/// ホーム画面
-/// アプリのメイン画面で、統計情報と最近の通知を表示します。
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _hasCheckedEvents = false;
+
+  void _checkStreakEvents(AppState appState) {
+    if (_hasCheckedEvents) return;
+    _hasCheckedEvents = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final milestone = appState.achievedMilestone;
+      if (milestone != null) {
+        StreakCelebrationDialog.show(context, milestone);
+      } else if (appState.isStreakBroken) {
+        StreakBrokenDialog.show(
+          context,
+          appState.previousStreak,
+          appState.maxStreak,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
+    _checkStreakEvents(appState);
 
     return Container(
       width: double.infinity,
@@ -147,7 +174,7 @@ class HomeScreen extends StatelessWidget {
 
           // 連続日数バブル（大）
           Positioned(
-            left: 140.0, // 中央に寄せる
+            left: 140.0,
             top: 119,
             child: Container(
               width: 112.50,
@@ -187,7 +214,14 @@ class HomeScreen extends StatelessWidget {
                       fontWeight: FontWeight.w900,
                       height: 0.80,
                     ),
-                  ),
+                  )
+                      .animate(onPlay: (c) => c.forward())
+                      .scale(
+                        begin: const Offset(0.7, 0.7),
+                        end: const Offset(1.0, 1.0),
+                        duration: 600.ms,
+                        curve: Curves.elasticOut,
+                      ),
                 ],
               ),
             ),
