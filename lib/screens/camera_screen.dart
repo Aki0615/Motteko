@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -184,9 +185,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> _takePhoto() async {
     if (_deviceId == null) return;
+    if (FirebaseAuth.instance.currentUser == null) return;
 
     try {
-      // Firestoreの commands コレクションに take_photo 命令を追加
       await FirebaseFirestore.instance.collection('commands').add({
         'command': 'take_photo',
         'device_id': _deviceId,
@@ -267,6 +268,10 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Widget _buildDetectionStatus() {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return const SizedBox(height: 32);
+    }
+
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('detections')

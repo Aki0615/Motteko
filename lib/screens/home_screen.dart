@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -342,47 +343,68 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 8),
 
                   // 最近の通知 リスト部分 (データがある場合のみ表示)
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('detections')
-                        .orderBy('timestamp', descending: true)
-                        .limit(4)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError ||
-                          snapshot.connectionState == ConnectionState.waiting ||
-                          !snapshot.hasData ||
-                          snapshot.data!.docs.isEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 32.0),
-                          child: Center(
-                            child: Text(
-                              '通知はありません',
-                              style: GoogleFonts.zenMaruGothic(
-                                color: const Color(0xFF6B7280),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: snapshot.data!.docs.map((doc) {
-                          final data = doc.data() as Map<String, dynamic>;
-                          return NotificationCard(data: data);
-                        }).toList(),
-                      );
-                    },
-                  ),
+                  _buildNotificationsList(),
                 ],
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildNotificationsList() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32.0),
+        child: Center(
+          child: Text(
+            'ログインすると通知が表示されます',
+            style: GoogleFonts.zenMaruGothic(
+              color: const Color(0xFF6B7280),
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('detections')
+          .orderBy('timestamp', descending: true)
+          .limit(4)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError ||
+            snapshot.connectionState == ConnectionState.waiting ||
+            !snapshot.hasData ||
+            snapshot.data!.docs.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32.0),
+            child: Center(
+              child: Text(
+                '通知はありません',
+                style: GoogleFonts.zenMaruGothic(
+                  color: const Color(0xFF6B7280),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: snapshot.data!.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return NotificationCard(data: data);
+          }).toList(),
+        );
+      },
     );
   }
 

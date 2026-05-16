@@ -127,18 +127,15 @@ class AppState extends ChangeNotifier {
           notifyListeners();
         });
       } else {
-        // ログアウト時
-        _userName = '';
+        // 未ログイン時はデモデータで動作
+        _detectionsSubscription?.cancel();
+        _detectionDocs = [];
+        _userName = 'ゲスト';
         _currentMode = '';
         _essentialItemNames = [];
-        _items.clear();
-        _saveData();
-
-        _successDates = {};
-        _consecutiveDaysWithoutForgetting = 0;
-        _notificationCount = 0;
-        _detectionDocs = [];
-        _detectionsSubscription?.cancel();
+        if (_items.isEmpty) {
+          loadDemoData();
+        }
         notifyListeners();
       }
     });

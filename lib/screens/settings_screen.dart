@@ -10,9 +10,9 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = AuthService().currentUser;
-    final nickname = user?.displayName ?? '未設定';
-    final email = user?.email ?? '未設定';
-    final userInitial = nickname.isNotEmpty ? nickname[0] : '?';
+    final nickname = user?.displayName ?? 'ゲスト';
+    final email = user?.email ?? 'ログインしていません';
+    final userInitial = nickname.isNotEmpty ? nickname[0] : 'G';
 
     return Container(
       width: double.infinity,

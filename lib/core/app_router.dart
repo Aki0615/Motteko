@@ -69,7 +69,7 @@ class AppRouter {
     navigatorKey: _rootNavigatorKey,
 
     // アプリ起動時に最初に表示する画面のパス
-    initialLocation: '/welcome',
+    initialLocation: '/',
 
     // ルート（画面）の定義
     routes: [
