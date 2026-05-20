@@ -20,7 +20,14 @@ void main() async {
   // バックグラウンドハンドラの登録
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // 通知サービスの初期化と権限リクエスト
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => AppState(),
+      child: const MyApp(),
+    ),
+  );
+
+  // UI表示後に通知サービスを初期化（権限ダイアログでブロックしないように）
   final notificationService = NotificationService();
   await notificationService.initialize();
   await notificationService.requestPermissions();
@@ -28,13 +35,6 @@ void main() async {
   // 監視サービスの開始
   final detectionService = DetectionService();
   detectionService.startListening();
-
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => AppState(),
-      child: const MyApp(),
-    ),
-  );
 }
 
 class MyApp extends StatelessWidget {
