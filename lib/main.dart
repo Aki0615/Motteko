@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'core/app_theme.dart';
 import 'core/app_router.dart';
@@ -12,15 +13,18 @@ import 'services/detection_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Firebase初期化（matsuriba-maxプロジェクト）
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // バックグラウンドハンドラの登録
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   // 通知サービスの初期化と権限リクエスト
   final notificationService = NotificationService();
   await notificationService.initialize();
   await notificationService.requestPermissions();
+
   // 監視サービスの開始
   final detectionService = DetectionService();
   detectionService.startListening();

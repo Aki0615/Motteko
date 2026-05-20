@@ -1,7 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import '../core/app_router.dart';
+
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  debugPrint('バックグラウンド通知受信: ${message.messageId}');
+}
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -15,6 +24,8 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
   bool _isInitialized = false;
 
   Future<void> initialize() async {
@@ -22,11 +33,9 @@ class NotificationService {
 
     tz.initializeTimeZones();
 
-    // Androidの初期化設定
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // iOSの初期化設定
     final DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -44,15 +53,95 @@ class NotificationService {
       settings: initializationSettings,
       onDidReceiveNotificationResponse:
           (NotificationResponse notificationResponse) async {
-        // 通知タップ時の処理
         final String? payload = notificationResponse.payload;
-        if (payload != null) {
-          // TODO(2026-05): 通知タップ時にpayloadに応じた画面へ遷移する処理を実装
+        if (payload != null && payload.isNotEmpty) {
+          AppRouter.router.go(payload);
         }
       },
     );
 
+    // FCM権限リクエスト
+    await _firebaseMessaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // iOSフォアグラウンド通知表示設定
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // フォアグラウンド通知受信リスナー
+    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+
+    // 通知タップでアプリが開かれた時
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationOpen);
+
+    // アプリ終了状態から通知タップで起動した場合
+    final initialMessage = await _firebaseMessaging.getInitialMessage();
+    if (initialMessage != null) {
+      _handleNotificationOpen(initialMessage);
+    }
+
+    // FCMトークン取得・保存
+    await saveFCMToken();
+
+    // トークンリフレッシュ時の更新
+    _firebaseMessaging.onTokenRefresh.listen(_updateFCMTokenInFirestore);
+
     _isInitialized = true;
+  }
+
+  Future<void> _handleForegroundMessage(RemoteMessage message) async {
+    debugPrint('フォアグラウンド通知受信: ${message.notification?.title}');
+
+    final notification = message.notification;
+    if (notification == null) return;
+
+    await showNotification(
+      id: message.hashCode,
+      title: notification.title ?? '',
+      body: notification.body ?? '',
+      payload: message.data['route'],
+    );
+  }
+
+  void _handleNotificationOpen(RemoteMessage message) {
+    debugPrint('通知タップ: ${message.data}');
+    final route = message.data['route'] as String?;
+    if (route != null) {
+      AppRouter.router.go(route);
+    }
+  }
+
+  Future<void> saveFCMToken() async {
+    try {
+      final token = await _firebaseMessaging.getToken();
+      if (token != null) {
+        debugPrint('FCMトークン: $token');
+        await _updateFCMTokenInFirestore(token);
+      }
+    } catch (e) {
+      debugPrint('FCMトークン取得エラー: $e');
+    }
+  }
+
+  Future<void> _updateFCMTokenInFirestore(String token) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({'fcm_token': token});
+    } catch (e) {
+      debugPrint('FCMトークン保存エラー: $e');
+    }
   }
 
   // 権限のリクエスト（Android 13+ / iOS）
@@ -61,7 +150,6 @@ class NotificationService {
 
     bool? isGranted = false;
 
-    // Androidの権限リクエスト
     final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
         flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>();
@@ -70,10 +158,7 @@ class NotificationService {
       isGranted = await androidImplementation.requestNotificationsPermission();
     }
 
-    // iOSの権限リクエスト（初期化時にリクエスト済みだが、明示的に呼ぶことも可能）
-    // iOSは初期化時のパラメータで制御されるため、ここでは追加処理は不要
-
-    return isGranted ?? false; // nullの場合はfalse扱い
+    return isGranted ?? false;
   }
 
   // 即時通知を表示
@@ -153,7 +238,6 @@ class NotificationService {
         payload: payload,
       );
     } catch (e) {
-      // 画像取得に失敗した場合は通常の通知を表示
       debugPrint('Error showing big picture notification: $e');
       await showNotification(
           id: id, title: title, body: body, payload: payload);
