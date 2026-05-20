@@ -47,3 +47,11 @@ app.*.map.json
 # Google Service Account Key
 serviceAccountKey.json
 **/serviceAccountKey.json
+
+# Duplicate files from sync tools (AI tools/iCloud/etc)
+* 2.*
+* 2
+* 3.*
+* 3
+*\ copy.*
+*\ copy
