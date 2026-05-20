@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'notification_service.dart';
 
 class DetectionService {
@@ -9,6 +10,13 @@ class DetectionService {
     if (_isListening) return;
     _isListening = true;
 
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null) return;
+      _listenDetections();
+    });
+  }
+
+  void _listenDetections() {
     FirebaseFirestore.instance
         .collection('detections')
         .orderBy('timestamp', descending: true)

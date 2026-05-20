@@ -77,7 +77,8 @@ class AppState extends ChangeNotifier {
             .collection('users')
             .doc(user.uid)
             .snapshots()
-            .listen((snapshot) {
+            .listen(
+          (snapshot) {
           if (snapshot.exists) {
             final data = snapshot.data();
             if (data != null) {
@@ -115,17 +116,27 @@ class AppState extends ChangeNotifier {
               notifyListeners();
             }
           }
-        });
+        },
+          onError: (e) {
+            debugPrint('users購読エラー: $e');
+          },
+        );
 
         // 検出履歴の購読 (連続日数・成功日の計算)
+        _detectionsSubscription?.cancel();
         _detectionsSubscription = FirebaseFirestore.instance
             .collection('detections')
             .snapshots()
-            .listen((snapshot) {
-          _detectionDocs = snapshot.docs;
-          _calculateStreaks();
-          notifyListeners();
-        });
+            .listen(
+          (snapshot) {
+            _detectionDocs = snapshot.docs;
+            _calculateStreaks();
+            notifyListeners();
+          },
+          onError: (e) {
+            debugPrint('detections購読エラー: $e');
+          },
+        );
       } else {
         // ログアウト時
         _userName = '';
