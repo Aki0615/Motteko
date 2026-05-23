@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/app_state.dart';
 import '../core/constants/app_colors.dart';
 import '../widgets/streak_celebration.dart';
@@ -60,184 +61,203 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _checkStreakEvents(appState);
 
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: AppColors.primary700,
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 12),
-              _buildTitle(),
-              const SizedBox(height: 20),
-              _buildContent(),
-            ],
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Positioned(
+            left: -85,
+            top: -215,
+            width: 360,
+            height: 346.5,
+            child: SvgPicture.asset(
+              'assets/icons/items_bg_decoration.svg',
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitle() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Text(
-        '連続記録',
-        style: GoogleFonts.zenMaruGothic(
-          color: Colors.white, fontSize: 36, fontWeight: FontWeight.w900, height: 0.80,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContent() {
-    return Expanded(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 100),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: _buildStreakCard(),
-            ),
-            const SizedBox(height: 24),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(32),
-                  topRight: Radius.circular(32),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: _buildCalendarCard(),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 連続記録カード
-  Widget _buildStreakCard() {
-    return Consumer<AppState>(
-      builder: (context, appState, child) {
-        final streak = appState.consecutiveDaysWithoutForgetting;
-        final maxStreak = appState.maxStreak;
-
-        return Container(
-          width: double.infinity,
-          height: 216,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/icons/streak_card_bg.png',
-                  fit: BoxFit.fill,
-                ),
-              ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          streak.toString().padLeft(3, '0'),
-                          style: GoogleFonts.zenMaruGothic(
-                            color: Colors.black,
-                            fontSize: 64,
-                            fontWeight: FontWeight.w900,
-                            height: 1.0,
-                          ),
-                        )
-                            .animate(
-                              onPlay: (c) => c.forward(),
-                            )
-                            .scale(
-                              begin: const Offset(0.8, 0.8),
-                              end: const Offset(1.0, 1.0),
-                              duration: 600.ms,
-                              curve: Curves.elasticOut,
-                            ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Text(
-                            '日',
-                            style: GoogleFonts.zenMaruGothic(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ),
-                      ],
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 28),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 68),
+                          _buildStreakCard(appState),
+                          const SizedBox(height: 18),
+                          _buildCalendarCard(),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(26, 0, 24, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'カレンダー',
+            style: GoogleFonts.zenMaruGothic(
+              color: Colors.black,
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              height: 1.20,
+            ),
+          ),
+          Text(
+            '毎日の記録で、忘れ物をゼロに',
+            style: GoogleFonts.zenMaruGothic(
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              height: 1.20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStreakCard(AppState appState) {
+    final streak = appState.consecutiveDaysWithoutForgetting;
+
+    return Container(
+      width: double.infinity,
+      height: 216,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: AppColors.primary700,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -10,
+            bottom: -30,
+            width: 126,
+            height: 128,
+            child: SvgPicture.asset(
+              'assets/icons/calendar_streak_box.svg',
+              fit: BoxFit.contain,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 11, top: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(9),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Colors.white, AppColors.primary400],
+                        ),
+                        borderRadius: BorderRadius.circular(31.5),
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/icons/calendar_streak_icon.svg',
+                        width: 30,
+                        height: 31,
+                      ),
+                    ),
+                    const SizedBox(width: 22),
                     Text(
-                      streak > 0 ? '連続忘れ物なし！！' : '今日から記録スタート！',
+                      '連続記録',
                       style: GoogleFonts.zenMaruGothic(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
                         height: 1.20,
                       ),
-                    )
-                        .animate()
-                        .fadeIn(duration: 500.ms, delay: 200.ms),
-                    if (maxStreak > 0 && maxStreak > streak) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        '🏆 最高記録: $maxStreak日',
-                        style: GoogleFonts.zenMaruGothic(
-                          color: Colors.black54,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      )
-                          .animate()
-                          .fadeIn(duration: 500.ms, delay: 400.ms),
-                    ],
+                    ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: 177,
+                  child: Column(
+                    children: [
+                      Text.rich(
+                        TextSpan(children: [
+                          TextSpan(
+                            text: streak.toString().padLeft(3, '0'),
+                            style: GoogleFonts.zenMaruGothic(
+                              color: Colors.white,
+                              fontSize: 64,
+                              fontWeight: FontWeight.w900,
+                              height: 1.0,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '日',
+                            style: GoogleFonts.zenMaruGothic(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w900,
+                              height: 1.0,
+                            ),
+                          ),
+                        ]),
+                        textAlign: TextAlign.center,
+                      )
+                          .animate(onPlay: (c) => c.forward())
+                          .scale(
+                            begin: const Offset(0.8, 0.8),
+                            end: const Offset(1.0, 1.0),
+                            duration: 600.ms,
+                            curve: Curves.elasticOut,
+                          ),
+                      Text(
+                        streak > 0 ? '連続忘れ物なし！！' : '今日から記録スタート！',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          height: 1.20,
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                          .animate()
+                          .fadeIn(duration: 500.ms, delay: 200.ms),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
-  // カレンダーカード
   Widget _buildCalendarCard() {
     return Container(
       width: double.infinity,
       clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Colors.black),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0xFF000000),
-            blurRadius: 0,
-            offset: Offset(3.5, 4),
-            spreadRadius: 0,
-          )
-        ],
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Stack(
         children: [
-          // 背景のbox_icon2（下部に大きく散らして配置）
           Positioned(
             left: -20,
             bottom: -10,
@@ -286,28 +306,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
               ),
             ),
           ),
-          Positioned(
-            left: 40,
-            bottom: 100,
-            child: Opacity(
-              opacity: 0.12,
-              child: Image.asset(
-                'assets/icons/box_icon2.png',
-                width: 90,
-                height: 90,
+          Positioned.fill(
+            top: 96,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ),
-          // カレンダー本体
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // カレンダーヘッダー
               _buildCalendarHeader(),
-              // 曜日の行
               _buildWeekdayRow(),
               const SizedBox(height: 8),
-              // 日付グリッド
               _buildDateGrid(),
               const SizedBox(height: 16),
             ],
@@ -317,28 +330,73 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  // カレンダーヘッダー（年月 + 前後ボタン）
   Widget _buildCalendarHeader() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 96,
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(width: 1, color: Color(0xFFF3F4F6)),
+        ),
+      ),
+      child: Column(
         children: [
-          Text(
-            '${_currentMonth.year}年 ${_currentMonth.month}月',
-            style: GoogleFonts.zenMaruGothic(
-              color: AppColors.gray900, fontSize: 16, fontWeight: FontWeight.w900, height: 1.20,
-            ),
-          ),
+          const SizedBox(height: 24),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildMonthNavButton(Icons.chevron_left, _previousMonth),
-              const SizedBox(width: 8),
-              _buildMonthNavButton(Icons.chevron_right, _nextMonth),
+              Text(
+                '${_currentMonth.year}年 ${_currentMonth.month}月',
+                style: GoogleFonts.zenMaruGothic(
+                  color: AppColors.gray900, fontSize: 16, fontWeight: FontWeight.w900, height: 1.20,
+                ),
+              ),
+              Row(
+                children: [
+                  _buildMonthNavButton(Icons.chevron_left, _previousMonth),
+                  const SizedBox(width: 8),
+                  _buildMonthNavButton(Icons.chevron_right, _nextMonth),
+                ],
+              ),
             ],
           ),
+          const Spacer(),
+          _buildWeekdayLabels(),
+          const SizedBox(height: 4),
         ],
       ),
+    );
+  }
+
+  Widget _buildWeekdayLabels() {
+    final dayLabels = ['日', '月', '火', '水', '木', '金', '土'];
+    final dayLabelColors = [
+      const Color(0xFFEF4444),
+      AppColors.gray500,
+      AppColors.gray500,
+      AppColors.gray500,
+      AppColors.gray500,
+      AppColors.gray500,
+      const Color(0xFF3B82F6),
+    ];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: List.generate(7, (index) {
+        return SizedBox(
+          width: 40,
+          child: Text(
+            dayLabels[index],
+            textAlign: TextAlign.center,
+            style: GoogleFonts.zenMaruGothic(
+              color: dayLabelColors[index],
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              height: 1.20,
+            ),
+          ),
+        );
+      }),
     );
   }
 
@@ -357,44 +415,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  // 曜日の行
   Widget _buildWeekdayRow() {
-    final dayLabels = ['日', '月', '火', '水', '木', '金', '土'];
-    // 日曜=赤、土曜=青、平日=グレーの配色
-    final dayLabelColors = [
-      AppColors.error, // 日: 赤
-      AppColors.gray500, // 月: グレー
-      AppColors.gray500, // 火
-      AppColors.gray500, // 水
-      AppColors.gray500, // 木
-      AppColors.gray500, // 金
-      const Color(0xFF3B82F6), // 土: 青
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(7, (index) {
-          return SizedBox(
-            width: 40,
-            child: Text(
-              dayLabels[index],
-              textAlign: TextAlign.center,
-              style: GoogleFonts.zenMaruGothic(
-                color: dayLabelColors[index],
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
-                height: 1.20,
-              ),
-            ),
-          );
-        }),
-      ),
-    );
+    return const SizedBox.shrink();
   }
 
-  // 日付グリッド
   Widget _buildDateGrid() {
     final daysInMonth =
         DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
@@ -480,18 +504,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  // 個別の日付セル
   Widget _buildDateCell(int day,
       {required bool isCurrentMonth,
       bool isSuccess = false,
       bool connectedLeft = false,
       bool connectedRight = false}) {
-    Color textColor = isCurrentMonth ? Colors.black : const Color(0xFFB9BFC9);
+    Color textColor = isCurrentMonth ? Colors.black : const Color(0xFFB9C0C9);
 
     if (isSuccess) {
       textColor = Colors.white;
       if (!connectedLeft && !connectedRight) {
-        // 単独の成功日（丸いアイコン）
         return SizedBox(
           height: 35,
           child: Center(
@@ -502,19 +524,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 gradient: const LinearGradient(
                   begin: Alignment(1.00, 0.51),
                   end: Alignment(0.00, 0.51),
-                  colors: [Color(0xFFFF6100), Color(0xFFFF9E64)],
+                  colors: [Color(0xFFFF6200), Color(0xFFFF9E64)],
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(80),
                 ),
-                shadows: const [
-                  BoxShadow(
-                    color: Color(0xFFEDB38E),
-                    blurRadius: 0,
-                    offset: Offset(2, 2.5),
-                    spreadRadius: 0,
-                  )
-                ],
               ),
               child: Center(
                 child: Text(
@@ -522,7 +536,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.zenMaruGothic(
                     color: textColor,
-                    fontSize: 20,
+                    fontSize: 24,
                     fontWeight: FontWeight.w900,
                     height: 1.20,
                   ),
@@ -532,7 +546,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
         );
       } else {
-        // 連続成功日（繋がったピル型の背景）
         return Container(
           height: 35,
           decoration: BoxDecoration(
@@ -541,14 +554,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
               left: connectedLeft ? Radius.zero : const Radius.circular(17.5),
               right: connectedRight ? Radius.zero : const Radius.circular(17.5),
             ),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0xFFEDB38E),
-                blurRadius: 0,
-                offset: Offset(2, 2.5),
-                spreadRadius: 0,
-              )
-            ],
           ),
           child: Center(
             child: Text(
@@ -556,7 +561,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               textAlign: TextAlign.center,
               style: GoogleFonts.zenMaruGothic(
                 color: textColor,
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: FontWeight.w900,
                 height: 1.20,
               ),
@@ -565,7 +570,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
         );
       }
     } else {
-      // 通常の日付テキスト
       return SizedBox(
         height: 35,
         child: Center(
@@ -574,7 +578,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             textAlign: TextAlign.center,
             style: GoogleFonts.zenMaruGothic(
               color: textColor,
-              fontSize: 20,
+              fontSize: 24,
               fontWeight: FontWeight.w900,
               height: 1.20,
             ),

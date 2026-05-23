@@ -118,6 +118,7 @@ class AppState extends ChangeNotifier {
           }
         },
           onError: (e) {
+            if (e is FirebaseException && e.code == 'permission-denied') return;
             debugPrint('users購読エラー: $e');
           },
         );
@@ -134,6 +135,7 @@ class AppState extends ChangeNotifier {
             notifyListeners();
           },
           onError: (e) {
+            if (e is FirebaseException && e.code == 'permission-denied') return;
             debugPrint('detections購読エラー: $e');
           },
         );
