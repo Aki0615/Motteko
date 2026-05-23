@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/constants/app_colors.dart';
 
 /// Firestore検出データから通知カードを表示する共通Widget。
 /// home_screenとnotifications_screenの両方から使用される。
@@ -58,7 +59,7 @@ class NotificationCard extends StatelessWidget {
                     Text(
                       message,
                       style: GoogleFonts.zenMaruGothic(
-                        color: const Color(0xFF374151),
+                        color: AppColors.gray700,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         height: 1.20,
@@ -69,7 +70,7 @@ class NotificationCard extends StatelessWidget {
                       Text(
                         formattedTime,
                         style: GoogleFonts.zenMaruGothic(
-                          color: const Color(0xFF374151),
+                          color: AppColors.gray700,
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
                           height: 1.20,
@@ -112,7 +113,7 @@ class NotificationCard extends StatelessWidget {
     }
     return const _BadgeStyle(
       backgroundColor: Color(0xFFBEFFD6),
-      textColor: Color(0xFF22C55E),
+      textColor: AppColors.success,
       label: '成功',
       iconAsset: 'assets/icons/success_icon.png',
     );

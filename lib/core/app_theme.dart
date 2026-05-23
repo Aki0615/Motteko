@@ -11,6 +11,7 @@
 // =============================================================================
 
 import 'package:flutter/material.dart';
+import 'constants/app_colors.dart';
 
 /// アプリのテーマを管理するクラス
 ///
@@ -37,7 +38,7 @@ class AppTheme {
 
   /// メインのオレンジ色（タイトルやアクセントに使用）
   /// カラーコード: #FF7B00 (primary-700)
-  static const Color primaryOrange = Color(0xFFFF7B00);
+  static const Color primaryOrange = AppColors.primary700;
 
   /// 薄いオレンジ色（背景に使用）
   /// カラーコード: #FFDAC4 (primary-400)
@@ -49,7 +50,7 @@ class AppTheme {
 
   /// 薄いグレーの背景色
   /// カラーコード: #F3F4F6 (gray-200)
-  static const Color backgroundLight = Color(0xFFF3F4F6);
+  static const Color backgroundLight = AppColors.gray200;
 
   /// 白い背景色
   /// カラーコード: #FFFFFF (gray-100)
@@ -66,15 +67,15 @@ class AppTheme {
 
   /// 主要テキスト色（最も重要な文字、見出しなど）
   /// カラーコード: #111827 (gray-900)
-  static const Color textPrimary = Color(0xFF111827);
+  static const Color textPrimary = AppColors.gray900;
 
   /// 補助テキスト色（説明文など、少し控えめな文字）
   /// カラーコード: #374151 (gray-700)
-  static const Color textSecondary = Color(0xFF374151);
+  static const Color textSecondary = AppColors.gray700;
 
   /// 第三テキスト色（ヒントテキストなど、さらに控えめな文字）
   /// カラーコード: #6B7280 (gray-500)
-  static const Color textTertiary = Color(0xFF6B7280);
+  static const Color textTertiary = AppColors.gray500;
 
   // ---------------------------------------------------------------------------
   // ステータスカラー（状態を表す色）
@@ -84,19 +85,19 @@ class AppTheme {
 
   /// 成功・正常を表す緑色
   /// カラーコード: #22C55E (color-success)
-  static const Color successGreen = Color(0xFF22C55E);
+  static const Color successGreen = AppColors.success;
 
   /// 警告を表す黄色
   /// カラーコード: #FACC15 (color-warning)
-  static const Color warningYellow = Color(0xFFFACC15);
+  static const Color warningYellow = AppColors.warning;
 
   /// エラー・危険を表す赤色
   /// カラーコード: #EF4444 (color-error)
-  static const Color errorRed = Color(0xFFEF4444);
+  static const Color errorRed = AppColors.error;
 
   /// エラー背景色（薄い赤）
   /// カラーコード: #FEF2F2 (color-error-bg)
-  static const Color errorBackground = Color(0xFFFEF2F2);
+  static const Color errorBackground = AppColors.errorBg;
 
   /// 情報を表す青色
   /// カラーコード: #26A5FF
@@ -114,23 +115,23 @@ class AppTheme {
 
   /// とても薄いグレー（背景色として使用）
   /// カラーコード: #F3F4F6 (gray-200)
-  static const Color gray200 = Color(0xFFF3F4F6);
+  static const Color gray200 = AppColors.gray200;
 
   /// 薄いグレー（区切り線・カード背景など）
   /// カラーコード: #6B7280 (gray-300)
-  static const Color gray300 = Color(0xFF6B7280);
+  static const Color gray300 = AppColors.gray500;
 
   /// 中間のグレー（ボーダー・枠線として使用）
   /// カラーコード: #AAAEB4 (gray-400)
-  static const Color gray400 = Color(0xFFAAAEB4);
+  static const Color gray400 = AppColors.gray400;
 
   /// やや濃いグレー（アイコン・プレースホルダーなど）
   /// カラーコード: #6B7280 (gray-500)
-  static const Color gray500 = Color(0xFF6B7280);
+  static const Color gray500 = AppColors.gray500;
 
   /// 濃いグレー（サブテキストなど）
   /// カラーコード: #374151 (gray-700)
-  static const Color gray700 = Color(0xFF374151);
+  static const Color gray700 = AppColors.gray700;
 
   /// gray-700のエイリアス（互換性維持）
   /// カラーコード: #374151
@@ -138,11 +139,11 @@ class AppTheme {
 
   /// さらに濃いグレー（本文テキストなど）
   /// カラーコード: #1F2937 (gray-800)
-  static const Color gray800 = Color(0xFF1F2937);
+  static const Color gray800 = AppColors.gray800;
 
   /// 最も濃いグレー（見出し・タイトルなど）
   /// カラーコード: #111827 (gray-900)
-  static const Color gray900 = Color(0xFF111827);
+  static const Color gray900 = AppColors.gray900;
 
   // ===========================================================================
   // フォント設定

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../core/constants/app_colors.dart';
 
 /// プライバシー設定画面
 class PrivacySettingsScreen extends StatefulWidget {
@@ -60,7 +61,7 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
                   Text(
                     'プライバシー',
                     style: GoogleFonts.zenMaruGothic(
-                      color: const Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       height: 0.90,
@@ -80,7 +81,7 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
               child: Text(
                 'データ収集・利用',
                 style: GoogleFonts.zenMaruGothic(
-                  color: const Color(0xFF6B7280),
+                  color: AppColors.gray500,
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   height: 1.20,
@@ -198,12 +199,12 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       side:
-                          BorderSide(width: 2, color: const Color(0xFFEF4444)),
+                          BorderSide(width: 2, color: AppColors.error),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     shadows: [
                       BoxShadow(
-                        color: Color(0xFFEF4444),
+                        color: AppColors.error,
                         blurRadius: 0,
                         offset: Offset(2, 3),
                         spreadRadius: 0,
@@ -214,7 +215,7 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
                     child: Text(
                       'アカウントを削除',
                       style: GoogleFonts.zenMaruGothic(
-                        color: const Color(0xFFEF4444),
+                        color: AppColors.error,
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
                         height: 1.20,
@@ -273,7 +274,7 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
             value: value,
             onChanged: onChanged,
             activeColor: Colors.white,
-            activeTrackColor: const Color(0xFFFF7B00),
+            activeTrackColor: AppColors.primary700,
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: const Color(0xFFB9BFC9),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

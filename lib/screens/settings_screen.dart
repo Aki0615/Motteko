@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../core/constants/app_colors.dart';
 import '../services/auth_service.dart';
 
 /// 設定画面
@@ -61,7 +62,7 @@ class SettingsScreen extends StatelessWidget {
                   Text(
                     '設定',
                     style: GoogleFonts.zenMaruGothic(
-                      color: const Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       height: 0.90,
@@ -104,7 +105,7 @@ class SettingsScreen extends StatelessWidget {
                       width: 70,
                       height: 70,
                       decoration: ShapeDecoration(
-                        color: const Color(0xFFFF7B00),
+                        color: AppColors.primary700,
                         shape: RoundedRectangleBorder(
                           side: BorderSide(width: 2, color: Colors.black),
                           borderRadius: BorderRadius.circular(45),
@@ -149,7 +150,7 @@ class SettingsScreen extends StatelessWidget {
                         Text(
                           email,
                           style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFF6B7280),
+                            color: AppColors.gray500,
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             height: 1.20,
@@ -172,7 +173,7 @@ class SettingsScreen extends StatelessWidget {
               child: Text(
                 'デバイス・接続',
                 style: GoogleFonts.zenMaruGothic(
-                  color: const Color(0xFF6B7280),
+                  color: AppColors.gray500,
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   height: 1.20,
@@ -212,7 +213,7 @@ class SettingsScreen extends StatelessWidget {
               child: _buildSettingsCard(
                 children: [
                   _buildSettingsItem(
-                    iconColor: const Color(0xFFFF7B00),
+                    iconColor: AppColors.primary700,
                     icon: Icons.description_outlined,
                     label: '利用規約',
                     onTap: () => context.go('/terms-of-service'),
@@ -290,7 +291,7 @@ class SettingsScreen extends StatelessWidget {
                             child: Text(
                               'ログアウト',
                               style: GoogleFonts.zenMaruGothic(
-                                color: const Color(0xFFEF4444),
+                                color: AppColors.error,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w900,
                               ),
@@ -308,12 +309,12 @@ class SettingsScreen extends StatelessWidget {
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       side:
-                          BorderSide(width: 2, color: const Color(0xFFEF4444)),
+                          BorderSide(width: 2, color: AppColors.error),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     shadows: [
                       BoxShadow(
-                        color: Color(0xFFEF4444),
+                        color: AppColors.error,
                         blurRadius: 0,
                         offset: Offset(2, 3),
                         spreadRadius: 0,
@@ -326,13 +327,13 @@ class SettingsScreen extends StatelessWidget {
                       Icon(
                         Icons.logout,
                         size: 24,
-                        color: const Color(0xFFEF4444),
+                        color: AppColors.error,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'ログアウト',
                         style: GoogleFonts.zenMaruGothic(
-                          color: const Color(0xFFEF4444),
+                          color: AppColors.error,
                           fontSize: 24,
                           fontWeight: FontWeight.w900,
                           height: 1.20,

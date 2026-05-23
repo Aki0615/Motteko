@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:confetti/confetti.dart';
+import '../core/constants/app_colors.dart';
 
 class StreakCelebrationDialog extends StatefulWidget {
   final int milestone;
@@ -99,7 +100,7 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog> {
             numberOfParticles: 25,
             gravity: 0.1,
             colors: const [
-              Color(0xFFFF7B00),
+              AppColors.primary700,
               Color(0xFFFF9E64),
               Color(0xFFFFDAC4),
               Color(0xFFFF6100),
@@ -141,7 +142,7 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog> {
                   style: GoogleFonts.zenMaruGothic(
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
-                    color: const Color(0xFFFF7B00),
+                    color: AppColors.primary700,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -170,7 +171,7 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog> {
                   child: ElevatedButton(
                     onPressed: widget.onDismiss,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF7B00),
+                      backgroundColor: AppColors.primary700,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -261,7 +262,7 @@ class StreakBrokenDialog extends StatelessWidget {
               style: GoogleFonts.zenMaruGothic(
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
-                color: const Color(0xFFFF7B00),
+                color: AppColors.primary700,
               ),
             ),
             const SizedBox(height: 16),
@@ -289,7 +290,7 @@ class StreakBrokenDialog extends StatelessWidget {
                         style: GoogleFonts.zenMaruGothic(
                           fontSize: 18,
                           fontWeight: FontWeight.w900,
-                          color: const Color(0xFFFF7B00),
+                          color: AppColors.primary700,
                         ),
                       ),
                     ],
@@ -311,7 +312,7 @@ class StreakBrokenDialog extends StatelessWidget {
                         style: GoogleFonts.zenMaruGothic(
                           fontSize: 18,
                           fontWeight: FontWeight.w900,
-                          color: const Color(0xFFFF7B00),
+                          color: AppColors.primary700,
                         ),
                       ),
                     ],
@@ -336,7 +337,7 @@ class StreakBrokenDialog extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onDismiss,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF7B00),
+                  backgroundColor: AppColors.primary700,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(

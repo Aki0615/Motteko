@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../core/constants/app_colors.dart';
 
 /// 通知設定画面
 class NotificationSettingsScreen extends StatefulWidget {
@@ -65,7 +66,7 @@ class _NotificationSettingsScreenState
                   Text(
                     '通知',
                     style: GoogleFonts.zenMaruGothic(
-                      color: const Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       height: 0.90,
@@ -85,7 +86,7 @@ class _NotificationSettingsScreenState
               child: Text(
                 'プッシュ通知',
                 style: GoogleFonts.zenMaruGothic(
-                  color: const Color(0xFF6B7280),
+                  color: AppColors.gray500,
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   height: 1.20,
@@ -176,7 +177,7 @@ class _NotificationSettingsScreenState
                           });
                         },
                         activeColor: Colors.white,
-                        activeTrackColor: const Color(0xFFFF7B00),
+                        activeTrackColor: AppColors.primary700,
                         inactiveThumbColor: Colors.white,
                         inactiveTrackColor: const Color(0xFFB9BFC9),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -197,7 +198,7 @@ class _NotificationSettingsScreenState
               child: Text(
                 '通知の種類',
                 style: GoogleFonts.zenMaruGothic(
-                  color: const Color(0xFF6B7280),
+                  color: AppColors.gray500,
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   height: 1.20,
@@ -230,7 +231,7 @@ class _NotificationSettingsScreenState
                   children: [
                     // 忘れ物無し通知
                     _buildNotificationTypeItem(
-                      iconColor: const Color(0xFF22C55E),
+                      iconColor: AppColors.success,
                       icon: Icons.check,
                       label: '忘れ物無し通知',
                       description: '全ての通知のオン/オフ',
@@ -342,7 +343,7 @@ class _NotificationSettingsScreenState
             value: value,
             onChanged: onChanged,
             activeColor: Colors.white,
-            activeTrackColor: const Color(0xFFFF7B00),
+            activeTrackColor: AppColors.primary700,
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: const Color(0xFFB9BFC9),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

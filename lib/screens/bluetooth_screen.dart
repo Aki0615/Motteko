@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:async';
+import '../core/constants/app_colors.dart';
 import '../services/ble_config_service.dart';
 
 /// Bluetooth設定画面（付近のBLEデバイスをスキャン表示）
@@ -182,7 +183,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                 Text(
                   'Bluetooth',
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFFFF7B00),
+                    color: AppColors.primary700,
                     fontSize: 32,
                     fontWeight: FontWeight.w900,
                     height: 0.90,
@@ -198,7 +199,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                     decoration: ShapeDecoration(
                       color: _isScanning
                           ? const Color(0xFFB9BFC9)
-                          : const Color(0xFFFF7B00),
+                          : AppColors.primary700,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(45),
                       ),
@@ -234,7 +235,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                 Text(
                   _isScanning ? 'スキャン中...' : '付近のデバイス',
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFF6B7280),
+                    color: AppColors.gray500,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     height: 1.20,
@@ -247,7 +248,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                     height: 12,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Color(0xFF6B7280),
+                      color: AppColors.gray500,
                     ),
                   ),
                 ],
@@ -255,7 +256,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                 Text(
                   '${_scanResults.length} 件',
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFF6B7280),
+                    color: AppColors.gray500,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     height: 1.20,
@@ -285,7 +286,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                         Text(
                           _isScanning ? 'デバイスを検索しています...' : 'デバイスが見つかりませんでした',
                           style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFF6B7280),
+                            color: AppColors.gray500,
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
@@ -297,7 +298,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                             child: Text(
                               'もう一度スキャン',
                               style: GoogleFonts.zenMaruGothic(
-                                color: const Color(0xFFFF7B00),
+                                color: AppColors.primary700,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w900,
                               ),
@@ -323,7 +324,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                         Text(
                           'ほかのデバイス',
                           style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFF6B7280),
+                            color: AppColors.gray500,
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             height: 1.20,
@@ -360,11 +361,11 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
 
     Color signalColor;
     if (rssi > -60) {
-      signalColor = const Color(0xFF22C55E); // 強い
+      signalColor = AppColors.success; // 強い
     } else if (rssi > -80) {
-      signalColor = const Color(0xFFFF7B00); // 中程度
+      signalColor = AppColors.primary700; // 中程度
     } else {
-      signalColor = const Color(0xFFEF4444); // 弱い
+      signalColor = AppColors.error; // 弱い
     }
 
     return GestureDetector(
@@ -468,7 +469,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                   Text(
                     deviceId,
                     style: GoogleFonts.zenMaruGothic(
-                      color: const Color(0xFF6B7280),
+                      color: AppColors.gray500,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -487,7 +488,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                 Text(
                   '${rssi}dBm',
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFF6B7280),
+                    color: AppColors.gray500,
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
                   ),

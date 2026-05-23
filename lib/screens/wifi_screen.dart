@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../core/constants/app_colors.dart';
 import '../services/ble_config_service.dart';
 
 /// Wi-Fi設定画面（SSID・パスワード手入力方式）
@@ -124,7 +125,7 @@ class _WifiScreenState extends State<WifiScreen> {
                     Text(
                       'Wi-Fi',
                       style: GoogleFonts.zenMaruGothic(
-                        color: const Color(0xFFFF7B00),
+                        color: AppColors.primary700,
                         fontSize: 32,
                         fontWeight: FontWeight.w900,
                         height: 0.90,
@@ -155,7 +156,7 @@ class _WifiScreenState extends State<WifiScreen> {
                     'M5Stackに接続するWi-Fiの\nSSIDとパスワードを入力してください。',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.zenMaruGothic(
-                      color: const Color(0xFF6B7280),
+                      color: AppColors.gray500,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       height: 1.40,
@@ -188,7 +189,7 @@ class _WifiScreenState extends State<WifiScreen> {
                       width: double.infinity,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF3F4F6),
+                        color: AppColors.gray200,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: TextField(
@@ -238,7 +239,7 @@ class _WifiScreenState extends State<WifiScreen> {
                       width: double.infinity,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF3F4F6),
+                        color: AppColors.gray200,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -302,7 +303,7 @@ class _WifiScreenState extends State<WifiScreen> {
                     height: 50,
                     decoration: ShapeDecoration(
                       color:
-                          _isConnecting ? Colors.grey : const Color(0xFFFF7B00),
+                          _isConnecting ? Colors.grey : AppColors.primary700,
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(width: 2, color: Colors.black),
                         borderRadius: BorderRadius.circular(8),

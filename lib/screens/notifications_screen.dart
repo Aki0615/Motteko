@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/constants/app_colors.dart';
 import '../widgets/notification_card.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -28,7 +29,7 @@ class NotificationsScreen extends StatelessWidget {
               child: Text(
                 '通知履歴',
                 style: GoogleFonts.zenMaruGothic(
-                  color: const Color(0xFFFF7B00),
+                  color: AppColors.primary700,
                   fontSize: 32,
                   fontWeight: FontWeight.w900,
                   height: 0.90,
@@ -103,14 +104,14 @@ class NotificationsScreen extends StatelessWidget {
             child: const Icon(
               Icons.notifications_none,
               size: 40,
-              color: Color(0xFF6B7280),
+              color: AppColors.gray500,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             '通知はありません',
             style: GoogleFonts.zenMaruGothic(
-              color: const Color(0xFF6B7280),
+              color: AppColors.gray500,
               fontSize: 12,
               fontWeight: FontWeight.w400,
             ),

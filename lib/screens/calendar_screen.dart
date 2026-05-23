@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/app_state.dart';
+import '../core/constants/app_colors.dart';
 import '../widgets/streak_celebration.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -63,7 +64,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          color: Color(0xFFFF7B00),
+          color: AppColors.primary700,
         ),
         child: SafeArea(
           bottom: false,
@@ -329,7 +330,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Text(
             '${_currentMonth.year}年 ${_currentMonth.month}月',
             style: GoogleFonts.zenMaruGothic(
-              color: const Color(0xFF111827),
+              color: AppColors.gray900,
               fontSize: 16,
               fontWeight: FontWeight.w900,
               height: 1.20,
@@ -352,7 +353,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   child: const Center(
                     child: Icon(
                       Icons.chevron_left,
-                      color: Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       size: 20,
                     ),
                   ),
@@ -374,7 +375,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   child: const Center(
                     child: Icon(
                       Icons.chevron_right,
-                      color: Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       size: 20,
                     ),
                   ),
@@ -392,12 +393,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final dayLabels = ['日', '月', '火', '水', '木', '金', '土'];
     // 日曜=赤、土曜=青、平日=グレーの配色
     final dayLabelColors = [
-      const Color(0xFFEF4444), // 日: 赤
-      const Color(0xFF6B7280), // 月: グレー
-      const Color(0xFF6B7280), // 火
-      const Color(0xFF6B7280), // 水
-      const Color(0xFF6B7280), // 木
-      const Color(0xFF6B7280), // 金
+      AppColors.error, // 日: 赤
+      AppColors.gray500, // 月: グレー
+      AppColors.gray500, // 火
+      AppColors.gray500, // 水
+      AppColors.gray500, // 木
+      AppColors.gray500, // 金
       const Color(0xFF3B82F6), // 土: 青
     ];
 
@@ -566,7 +567,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         return Container(
           height: 35,
           decoration: BoxDecoration(
-            color: const Color(0xFFFF7B00),
+            color: AppColors.primary700,
             borderRadius: BorderRadius.horizontal(
               left: connectedLeft ? Radius.zero : const Radius.circular(17.5),
               right: connectedRight ? Radius.zero : const Radius.circular(17.5),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../core/constants/app_colors.dart';
 import '../providers/app_state.dart';
 
 class SensorsScreen extends StatelessWidget {
@@ -24,7 +25,7 @@ class SensorsScreen extends StatelessWidget {
                   Text(
                     'センサー状態',
                     style: TextStyle(
-                      color: Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       fontSize: 32,
                       fontFamily: 'Zen Maru Gothic',
                       fontWeight: FontWeight.w700,
@@ -62,7 +63,7 @@ class SensorsScreen extends StatelessWidget {
                           Text(
                             '人感センサーについて',
                             style: TextStyle(
-                              color: Color(0xFF111827),
+                              color: AppColors.gray900,
                               fontSize: 16,
                               fontFamily: 'Zen Maru Gothic',
                               fontWeight: FontWeight.w700,
@@ -72,7 +73,7 @@ class SensorsScreen extends StatelessWidget {
                           Text(
                             '玄関などに設置したセンサーで人の動きを検知します。外出時にカメラと連動して、忘れ物チェックを行います。',
                             style: TextStyle(
-                              color: Color(0xFF374151),
+                              color: AppColors.gray700,
                               fontSize: 14,
                               fontFamily: 'Zen Maru Gothic',
                               fontWeight: FontWeight.w400,
@@ -111,7 +112,7 @@ class SensorsScreen extends StatelessWidget {
                                   width: 1,
                                   color: appState.sensorStatus.isPersonPresent
                                       ? const Color(0xFF10B981)
-                                      : const Color(0xFF6B7280),
+                                      : AppColors.gray500,
                                 ),
                               ),
                             ),
@@ -129,7 +130,7 @@ class SensorsScreen extends StatelessWidget {
                                   Icons.person,
                                   color: appState.sensorStatus.isPersonPresent
                                       ? Colors.white
-                                      : const Color(0xFF6B7280),
+                                      : AppColors.gray500,
                                   size: 30,
                                 ),
                               ),
@@ -140,7 +141,7 @@ class SensorsScreen extends StatelessWidget {
                           const Text(
                             '人感センサー',
                             style: TextStyle(
-                              color: Color(0xFF111827),
+                              color: AppColors.gray900,
                               fontSize: 16,
                               fontFamily: 'Zen Maru Gothic',
                               fontWeight: FontWeight.w700,
@@ -217,7 +218,7 @@ class SensorsScreen extends StatelessWidget {
                               const Text(
                                 '最終検知時刻',
                                 style: TextStyle(
-                                  color: Color(0xFF374151),
+                                  color: AppColors.gray700,
                                   fontSize: 12,
                                   fontFamily: 'Zen Maru Gothic',
                                   fontWeight: FontWeight.w400,
@@ -227,7 +228,7 @@ class SensorsScreen extends StatelessWidget {
                                 _formatLastDetected(
                                     appState.sensorStatus.lastDetectedTime),
                                 style: const TextStyle(
-                                  color: Color(0xFF374151),
+                                  color: AppColors.gray700,
                                   fontSize: 12,
                                   fontFamily: 'Zen Maru Gothic',
                                   fontWeight: FontWeight.w400,

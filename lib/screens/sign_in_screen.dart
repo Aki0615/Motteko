@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/constants/app_colors.dart';
 import '../services/auth_service.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -12,11 +13,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  static const Color _darkText = Color(0xFF373735);
-  static const Color _gray500 = Color(0xFF6B7280);
-  static const Color _iconBg = Color(0xFFFFE9C9);
   static const Color _accentOrange = Color(0xFFFF8C00);
-  static const Color _primaryOrange = Color(0xFFFF7B00);
   static const Color _cardBg = Color(0xFFFFF6E8);
   static const Color _inputBg = Color(0xFFF9FAFB);
   static const Color _inputBorder = Color(0xFFD1D5DB);
@@ -56,7 +53,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     width: 346.5,
                     height: 346.5,
                     decoration: const BoxDecoration(
-                      color: _iconBg,
+                      color: AppColors.primary400,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -67,7 +64,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       width: 84,
                       height: 84,
                       decoration: const BoxDecoration(
-                        color: _primaryOrange,
+                        color: AppColors.primary700,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -91,7 +88,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       width: 346.5,
                       height: 346.5,
                       decoration: const BoxDecoration(
-                        color: _primaryOrange,
+                        color: AppColors.primary700,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -102,7 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         width: 54.6,
                         height: 54.6,
                         decoration: const BoxDecoration(
-                          color: _darkText,
+                          color: AppColors.black1000,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -128,7 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         style: GoogleFonts.zenMaruGothic(
                           fontSize: 36,
                           fontWeight: FontWeight.w900,
-                          color: _darkText,
+                          color: AppColors.black1000,
                           height: 0.6,
                         ),
                       ),
@@ -156,7 +153,7 @@ class _SignInScreenState extends State<SignInScreen> {
             width: 69,
             height: 69,
             decoration: BoxDecoration(
-              color: _iconBg,
+              color: AppColors.primary400,
               borderRadius: BorderRadius.circular(35),
             ),
             child: Center(
@@ -217,7 +214,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 TextSpan(
                   text: '仲間になろう',
                   style: GoogleFonts.zenMaruGothic(
-                    color: _primaryOrange,
+                    color: AppColors.primary700,
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     height: 1.2,
@@ -287,10 +284,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   width: 15,
                   height: 15,
                   decoration: BoxDecoration(
-                    color: _isAgreed ? _primaryOrange : Colors.white,
+                    color: _isAgreed ? AppColors.primary700 : Colors.white,
                     borderRadius: BorderRadius.circular(3),
                     border: Border.all(
-                      color: _isAgreed ? _primaryOrange : _inputBorder,
+                      color: _isAgreed ? AppColors.primary700 : _inputBorder,
                     ),
                   ),
                   child: _isAgreed
@@ -306,7 +303,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextSpan(
                         text: '利用規約',
                         style: GoogleFonts.zenMaruGothic(
-                          color: _primaryOrange,
+                          color: AppColors.primary700,
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
@@ -316,7 +313,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextSpan(
                         text: 'と',
                         style: GoogleFonts.zenMaruGothic(
-                          color: _gray500,
+                          color: AppColors.gray500,
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
@@ -324,7 +321,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextSpan(
                         text: 'プライバシーポリシー',
                         style: GoogleFonts.zenMaruGothic(
-                          color: _primaryOrange,
+                          color: AppColors.primary700,
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
@@ -334,7 +331,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextSpan(
                         text: 'に同意します',
                         style: GoogleFonts.zenMaruGothic(
-                          color: _gray500,
+                          color: AppColors.gray500,
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
@@ -353,9 +350,9 @@ class _SignInScreenState extends State<SignInScreen> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _handleSignUp,
               style: ElevatedButton.styleFrom(
-                backgroundColor: _darkText,
+                backgroundColor: AppColors.black1000,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: _darkText.withAlpha(180),
+                disabledBackgroundColor: AppColors.black1000.withAlpha(180),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(999),
                 ),
@@ -412,7 +409,7 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: _primaryOrange),
+            borderSide: const BorderSide(color: AppColors.primary700),
           ),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12,

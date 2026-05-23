@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/constants/app_colors.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -50,7 +51,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 child: Text(
                   'カメラ',
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFFFF7B00),
+                    color: AppColors.primary700,
                     fontSize: 32,
                     fontWeight: FontWeight.w900,
                   ),
@@ -68,7 +69,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   width: double.infinity,
                   height: 250,
                   decoration: ShapeDecoration(
-                    color: const Color(0xFF1F2937),
+                    color: AppColors.gray800,
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(width: 2, color: Colors.black),
                       borderRadius: BorderRadius.circular(8),
@@ -102,7 +103,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       height: 48,
                       width: 200, // Figmaデザインに合わせた横幅
                       decoration: ShapeDecoration(
-                        color: const Color(0xFFFF7B00),
+                        color: AppColors.primary700,
                         shape: RoundedRectangleBorder(
                           side: const BorderSide(width: 2, color: Colors.black),
                           borderRadius: BorderRadius.circular(24), // 丸みを強く
@@ -139,7 +140,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       height: 48,
                       width: 280, // 少し幅広のグレーボタン
                       decoration: ShapeDecoration(
-                        color: const Color(0xFF6B7280), // グレー
+                        color: AppColors.gray500, // グレー
                         shape: RoundedRectangleBorder(
                           side: const BorderSide(width: 2, color: Colors.black),
                           borderRadius: BorderRadius.circular(24),
@@ -223,7 +224,7 @@ class _CameraScreenState extends State<CameraScreen> {
           Text(
             'カメラは停止しています',
             style: GoogleFonts.zenMaruGothic(
-              color: const Color(0xFF6B7280),
+              color: AppColors.gray500,
               fontSize: 14,
             ),
           ),
@@ -256,7 +257,7 @@ class _CameraScreenState extends State<CameraScreen> {
             Text(
               'カメラは停止しています',
               style: GoogleFonts.zenMaruGothic(
-                color: const Color(0xFF6B7280),
+                color: AppColors.gray500,
                 fontSize: 14,
               ),
             ),
@@ -327,7 +328,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   child: Text(
                     detectionMessage,
                     style: GoogleFonts.zenMaruGothic(
-                      color: const Color(0xFF374151), // 少し濃いめのグレー
+                      color: AppColors.gray700, // 少し濃いめのグレー
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),

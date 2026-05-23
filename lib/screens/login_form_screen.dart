@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../core/constants/app_colors.dart';
 import '../services/auth_service.dart';
 
 class LoginFormScreen extends StatefulWidget {
@@ -12,11 +13,7 @@ class LoginFormScreen extends StatefulWidget {
 }
 
 class _LoginFormScreenState extends State<LoginFormScreen> {
-  static const Color _darkText = Color(0xFF373735);
-  static const Color _gray500 = Color(0xFF6B7280);
-  static const Color _iconBg = Color(0xFFFFE9C9);
   static const Color _accentOrange = Color(0xFFFF8C00);
-  static const Color _primaryOrange = Color(0xFFFF7B00);
   static const Color _cardBg = Color(0xFFFFF6E8);
   static const Color _inputBg = Color(0xFFF9FAFB);
   static const Color _inputBorder = Color(0xFFD1D5DB);
@@ -53,7 +50,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                     width: 346.5,
                     height: 346.5,
                     decoration: const BoxDecoration(
-                      color: _iconBg,
+                      color: AppColors.primary400,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -64,7 +61,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       width: 84,
                       height: 84,
                       decoration: const BoxDecoration(
-                        color: _primaryOrange,
+                        color: AppColors.primary700,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -88,7 +85,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       width: 346.5,
                       height: 346.5,
                       decoration: const BoxDecoration(
-                        color: _primaryOrange,
+                        color: AppColors.primary700,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -99,7 +96,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                         width: 54.6,
                         height: 54.6,
                         decoration: const BoxDecoration(
-                          color: _darkText,
+                          color: AppColors.black1000,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -125,7 +122,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                         style: GoogleFonts.zenMaruGothic(
                           fontSize: 36,
                           fontWeight: FontWeight.w900,
-                          color: _darkText,
+                          color: AppColors.black1000,
                           height: 0.6,
                         ),
                       ),
@@ -153,7 +150,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
             width: 69,
             height: 69,
             decoration: BoxDecoration(
-              color: _iconBg,
+              color: AppColors.primary400,
               borderRadius: BorderRadius.circular(35),
             ),
             child: Center(
@@ -214,7 +211,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                 TextSpan(
                   text: 'また会えたね',
                   style: GoogleFonts.zenMaruGothic(
-                    color: _primaryOrange,
+                    color: AppColors.primary700,
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     height: 1.2,
@@ -263,7 +260,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
             child: Text(
               'パスワードを忘れた方はこちら',
               style: GoogleFonts.zenMaruGothic(
-                color: _primaryOrange,
+                color: AppColors.primary700,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
                 height: 1.2,
@@ -278,9 +275,9 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _handleLogin,
               style: ElevatedButton.styleFrom(
-                backgroundColor: _darkText,
+                backgroundColor: AppColors.black1000,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: _darkText.withAlpha(180),
+                disabledBackgroundColor: AppColors.black1000.withAlpha(180),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(999),
                 ),
@@ -305,7 +302,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   TextSpan(
                     text: 'アカウントがない方は',
                     style: GoogleFonts.zenMaruGothic(
-                      color: _gray500,
+                      color: AppColors.gray500,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       height: 1.2,
@@ -314,7 +311,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   TextSpan(
                     text: '新規登録',
                     style: GoogleFonts.zenMaruGothic(
-                      color: _primaryOrange,
+                      color: AppColors.primary700,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       height: 1.2,
@@ -368,7 +365,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: _primaryOrange),
+            borderSide: const BorderSide(color: AppColors.primary700),
           ),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12,

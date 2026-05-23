@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/constants/app_colors.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
-  static const Color _darkText = Color(0xFF373735);
-  static const Color _gray500 = Color(0xFF6B7280);
-  static const Color _iconBg = Color(0xFFFFE9C9);
   static const Color _accentOrange = Color(0xFFFF8C00);
 
   @override
@@ -32,7 +30,7 @@ class WelcomeScreen extends StatelessWidget {
                       width: 346.5,
                       height: 346.5,
                       decoration: const BoxDecoration(
-                        color: _iconBg,
+                        color: AppColors.primary400,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -44,7 +42,7 @@ class WelcomeScreen extends StatelessWidget {
                       width: 84,
                       height: 84,
                       decoration: const BoxDecoration(
-                        color: Color(0xFFFF7B00),
+                        color: AppColors.primary700,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -71,7 +69,7 @@ class WelcomeScreen extends StatelessWidget {
                         width: 346.5,
                         height: 346.5,
                         decoration: const BoxDecoration(
-                          color: Color(0xFFFF7B00),
+                          color: AppColors.primary700,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -83,7 +81,7 @@ class WelcomeScreen extends StatelessWidget {
                         width: 54.6,
                         height: 54.6,
                         decoration: const BoxDecoration(
-                          color: _darkText,
+                          color: AppColors.black1000,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -109,7 +107,7 @@ class WelcomeScreen extends StatelessWidget {
                         style: GoogleFonts.zenMaruGothic(
                           fontSize: 36,
                           fontWeight: FontWeight.w900,
-                          color: _darkText,
+                          color: AppColors.black1000,
                           height: 0.6,
                         ),
                       ),
@@ -119,7 +117,7 @@ class WelcomeScreen extends StatelessWidget {
                         style: GoogleFonts.zenMaruGothic(
                           fontSize: 32,
                           fontWeight: FontWeight.w700,
-                          color: _darkText,
+                          color: AppColors.black1000,
                           height: 0.9,
                         ),
                         textAlign: TextAlign.center,
@@ -130,7 +128,7 @@ class WelcomeScreen extends StatelessWidget {
                         style: GoogleFonts.zenMaruGothic(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: _darkText,
+                          color: AppColors.black1000,
                           height: 1.5,
                         ),
                         textAlign: TextAlign.center,
@@ -163,7 +161,7 @@ class WelcomeScreen extends StatelessWidget {
             width: 69,
             height: 69,
             decoration: BoxDecoration(
-              color: _iconBg,
+              color: AppColors.primary400,
               borderRadius: BorderRadius.circular(35),
             ),
             child: Center(
@@ -240,7 +238,7 @@ class WelcomeScreen extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () => context.push('/sign-in'),
         style: ElevatedButton.styleFrom(
-          backgroundColor: _darkText,
+          backgroundColor: AppColors.black1000,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(999),
@@ -266,7 +264,7 @@ class WelcomeScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: const BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: _gray500, width: 1),
+            bottom: BorderSide(color: AppColors.gray500, width: 1),
           ),
         ),
         child: Text(
@@ -274,7 +272,7 @@ class WelcomeScreen extends StatelessWidget {
           style: GoogleFonts.zenMaruGothic(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: _gray500,
+            color: AppColors.gray500,
             height: 1.2,
           ),
         ),

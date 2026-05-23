@@ -5,6 +5,7 @@ import '../providers/app_state.dart';
 import '../models/item_model.dart';
 import '../widgets/item_card.dart';
 import '../core/app_theme.dart';
+import '../core/constants/app_colors.dart';
 
 class ItemsScreen extends StatelessWidget {
   const ItemsScreen({super.key});
@@ -37,7 +38,7 @@ class ItemsScreen extends StatelessWidget {
                 Text(
                   '持ち物リスト',
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFFFF7B00),
+                    color: AppColors.primary700,
                     fontSize: 32,
                     fontWeight: FontWeight.w900,
                     height: 0.90,
@@ -50,7 +51,7 @@ class ItemsScreen extends StatelessWidget {
                     width: 35,
                     height: 35,
                     decoration: ShapeDecoration(
-                      color: const Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(45),
                       ),
@@ -80,7 +81,7 @@ class ItemsScreen extends StatelessWidget {
       floatingActionButton: appState.items.isNotEmpty
           ? FloatingActionButton(
               onPressed: () => _showItemDialog(context, appState),
-              backgroundColor: const Color(0xFFFF7B00),
+              backgroundColor: AppColors.primary700,
               shape: const CircleBorder(),
               child: const Icon(Icons.add, color: Colors.white, size: 30),
             )
@@ -125,7 +126,7 @@ class ItemsScreen extends StatelessWidget {
           Text(
             '持ち物が登録されていません',
             style: GoogleFonts.zenMaruGothic(
-              color: const Color(0xFF6B7280),
+              color: AppColors.gray500,
               fontSize: 16,
               fontWeight: FontWeight.w900,
               height: 1.20,
@@ -144,7 +145,7 @@ class ItemsScreen extends StatelessWidget {
                 bottom: 16,
               ),
               decoration: ShapeDecoration(
-                color: const Color(0xFFFF7B00),
+                color: AppColors.primary700,
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(
                     width: 2,
@@ -251,7 +252,7 @@ class ItemsScreen extends StatelessWidget {
                       Text(
                         isEditing ? 'アイテムを編集' : '新しいアイテムを追加',
                         style: GoogleFonts.zenMaruGothic(
-                          color: const Color(0xFF111827),
+                          color: AppColors.gray900,
                           fontSize: 18,
                           fontWeight: FontWeight.w900,
                           height: 1.20,
@@ -364,7 +365,7 @@ class ItemsScreen extends StatelessWidget {
           fontSize: 14,
           fontWeight: FontWeight.w400,
         ),
-        cursorColor: const Color(0xFFFF7B00),
+        cursorColor: AppColors.primary700,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: GoogleFonts.zenMaruGothic(
@@ -411,7 +412,7 @@ class ItemsScreen extends StatelessWidget {
         _buildNewCategoryToggle(
           title: '必須アイテム',
           description: '毎日持ち歩くものは\nONにしてください',
-          titleColor: const Color(0xFFFF7B00),
+          titleColor: AppColors.primary700,
           isSelected: isRequired,
           onChanged: (value) => setState(() => onRequiredChanged(value)),
         ),
@@ -439,7 +440,7 @@ class ItemsScreen extends StatelessWidget {
           const SizedBox(width: 10),
           _buildDialogButton(
             label: isEditing ? '更新' : '追加',
-            backgroundColor: const Color(0xFFFF7B00),
+            backgroundColor: AppColors.primary700,
             textColor: Colors.white,
             fontSize: 12,
             onTap: onSave,
@@ -577,7 +578,7 @@ class ItemsScreen extends StatelessWidget {
             child: Switch(
               value: isSelected,
               activeColor: Colors.white,
-              activeTrackColor: const Color(0xFFFF7B00),
+              activeTrackColor: AppColors.primary700,
               inactiveThumbColor: Colors.white,
               inactiveTrackColor: const Color(0xFFE5E7EB),
               onChanged: onChanged,

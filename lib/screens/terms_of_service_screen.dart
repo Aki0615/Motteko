@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../core/constants/app_colors.dart';
 
 /// 利用規約画面
 class TermsOfServiceScreen extends StatelessWidget {
@@ -51,7 +52,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   Text(
                     '利用規約',
                     style: GoogleFonts.zenMaruGothic(
-                      color: const Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       height: 0.90,
@@ -94,7 +95,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: ShapeDecoration(
-                        color: const Color(0xFFFF7B00),
+                        color: AppColors.primary700,
                         shape: RoundedRectangleBorder(
                           side: BorderSide(width: 1.50, color: Colors.black),
                           borderRadius: BorderRadius.circular(8),

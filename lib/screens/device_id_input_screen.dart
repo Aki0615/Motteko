@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../core/constants/app_colors.dart';
 
 /// デバイスID登録画面
 class DeviceIdInputScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
                   Text(
                     'デバイス登録',
                     style: GoogleFonts.zenMaruGothic(
-                      color: const Color(0xFFFF7B00),
+                      color: AppColors.primary700,
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       height: 0.90,
@@ -81,7 +82,7 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
                   'Mottekoデバイスの画面に表示されているIDを入力してください。',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFF6B7280),
+                    color: AppColors.gray500,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     height: 1.20,
@@ -190,7 +191,7 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
                   width: double.infinity,
                   height: 50,
                   decoration: ShapeDecoration(
-                    color: const Color(0xFFFF7B00),
+                    color: AppColors.primary700,
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(width: 2, color: Colors.black),
                       borderRadius: BorderRadius.circular(8),

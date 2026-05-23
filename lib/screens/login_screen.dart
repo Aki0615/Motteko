@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/constants/app_colors.dart';
 
 /// ログイン画面ウィジェット
 ///
@@ -20,7 +21,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFF7B00),
+      backgroundColor: AppColors.primary700,
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -178,7 +179,7 @@ class LoginScreen extends StatelessWidget {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 48),
                               decoration: ShapeDecoration(
-                                color: const Color(0xFFFF7B00),
+                                color: AppColors.primary700,
                                 shape: RoundedRectangleBorder(
                                   side: const BorderSide(width: 2.25),
                                   borderRadius: BorderRadius.circular(22.50),
