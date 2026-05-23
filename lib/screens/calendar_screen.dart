@@ -63,64 +63,61 @@ class _CalendarScreenState extends State<CalendarScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          color: AppColors.primary700,
-        ),
+        color: AppColors.primary700,
         child: SafeArea(
           bottom: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 12),
-              // ヘッダー: 連続記録
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  '連続記録',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: Colors.white,
-                    fontSize: 36,
-                    fontWeight: FontWeight.w900,
-                    height: 0.80,
-                  ),
-                ),
-              ),
+              _buildTitle(),
               const SizedBox(height: 20),
-
-              // メインコンテンツ
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(bottom: 100),
-                  child: Column(
-                    children: [
-                      // 連続記録カード
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: _buildStreakCard(),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // 下部: カレンダー部分の背景（白）
-                      Container(
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32),
-                            topRight: Radius.circular(32),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-                          child: _buildCalendarCard(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              _buildContent(),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Text(
+        '連続記録',
+        style: GoogleFonts.zenMaruGothic(
+          color: Colors.white, fontSize: 36, fontWeight: FontWeight.w900, height: 0.80,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    return Expanded(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 100),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: _buildStreakCard(),
+            ),
+            const SizedBox(height: 24),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(32),
+                  topRight: Radius.circular(32),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: _buildCalendarCard(),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -330,60 +327,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Text(
             '${_currentMonth.year}年 ${_currentMonth.month}月',
             style: GoogleFonts.zenMaruGothic(
-              color: AppColors.gray900,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              height: 1.20,
+              color: AppColors.gray900, fontSize: 16, fontWeight: FontWeight.w900, height: 1.20,
             ),
           ),
           Row(
             children: [
-              // 前月ボタン
-              GestureDetector(
-                onTap: _previousMonth,
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFFDAC3),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.chevron_left,
-                      color: AppColors.primary700,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
+              _buildMonthNavButton(Icons.chevron_left, _previousMonth),
               const SizedBox(width: 8),
-              // 次月ボタン
-              GestureDetector(
-                onTap: _nextMonth,
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFFDAC4),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.chevron_right,
-                      color: AppColors.primary700,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
+              _buildMonthNavButton(Icons.chevron_right, _nextMonth),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMonthNavButton(IconData icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: ShapeDecoration(
+          color: const Color(0xFFFFDAC3),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+        child: Center(child: Icon(icon, color: AppColors.primary700, size: 20)),
       ),
     );
   }

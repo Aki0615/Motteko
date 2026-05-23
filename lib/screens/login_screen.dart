@@ -83,209 +83,159 @@ class LoginScreen extends StatelessWidget {
 
             Column(
               children: [
-                // ロゴとタイトル領域
-                Expanded(
-                  flex: 3,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // アプリアイコン
-                        Container(
-                          width: 90,
-                          height: 90,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(19.69),
-                            ),
-                          ),
-                          child: Image.asset(
-                            'assets/icons/Motteko_rogo.png',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // タイトル
-                        Text(
-                          'Motteko',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: Colors.white,
-                            fontSize: 40,
-                            fontWeight: FontWeight.w900,
-                            height: 0.72,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // 下部のベージュ背景メニュー領域
-                Expanded(
-                  flex: 5,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: const ShapeDecoration(
-                      color: Color(0xFFFFDAC4),
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          width: 2,
-                          color: Color(0xFF000000),
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40),
-                        ),
-                      ),
-                    ),
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 46, vertical: 40),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 16),
-                          // キャッチコピー
-                          Text(
-                            'もう忘れない！',
-                            style: GoogleFonts.zenMaruGothic(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              height: 1.20,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '毎朝を自信満々に',
-                            style: GoogleFonts.zenMaruGothic(
-                              color: Colors.black,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              height: 1.20,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 60),
-
-                          // サインインボタン
-                          GestureDetector(
-                            onTap: () => context.go('/sign-in'),
-                            child: Container(
-                              height: 60,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 48),
-                              decoration: ShapeDecoration(
-                                color: AppColors.primary700,
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(width: 2.25),
-                                  borderRadius: BorderRadius.circular(22.50),
-                                ),
-                                shadows: const [
-                                  BoxShadow(
-                                    color: Color(0xFF000000),
-                                    blurRadius: 0,
-                                    offset: Offset(3, 4.50),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'サインイン→',
-                                  style: GoogleFonts.zenMaruGothic(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900,
-                                    height: 1.20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-
-                          // 区切り線とテキスト
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 2,
-                                  color: const Color(0xFFB9BFC9),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Text(
-                                  'すでにアカウントをお持ちの方',
-                                  style: GoogleFonts.zenMaruGothic(
-                                    color: const Color(0xFFB9BFC9),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                    height: 1.20,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: 2,
-                                  color: const Color(0xFFB9BFC9),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 32),
-
-                          // ログインボタン
-                          GestureDetector(
-                            onTap: () => context.go('/login-form'),
-                            child: Container(
-                              height: 60,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 48),
-                              decoration: ShapeDecoration(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(width: 2.25),
-                                  borderRadius: BorderRadius.circular(22.50),
-                                ),
-                                shadows: const [
-                                  BoxShadow(
-                                    color: Color(0xFF000000),
-                                    blurRadius: 0,
-                                    offset: Offset(3, 4.50),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'ログイン→',
-                                  style: GoogleFonts.zenMaruGothic(
-                                    color: Colors.black,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900,
-                                    height: 1.20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                _buildLogoSection(),
+                _buildMenuSection(context),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLogoSection() {
+    return Expanded(
+      flex: 3,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 90,
+              height: 90,
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(19.69),
+                ),
+              ),
+              child: Image.asset('assets/icons/Motteko_rogo.png', fit: BoxFit.cover),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Motteko',
+              style: GoogleFonts.zenMaruGothic(
+                color: Colors.white,
+                fontSize: 40,
+                fontWeight: FontWeight.w900,
+                height: 0.72,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuSection(BuildContext context) {
+    return Expanded(
+      flex: 5,
+      child: Container(
+        width: double.infinity,
+        decoration: const ShapeDecoration(
+          color: Color(0xFFFFDAC4),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 2, color: Color(0xFF000000)),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(40),
+              topRight: Radius.circular(40),
+            ),
+          ),
+        ),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 46, vertical: 40),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Text(
+                'もう忘れない！',
+                style: GoogleFonts.zenMaruGothic(
+                  color: Colors.black, fontSize: 24, fontWeight: FontWeight.w900, height: 1.20,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '毎朝を自信満々に',
+                style: GoogleFonts.zenMaruGothic(
+                  color: Colors.black, fontSize: 24, fontWeight: FontWeight.w900, height: 1.20,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 60),
+              _buildActionButton(
+                onTap: () => context.go('/sign-in'),
+                label: 'サインイン→',
+                bgColor: AppColors.primary700,
+                textColor: Colors.white,
+              ),
+              const SizedBox(height: 32),
+              _buildDivider(),
+              const SizedBox(height: 32),
+              _buildActionButton(
+                onTap: () => context.go('/login-form'),
+                label: 'ログイン→',
+                bgColor: Colors.white,
+                textColor: Colors.black,
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required VoidCallback onTap,
+    required String label,
+    required Color bgColor,
+    required Color textColor,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 48),
+        decoration: ShapeDecoration(
+          color: bgColor,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(width: 2.25),
+            borderRadius: BorderRadius.circular(22.50),
+          ),
+          shadows: const [
+            BoxShadow(color: Color(0xFF000000), blurRadius: 0, offset: Offset(3, 4.50)),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: GoogleFonts.zenMaruGothic(
+              color: textColor, fontSize: 24, fontWeight: FontWeight.w900, height: 1.20,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Row(
+      children: [
+        Expanded(child: Container(height: 2, color: const Color(0xFFB9BFC9))),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'すでにアカウントをお持ちの方',
+            style: GoogleFonts.zenMaruGothic(
+              color: const Color(0xFFB9BFC9), fontSize: 16, fontWeight: FontWeight.w900, height: 1.20,
+            ),
+          ),
+        ),
+        Expanded(child: Container(height: 2, color: const Color(0xFFB9BFC9))),
+      ],
     );
   }
 }

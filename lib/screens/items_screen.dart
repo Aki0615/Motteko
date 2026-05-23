@@ -18,56 +18,7 @@ class ItemsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // ============================================================
-          // ヘッダー（Figmaデザイン準拠）
-          // ============================================================
-          Container(
-            width: double.infinity,
-            height: 60,
-            margin: const EdgeInsets.only(top: 48),
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: 2, color: Colors.black),
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(width: 22),
-                Text(
-                  '持ち物リスト',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: AppColors.primary700,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    height: 0.90,
-                  ),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () => _showItemDialog(context, appState),
-                  child: Container(
-                    width: 35,
-                    height: 35,
-                    decoration: ShapeDecoration(
-                      color: AppColors.primary700,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(45),
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.add,
-                      size: 24,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // メインコンテンツエリア
+          _buildHeader(context, appState),
           Expanded(
             child: appState.items.isEmpty
                 ? _buildEmptyState(context, appState)
@@ -75,9 +26,6 @@ class ItemsScreen extends StatelessWidget {
           ),
         ],
       ),
-      // ============================================================
-      // 追加：アイテムが1つ以上ある時に表示される右下の「＋」ボタン
-      // ============================================================
       floatingActionButton: appState.items.isNotEmpty
           ? FloatingActionButton(
               onPressed: () => _showItemDialog(context, appState),
@@ -85,7 +33,44 @@ class ItemsScreen extends StatelessWidget {
               shape: const CircleBorder(),
               child: const Icon(Icons.add, color: Colors.white, size: 30),
             )
-          : null, // 空の時は画面中央のボタンがあるので非表示にする
+          : null,
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, AppState appState) {
+    return Container(
+      width: double.infinity,
+      height: 60,
+      margin: const EdgeInsets.only(top: 48),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(width: 2, color: Colors.black)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(width: 22),
+          Text(
+            '持ち物リスト',
+            style: GoogleFonts.zenMaruGothic(
+              color: AppColors.primary700, fontSize: 32, fontWeight: FontWeight.w900, height: 0.90,
+            ),
+          ),
+          const Spacer(),
+          GestureDetector(
+            onTap: () => _showItemDialog(context, appState),
+            child: Container(
+              width: 35,
+              height: 35,
+              decoration: ShapeDecoration(
+                color: AppColors.primary700,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
+              ),
+              child: const Icon(Icons.add, size: 24, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

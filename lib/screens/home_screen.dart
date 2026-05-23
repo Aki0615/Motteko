@@ -341,124 +341,132 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             }
 
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 39,
-                        height: 39,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFF0B3),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.warning_amber_rounded,
-                          color: Color(0xFFFFA600),
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(height: 11),
-                      Text(
-                        'よく忘れるアイテム',
-                        style: GoogleFonts.zenMaruGothic(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          color: const Color(0xFF111111),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '自分の傾向を知って、\n対策できる。',
-                        style: GoogleFonts.zenMaruGothic(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF4B5563),
-                          height: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        width: 132,
-                        height: 1,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            const dashWidth = 4.0;
-                            const dashSpace = 3.0;
-                            final count = (constraints.maxWidth / (dashWidth + dashSpace)).floor();
-                            return Row(
-                              children: List.generate(count, (_) {
-                                return const Padding(
-                                  padding: EdgeInsets.only(right: dashSpace),
-                                  child: SizedBox(
-                                    width: dashWidth,
-                                    height: 1,
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(color: AppColors.primary400),
-                                    ),
-                                  ),
-                                );
-                              }),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '課題の可視化で、忘れ物を減らせる',
-                        style: GoogleFonts.zenMaruGothic(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.gray500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 18),
-                Container(
-                  width: 130,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0x1A000000),
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          itemName,
-                          style: GoogleFonts.zenMaruGothic(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF222222),
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Text(
-                        itemCount > 0 ? '$itemCount回' : '',
-                        style: GoogleFonts.zenMaruGothic(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.gray700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
+            return _buildForgottenContent(itemName, itemCount);
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildDashedLine({required double width, required Color color}) {
+    const dashWidth = 4.0;
+    const dashSpace = 3.0;
+    final count = (width / (dashWidth + dashSpace)).floor();
+    return SizedBox(
+      width: width,
+      height: 1,
+      child: Row(
+        children: List.generate(count, (_) {
+          return Padding(
+            padding: const EdgeInsets.only(right: dashSpace),
+            child: SizedBox(
+              width: dashWidth,
+              height: 1,
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: color),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildForgottenContent(String itemName, int itemCount) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(child: _buildForgottenDescription()),
+        const SizedBox(width: 18),
+        _buildForgottenItemBadge(itemName, itemCount),
+      ],
+    );
+  }
+
+  Widget _buildForgottenDescription() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 39,
+          height: 39,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF0B3),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(
+            Icons.warning_amber_rounded,
+            color: Color(0xFFFFA600),
+            size: 24,
+          ),
+        ),
+        const SizedBox(height: 11),
+        Text(
+          'よく忘れるアイテム',
+          style: GoogleFonts.zenMaruGothic(
+            fontSize: 16,
+            fontWeight: FontWeight.w900,
+            color: const Color(0xFF111111),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          '自分の傾向を知って、\n対策できる。',
+          style: GoogleFonts.zenMaruGothic(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF4B5563),
+            height: 1.2,
+          ),
+        ),
+        const SizedBox(height: 8),
+        _buildDashedLine(width: 132, color: AppColors.primary400),
+        const SizedBox(height: 8),
+        Text(
+          '課題の可視化で、忘れ物を減らせる',
+          style: GoogleFonts.zenMaruGothic(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            color: AppColors.gray500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildForgottenItemBadge(String itemName, int itemCount) {
+    return Container(
+      width: 130,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0x1A000000)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Text(
+              itemName,
+              style: GoogleFonts.zenMaruGothic(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF222222),
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Text(
+            itemCount > 0 ? '$itemCount回' : '',
+            style: GoogleFonts.zenMaruGothic(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: AppColors.gray700,
+            ),
+          ),
+        ],
       ),
     );
   }
