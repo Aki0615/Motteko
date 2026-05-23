@@ -1,22 +1,9 @@
-// =============================================================================
-// login_form_screen.dart
-// =============================================================================
-// Figmaデザインに基づいたログインフォーム画面。
-// メールアドレスとパスワードの入力フィールド、ログインボタン、
-// Google/Appleログイン、新規登録へのリンクを配置しています。
-// =============================================================================
-
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
 
-/// ログインフォーム画面ウィジェット
-///
-/// Figmaデザインを忠実に再現したログインフォーム画面。
-/// メールアドレス・パスワード入力、ログインボタン、
-/// Google/Apple認証ボタン、新規登録リンクを配置しています。
 class LoginFormScreen extends StatefulWidget {
   const LoginFormScreen({super.key});
 
@@ -25,6 +12,16 @@ class LoginFormScreen extends StatefulWidget {
 }
 
 class _LoginFormScreenState extends State<LoginFormScreen> {
+  static const Color _darkText = Color(0xFF373735);
+  static const Color _gray500 = Color(0xFF6B7280);
+  static const Color _iconBg = Color(0xFFFFE9C9);
+  static const Color _accentOrange = Color(0xFFFF8C00);
+  static const Color _primaryOrange = Color(0xFFFF7B00);
+  static const Color _cardBg = Color(0xFFFFF6E8);
+  static const Color _inputBg = Color(0xFFF9FAFB);
+  static const Color _inputBorder = Color(0xFFD1D5DB);
+  static const Color _placeholder = Color(0xFF9CA3AF);
+
   bool _isLoading = false;
   final _authService = AuthService();
   final _emailController = TextEditingController();
@@ -40,292 +37,343 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFF7B00),
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            // ヘッダー部分
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 27, right: 30, top: 20, bottom: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          // 左上の装飾
+          Positioned(
+            left: -85,
+            top: -215,
+            child: SizedBox(
+              width: 360,
+              height: 347,
+              child: Stack(
                 children: [
-                  Text(
-                    'ログイン',
-                    style: GoogleFonts.zenMaruGothic(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w900,
-                      height: 0.90,
+                  Container(
+                    width: 346.5,
+                    height: 346.5,
+                    decoration: const BoxDecoration(
+                      color: _iconBg,
+                      shape: BoxShape.circle,
                     ),
                   ),
-                  Text(
-                    'Motteko',
-                    style: GoogleFonts.zenMaruGothic(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      height: 1.44,
+                  Positioned(
+                    left: 276,
+                    top: 236,
+                    child: Container(
+                      width: 84,
+                      height: 84,
+                      decoration: const BoxDecoration(
+                        color: _primaryOrange,
+                        shape: BoxShape.circle,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-
-            // 下部のベージュ背景フォーム
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: const ShapeDecoration(
-                  color: Color(0xFFFFDAC4),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      width: 2,
-                      color: Color(0xFF000000),
+          ),
+          // 右下の装飾
+          Positioned(
+            right: -85,
+            bottom: -215,
+            child: Transform.rotate(
+              angle: 3.14159,
+              child: SizedBox(
+                width: 360,
+                height: 347,
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 346.5,
+                      height: 346.5,
+                      decoration: const BoxDecoration(
+                        color: _primaryOrange,
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
+                    Positioned(
+                      left: 290.7,
+                      top: 250.7,
+                      child: Container(
+                        width: 54.6,
+                        height: 54.6,
+                        decoration: const BoxDecoration(
+                          color: _darkText,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 46, vertical: 40),
+              ),
+            ),
+          ),
+          // メインコンテンツ
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 38),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // 「おかえり！また会えたね」テキスト
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'おかえり！\n',
-                              style: GoogleFonts.zenMaruGothic(
-                                color: Colors.black,
-                                fontSize: 32,
-                                fontWeight: FontWeight.w900,
-                                height: 1.09,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'また会えたね',
-                              style: GoogleFonts.zenMaruGothic(
-                                color: const Color(0xFFFF6100),
-                                fontSize: 32,
-                                fontWeight: FontWeight.w900,
-                                height: 1.09,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 48),
-
-                      // 「メールアドレス」ラベル
+                      _buildAppIcon(),
+                      const SizedBox(height: 7),
                       Text(
-                        'メールアドレス',
+                        'Motteko',
                         style: GoogleFonts.zenMaruGothic(
-                          color: Colors.black,
-                          fontSize: 20,
+                          fontSize: 36,
                           fontWeight: FontWeight.w900,
-                          height: 1.20,
+                          color: _darkText,
+                          height: 0.6,
                         ),
                       ),
-                      const SizedBox(height: 8),
-
-                      // メールアドレス入力フィールド
-                      _buildInputField(
-                        controller: _emailController,
-                        hintText: 'メールアドレスを入力',
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      const SizedBox(height: 24),
-
-                      // 「パスワード」ラベル
-                      Text(
-                        'パスワード',
-                        style: GoogleFonts.zenMaruGothic(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-                          height: 1.20,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-
-                      // パスワード入力フィールド
-                      _buildInputField(
-                        controller: _passwordController,
-                        hintText: 'パスワードを入力',
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 8),
-
-                      // 「パスワードを忘れた方はこちら」テキスト
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'パスワードを忘れた方はこちら',
-                          style: GoogleFonts.zenMaruGothic(
-                            color: const Color(0xFFFF6100),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w900,
-                            height: 1.28,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-
-                      // ログインボタン
-                      Center(
-                        child: GestureDetector(
-                          onTap: _isLoading ? null : _handleLogin,
-                          child: Container(
-                            height: 60,
-                            padding: const EdgeInsets.symmetric(horizontal: 48),
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFFF7B00),
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(width: 2.25),
-                                borderRadius: BorderRadius.circular(22.50),
-                              ),
-                              shadows: const [
-                                BoxShadow(
-                                  color: Color(0xFF000000),
-                                  blurRadius: 0,
-                                  offset: Offset(3, 4.50),
-                                  spreadRadius: 0,
-                                )
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  _isLoading ? '接続中...' : 'ログイン→',
-                                  style: GoogleFonts.zenMaruGothic(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900,
-                                    height: 1.20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-
-                      // 「または」区切り線
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 2,
-                              color: const Color(0xFFB9BFC9),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              'または',
-                              style: GoogleFonts.zenMaruGothic(
-                                color: const Color(0xFFB9BFC9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w900,
-                                height: 1.20,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 2,
-                              color: const Color(0xFFB9BFC9),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Google/Appleログインボタン
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: _buildSocialButton(
-                              icon: const Text(
-                                'G',
-                                style: TextStyle(
-                                  color: Color(0xFFFF7B00),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              text: 'Google',
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: _buildSocialButton(
-                              icon: const Icon(
-                                Icons.apple,
-                                color: Colors.black,
-                                size: 22,
-                              ),
-                              text: 'Apple',
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
-
-                      // 「アカウントがない方は新規登録」テキスト
-                      Center(
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'アカウントがない方は',
-                                style: GoogleFonts.zenMaruGothic(
-                                  color: const Color(0xFFB9BFC9),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
-                                  height: 1.20,
-                                ),
-                              ),
-                              TextSpan(
-                                text: '新規登録',
-                                style: GoogleFonts.zenMaruGothic(
-                                  color: const Color(0xFFFF6100),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
-                                  height: 1.20,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    context.go('/sign-in');
-                                  },
-                              ),
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 37),
+                      _buildLoginCard(),
                     ],
                   ),
                 ),
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppIcon() {
+    return SizedBox(
+      width: 71,
+      height: 70,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 69,
+            height: 69,
+            decoration: BoxDecoration(
+              color: _iconBg,
+              borderRadius: BorderRadius.circular(35),
+            ),
+            child: Center(
+              child: Image.asset(
+                'assets/icons/Motteko_rogo2.png',
+                width: 40,
+                height: 40,
+              ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 2,
+            child: Container(
+              width: 14,
+              height: 14,
+              decoration: const BoxDecoration(
+                color: _accentOrange,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 35),
+      decoration: BoxDecoration(
+        color: _cardBg,
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // タイトル
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'おかえり！\n',
+                  style: GoogleFonts.zenMaruGothic(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                  ),
+                ),
+                TextSpan(
+                  text: 'また会えたね',
+                  style: GoogleFonts.zenMaruGothic(
+                    color: _primaryOrange,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 23),
+          // メールアドレス
+          Text(
+            'メールアドレス',
+            style: GoogleFonts.zenMaruGothic(
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 5),
+          _buildInputField(
+            controller: _emailController,
+            hintText: 'メールアドレスを入力',
+            keyboardType: TextInputType.emailAddress,
+          ),
+          const SizedBox(height: 23),
+          // パスワード
+          Text(
+            'パスワード',
+            style: GoogleFonts.zenMaruGothic(
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 5),
+          _buildInputField(
+            controller: _passwordController,
+            hintText: 'パスワードを入力',
+            obscureText: true,
+          ),
+          const SizedBox(height: 6),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'パスワードを忘れた方はこちら',
+              style: GoogleFonts.zenMaruGothic(
+                color: _primaryOrange,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                height: 1.2,
+              ),
+            ),
+          ),
+          const SizedBox(height: 23),
+          // ログインボタン
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton(
+              onPressed: _isLoading ? null : _handleLogin,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _darkText,
+                foregroundColor: Colors.white,
+                disabledBackgroundColor: _darkText.withAlpha(180),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                elevation: 0,
+              ),
+              child: Text(
+                _isLoading ? '接続中...' : 'ログイン',
+                style: GoogleFonts.zenMaruGothic(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  height: 1.2,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 23),
+          // 新規登録リンク
+          Center(
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'アカウントがない方は',
+                    style: GoogleFonts.zenMaruGothic(
+                      color: _gray500,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '新規登録',
+                    style: GoogleFonts.zenMaruGothic(
+                      color: _primaryOrange,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => context.go('/sign-in'),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String hintText,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return SizedBox(
+      height: 35,
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        style: GoogleFonts.zenMaruGothic(
+          color: Colors.black,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: GoogleFonts.zenMaruGothic(
+            color: _placeholder,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+          filled: true,
+          fillColor: _inputBg,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: _inputBorder),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: _inputBorder),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: _primaryOrange),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 0,
+          ),
         ),
       ),
     );
@@ -364,83 +412,5 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  Widget _buildSocialButton({required Widget icon, required String text}) {
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(width: 2.25, color: Colors.black),
-        borderRadius: BorderRadius.circular(22.50),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xFF000000),
-            blurRadius: 0,
-            offset: Offset(3, 4.50),
-            spreadRadius: 0,
-          )
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon,
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: GoogleFonts.zenMaruGothic(
-              color: Colors.black,
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              height: 1.20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hintText,
-    bool obscureText = false,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return SizedBox(
-      width: double.infinity,
-      height: 60,
-      child: Material(
-        color: Colors.transparent,
-        child: TextField(
-          controller: controller,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
-          style: GoogleFonts.zenMaruGothic(
-            color: Colors.black,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          ),
-          decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: GoogleFonts.zenMaruGothic(
-              color: const Color(0xFF6B7280),
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(22.50),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
