@@ -23,7 +23,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               height: 60,
               margin: const EdgeInsets.only(top: 48),
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(width: 2, color: Colors.black),
                 ),
@@ -75,10 +75,10 @@ class TermsOfServiceScreen extends StatelessWidget {
                 decoration: ShapeDecoration(
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 2, color: Colors.black),
+                    side: const BorderSide(width: 2, color: Colors.black),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  shadows: [
+                  shadows: const [
                     BoxShadow(
                       color: Color(0xFF000000),
                       blurRadius: 0,
@@ -97,10 +97,10 @@ class TermsOfServiceScreen extends StatelessWidget {
                       decoration: ShapeDecoration(
                         color: AppColors.primary700,
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(width: 1.50, color: Colors.black),
+                          side: const BorderSide(width: 1.50, color: Colors.black),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        shadows: [
+                        shadows: const [
                           BoxShadow(
                             color: Color(0xFF000000),
                             blurRadius: 0,
@@ -159,10 +159,10 @@ class TermsOfServiceScreen extends StatelessWidget {
                 decoration: ShapeDecoration(
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 2, color: Colors.black),
+                    side: const BorderSide(width: 2, color: Colors.black),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  shadows: [
+                  shadows: const [
                     BoxShadow(
                       color: Color(0xFF000000),
                       blurRadius: 0,

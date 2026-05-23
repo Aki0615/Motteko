@@ -47,7 +47,7 @@ class SettingsScreen extends StatelessWidget {
       height: 60,
       margin: const EdgeInsets.only(top: 48),
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(width: 2, color: Colors.black)),
       ),
       child: Row(
@@ -85,10 +85,10 @@ class SettingsScreen extends StatelessWidget {
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            side: BorderSide(width: 2, color: Colors.black),
+            side: const BorderSide(width: 2, color: Colors.black),
             borderRadius: BorderRadius.circular(8),
           ),
-          shadows: [
+          shadows: const [
             BoxShadow(color: Color(0xFF000000), blurRadius: 0, offset: Offset(2, 3), spreadRadius: 0),
           ],
         ),
@@ -101,10 +101,10 @@ class SettingsScreen extends StatelessWidget {
               decoration: ShapeDecoration(
                 color: AppColors.primary700,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 2, color: Colors.black),
+                  side: const BorderSide(width: 2, color: Colors.black),
                   borderRadius: BorderRadius.circular(45),
                 ),
-                shadows: [
+                shadows: const [
                   BoxShadow(color: Color(0xFF000000), blurRadius: 0, offset: Offset(3, 4.50), spreadRadius: 0),
                 ],
               ),
@@ -209,17 +209,17 @@ class SettingsScreen extends StatelessWidget {
           decoration: ShapeDecoration(
             color: Colors.white,
             shape: RoundedRectangleBorder(
-              side: BorderSide(width: 2, color: AppColors.error),
+              side: const BorderSide(width: 2, color: AppColors.error),
               borderRadius: BorderRadius.circular(8),
             ),
-            shadows: [
+            shadows: const [
               BoxShadow(color: AppColors.error, blurRadius: 0, offset: Offset(2, 3), spreadRadius: 0),
             ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.logout, size: 24, color: AppColors.error),
+              const Icon(Icons.logout, size: 24, color: AppColors.error),
               const SizedBox(width: 8),
               Text(
                 'ログアウト',
@@ -241,7 +241,7 @@ class SettingsScreen extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            side: BorderSide(width: 2, color: Colors.black),
+            side: const BorderSide(width: 2, color: Colors.black),
             borderRadius: BorderRadius.circular(16),
           ),
           title: Text(
@@ -289,10 +289,10 @@ class SettingsScreen extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 2, color: Colors.black),
+          side: const BorderSide(width: 2, color: Colors.black),
           borderRadius: BorderRadius.circular(8),
         ),
-        shadows: [
+        shadows: const [
           BoxShadow(
             color: Color(0xFF000000),
             blurRadius: 0,
@@ -328,10 +328,10 @@ class SettingsScreen extends StatelessWidget {
               decoration: ShapeDecoration(
                 color: iconColor,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1.50, color: Colors.black),
+                  side: const BorderSide(width: 1.50, color: Colors.black),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                shadows: [
+                shadows: const [
                   BoxShadow(
                     color: Color(0xFF000000),
                     blurRadius: 0,
@@ -355,10 +355,10 @@ class SettingsScreen extends StatelessWidget {
             ),
             const Spacer(),
             // 矢印
-            Icon(
+            const Icon(
               Icons.chevron_right,
               size: 24,
-              color: const Color(0xFFB9BFC9),
+              color: Color(0xFFB9BFC9),
             ),
           ],
         ),

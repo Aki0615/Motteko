@@ -293,8 +293,6 @@ class AppTheme {
       // テキストスタイルを適用
       textTheme: _buildTextTheme(),
 
-      // Material3デザインを使用
-      useMaterial3: true,
 
       // -------------------------------------------------------------------------
       // AppBar（画面上部のバー）のテーマ
@@ -467,7 +465,7 @@ class AppTheme {
         trackColor: WidgetStateProperty.resolveWith((states) {
           // ONの時は薄いオレンジ、OFFの時は薄いグレー
           if (states.contains(WidgetState.selected)) {
-            return primaryOrange.withOpacity(0.3);
+            return primaryOrange.withValues(alpha: 0.3);
           }
           return gray300;
         }),

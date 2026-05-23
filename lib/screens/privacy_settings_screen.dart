@@ -32,7 +32,7 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
               height: 60,
               margin: const EdgeInsets.only(top: 48),
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(width: 2, color: Colors.black),
                 ),
@@ -97,10 +97,10 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
                 decoration: ShapeDecoration(
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 2, color: Colors.black),
+                    side: const BorderSide(width: 2, color: Colors.black),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  shadows: [
+                  shadows: const [
                     BoxShadow(
                       color: Color(0xFF000000),
                       blurRadius: 0,
@@ -154,10 +154,10 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2, color: Colors.black),
+                      side: const BorderSide(width: 2, color: Colors.black),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    shadows: [
+                    shadows: const [
                       BoxShadow(
                         color: Color(0xFF000000),
                         blurRadius: 0,
@@ -199,10 +199,10 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       side:
-                          BorderSide(width: 2, color: AppColors.error),
+                          const BorderSide(width: 2, color: AppColors.error),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    shadows: [
+                    shadows: const [
                       BoxShadow(
                         color: AppColors.error,
                         blurRadius: 0,
@@ -273,7 +273,7 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
             activeTrackColor: AppColors.primary700,
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: const Color(0xFFB9BFC9),

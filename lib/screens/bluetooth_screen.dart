@@ -270,7 +270,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                       onTap: () => _connectAndSendUid(device),
                       child: _buildConnectedDeviceCard(device),
                     ))
-                .toList(),
+                ,
             const SizedBox(height: 16),
             Text(
               'ほかのデバイス',
@@ -289,7 +289,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                     onTap: () => _connectAndSendUid(r.device),
                     child: _buildDeviceCard(r),
                   ))
-              .toList(),
+              ,
         ],
       ),
     );
@@ -410,7 +410,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: const Color(0xFF26A5FF).withOpacity(0.1),
+            color: const Color(0xFF26A5FF).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(Icons.bluetooth, size: 24, color: Color(0xFF26A5FF)),
