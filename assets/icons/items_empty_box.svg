@@ -1,0 +1,21 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 58.3333 63.6557" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 319">
+<path id="Vector" d="M28.4167 48.4167V31.0417" stroke="#373735" stroke-width="4.44722" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M5.16667 18.1667L28.3667 31.5001L51.5667 18.1667" stroke="#373735" stroke-width="5.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="Vector_3" filter="url(#filter0_d_0_45)">
+<path d="M52.4167 20.4112C52.4157 19.4759 52.1688 18.5574 51.7008 17.7476C51.2327 16.9379 50.56 16.2655 49.75 15.7979L31.0833 5.1312C30.2726 4.6631 29.3529 4.41667 28.4167 4.41667C27.4805 4.41667 26.5608 4.6631 25.75 5.1312L7.08333 15.7979C6.27337 16.2655 5.60062 16.9379 5.13257 17.7476C4.66452 18.5574 4.41763 19.4759 4.41667 20.4112V41.7445C4.41763 42.6798 4.66452 43.5984 5.13257 44.4081C5.60062 45.2178 6.27337 45.8902 7.08333 46.3579L25.75 57.0245C26.5608 57.4926 27.4805 57.7391 28.4167 57.7391C29.3529 57.7391 30.2726 57.4926 31.0833 57.0245L49.75 46.3579C50.56 45.8902 51.2327 45.2178 51.7008 44.4081C52.1688 43.5984 52.4157 42.6798 52.4167 41.7445V20.4112Z" stroke="#373735" stroke-width="5.33333" stroke-linecap="round" stroke-linejoin="round" shape-rendering="crispEdges"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_0_45" x="-2.38419e-07" y="2.38419e-07" width="58.3333" height="63.6557" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="0.75" dy="0.75"/>
+<feGaussianBlur stdDeviation="1.25"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_45"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_45" result="shape"/>
+</filter>
+</defs>
+</svg>
