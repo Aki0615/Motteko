@@ -27,6 +27,7 @@ dependencies:
   flutter_blue_plus: ^1.33.4
   holiday_jp: ^0.0.8
   confetti: ^0.8.0
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +48,7 @@ flutter:
   assets:
     - assets/fonts/
     - assets/icons/
+    - assets/images/welcome/
 
 flutter_launcher_icons:
   android: true
