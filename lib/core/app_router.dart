@@ -17,6 +17,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'constants/app_colors.dart';
 
 // 各画面のインポート
 import '../screens/home_screen.dart';
@@ -262,35 +264,26 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
           child,
           // フローティングナビゲーションバー
           Positioned(
-            left: 20,
-            right: 20,
+            left: 17,
+            right: 17,
             bottom: 20,
             child: SafeArea(
               child: Container(
                 height: 60,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: ShapeDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
                   color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(
-                      width: 1.5,
-                      color: Colors.black,
-                    ),
-                    borderRadius: BorderRadius.circular(60),
-                  ),
-                  shadows: const [
+                  borderRadius: BorderRadius.circular(60),
+                  boxShadow: const [
                     BoxShadow(
-                      color: Color(0xFF000000),
-                      blurRadius: 0,
-                      offset: Offset(3, 4.5),
-                      spreadRadius: 0,
-                    )
+                      color: Color(0x40000000),
+                      blurRadius: 5,
+                    ),
                   ],
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // ホームタブ
                     _buildNavItem(
                       context: context,
                       index: 0,
@@ -299,40 +292,36 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
                       selectedIcon: Icons.home,
                       label: 'ホーム',
                     ),
-                    // 持ち物タブ
-                    _buildNavItem(
+                    _buildSvgNavItem(
                       context: context,
                       index: 1,
                       selectedIndex: selectedIndex,
-                      icon: Icons.work_outline,
-                      selectedIcon: Icons.work,
+                      svgAsset: 'assets/icons/nav_bag.svg',
+                      selectedSvgAsset: 'assets/icons/nav_bag_active.svg',
                       label: '持ち物',
                     ),
-                    // カメラタブ
-                    _buildNavItem(
+                    _buildSvgNavItem(
                       context: context,
                       index: 2,
                       selectedIndex: selectedIndex,
-                      icon: Icons.videocam_outlined,
-                      selectedIcon: Icons.videocam,
+                      svgAsset: 'assets/icons/nav_camera.svg',
+                      selectedSvgAsset: 'assets/icons/nav_camera_active.svg',
                       label: 'カメラ',
                     ),
-                    // カレンダータブ
-                    _buildNavItem(
+                    _buildSvgNavItem(
                       context: context,
                       index: 3,
                       selectedIndex: selectedIndex,
-                      icon: Icons.calendar_today_outlined,
-                      selectedIcon: Icons.calendar_today,
+                      svgAsset: 'assets/icons/nav_calendar.svg',
+                      selectedSvgAsset: 'assets/icons/nav_calendar_active.svg',
                       label: 'カレンダー',
                     ),
-                    // 通知タブ
-                    _buildNavItem(
+                    _buildSvgNavItem(
                       context: context,
                       index: 4,
                       selectedIndex: selectedIndex,
-                      icon: Icons.notifications_outlined,
-                      selectedIcon: Icons.notifications,
+                      svgAsset: 'assets/icons/nav_bell.svg',
+                      selectedSvgAsset: 'assets/icons/nav_bell_active.svg',
                       label: '通知',
                     ),
                   ],
@@ -377,31 +366,78 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
 
       child: Container(
-        width: 52,
-        height: 52,
+        width: 60,
+        height: 60,
         decoration: isSelected
-            ? const ShapeDecoration(
-                color: Color(0xFFFF7B00),
-                shape: CircleBorder(),
+            ? const BoxDecoration(
+                color: AppColors.primary400,
+                shape: BoxShape.circle,
               )
-            : const BoxDecoration(),
+            : null,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               isSelected ? selectedIcon : icon,
-              color: isSelected ? Colors.white : const Color(0xFF6B7280),
-              size: 20,
+              color: isSelected ? AppColors.primary700 : AppColors.gray500,
+              size: 24,
             ),
-            const SizedBox(height: 2),
             Text(
               label,
+              maxLines: 1,
+              overflow: TextOverflow.visible,
               style: GoogleFonts.zenMaruGothic(
                 fontSize: 10,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-                color: isSelected ? Colors.white : const Color(0xFF6B7280),
-                height: 1.20,
+                fontWeight: FontWeight.w400,
+                color: isSelected ? AppColors.primary700 : AppColors.gray500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSvgNavItem({
+    required BuildContext context,
+    required int index,
+    required int selectedIndex,
+    required String svgAsset,
+    required String selectedSvgAsset,
+    required String label,
+  }) {
+    final isSelected = index == selectedIndex;
+
+    return GestureDetector(
+      onTap: () => _onItemTapped(index, context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: isSelected
+            ? const BoxDecoration(
+                color: AppColors.primary400,
+                shape: BoxShape.circle,
+              )
+            : null,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              isSelected ? selectedSvgAsset : svgAsset,
+              width: 24,
+              height: 24,
+            ),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.visible,
+              style: GoogleFonts.zenMaruGothic(
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: isSelected ? AppColors.primary700 : AppColors.gray500,
               ),
             ),
           ],
