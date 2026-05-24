@@ -317,7 +317,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       height: 1.2,
                     ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => context.go('/sign-in'),
+                      ..onTap = () => context.push('/sign-in'),
                   ),
                 ],
               ),

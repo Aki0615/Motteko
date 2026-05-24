@@ -166,7 +166,7 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 60),
               _buildActionButton(
-                onTap: () => context.go('/sign-in'),
+                onTap: () => context.push('/sign-in'),
                 label: 'サインイン→',
                 bgColor: AppColors.primary700,
                 textColor: Colors.white,

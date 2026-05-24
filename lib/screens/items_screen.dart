@@ -86,10 +86,12 @@ class ItemsScreen extends StatelessWidget {
 
   Widget _buildEmptyState(BuildContext context, AppState appState) {
     return Center(
-      child: SizedBox(
-        width: 250,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: SizedBox(
+          width: 250,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildEmptyIcon(),
             const SizedBox(height: 7),
@@ -117,6 +119,7 @@ class ItemsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             _buildAddButton(context, appState),
           ],
+        ),
         ),
       ),
     );
@@ -321,6 +324,7 @@ class _ItemFormPageState extends State<_ItemFormPage> {
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(bottom: 40),
                   child: _buildFormCard(),
                 ),
               ),
