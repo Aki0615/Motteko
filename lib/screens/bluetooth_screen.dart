@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:async';
 import '../core/constants/app_colors.dart';
 import '../services/ble_config_service.dart';
 
-/// Bluetooth設定画面（付近のBLEデバイスをスキャン表示）
+
 class BluetoothScreen extends StatefulWidget {
   const BluetoothScreen({super.key});
 
@@ -29,18 +29,13 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     super.initState();
     _getConnectedDevices();
 
-    // スキャン状態の監視
     _isScanningSubscription = FlutterBluePlus.isScanning.listen((scanning) {
-      if (mounted) {
-        setState(() => _isScanning = scanning);
-      }
+      if (mounted) setState(() => _isScanning = scanning);
     });
 
-    // スキャン結果の監視
     _scanSubscription = FlutterBluePlus.scanResults.listen((results) {
       if (mounted) {
         setState(() {
-          // デバイス名があるものを優先表示し、名前順にソート
           _scanResults = results
             ..sort((a, b) {
               final aName = a.device.platformName;
@@ -53,7 +48,6 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       }
     });
 
-    // 自動的にスキャン開始
     _startScan();
   }
 
@@ -67,24 +61,18 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
 
   void _getConnectedDevices() {
     if (mounted) {
-      setState(() {
-        _connectedDevices = FlutterBluePlus.connectedDevices;
-      });
+      setState(() => _connectedDevices = FlutterBluePlus.connectedDevices);
     }
   }
 
   Future<void> _startScan() async {
     _getConnectedDevices();
     try {
-      // Bluetoothがオンか確認
       final adapterState = await FlutterBluePlus.adapterState.first;
       if (adapterState != BluetoothAdapterState.on) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Bluetoothをオンにしてください'),
-              backgroundColor: Colors.red,
-            ),
+            const SnackBar(content: Text('Bluetoothをオンにしてください'), backgroundColor: Colors.red),
           );
         }
         return;
@@ -95,10 +83,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('スキャンに失敗しました: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text('スキャンに失敗しました: ${e.toString()}'), backgroundColor: Colors.red),
         );
       }
     }
@@ -106,7 +91,6 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
 
   Future<void> _connectAndSendUid(BluetoothDevice device) async {
     if (_isConnecting) return;
-
     setState(() => _isConnecting = true);
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -117,10 +101,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       await _bleService.sendUid(device);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Firebase UIDの送信に成功しました！'),
-            backgroundColor: Colors.green,
-          ),
+          const SnackBar(content: Text('Firebase UIDの送信に成功しました！'), backgroundColor: Colors.green),
         );
       }
     } catch (e) {
@@ -133,207 +114,10 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isConnecting = false);
-      }
+      if (mounted) setState(() => _isConnecting = false);
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context),
-          const SizedBox(height: 16),
-          _buildScanStatus(),
-          const SizedBox(height: 8),
-          _buildDeviceList(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 60,
-      margin: const EdgeInsets.only(top: 48),
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(width: 2, color: Colors.black)),
-      ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => context.go('/settings'),
-            child: Container(
-              width: 35,
-              height: 35,
-              decoration: ShapeDecoration(
-                color: const Color(0xFFB9BFC9),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(45),
-                ),
-              ),
-              child: const Icon(Icons.arrow_back_ios_new, size: 16, color: Colors.white),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            'Bluetooth',
-            style: GoogleFonts.zenMaruGothic(
-              color: AppColors.primary700,
-              fontSize: 32,
-              fontWeight: FontWeight.w900,
-              height: 0.90,
-            ),
-          ),
-          const Spacer(),
-          _buildScanButton(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildScanButton() {
-    return GestureDetector(
-      onTap: _isScanning ? null : _startScan,
-      child: Container(
-        width: 35,
-        height: 35,
-        decoration: ShapeDecoration(
-          color: _isScanning ? const Color(0xFFB9BFC9) : AppColors.primary700,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(45),
-          ),
-        ),
-        child: _isScanning
-            ? const Padding(
-                padding: EdgeInsets.all(8),
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-              )
-            : const Icon(Icons.refresh, size: 20, color: Colors.white),
-      ),
-    );
-  }
-
-  Widget _buildScanStatus() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Row(
-        children: [
-          Text(
-            _isScanning ? 'スキャン中...' : '付近のデバイス',
-            style: GoogleFonts.zenMaruGothic(
-              color: AppColors.gray500,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              height: 1.20,
-            ),
-          ),
-          if (_isScanning) ...[
-            const SizedBox(width: 8),
-            const SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.gray500),
-            ),
-          ],
-          const Spacer(),
-          Text(
-            '${_scanResults.length} 件',
-            style: GoogleFonts.zenMaruGothic(
-              color: AppColors.gray500,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              height: 1.20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDeviceList() {
-    if (_scanResults.isEmpty) return _buildEmptyState();
-
-    return Expanded(
-      child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
-        children: [
-          if (_connectedDevices.isNotEmpty) ...[
-            ..._connectedDevices
-                .map((device) => GestureDetector(
-                      onTap: () => _connectAndSendUid(device),
-                      child: _buildConnectedDeviceCard(device),
-                    ))
-                ,
-            const SizedBox(height: 16),
-            Text(
-              'ほかのデバイス',
-              style: GoogleFonts.zenMaruGothic(
-                color: AppColors.gray500,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                height: 1.20,
-              ),
-            ),
-            const SizedBox(height: 8),
-          ],
-          ..._scanResults
-              .where((r) => !_connectedDevices.any((c) => c.remoteId == r.device.remoteId))
-              .map((r) => GestureDetector(
-                    onTap: () => _connectAndSendUid(r.device),
-                    child: _buildDeviceCard(r),
-                  ))
-              ,
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Expanded(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.bluetooth_searching, size: 64, color: Color(0xFFB9BFC9)),
-            const SizedBox(height: 16),
-            Text(
-              _isScanning ? 'デバイスを検索しています...' : 'デバイスが見つかりませんでした',
-              style: GoogleFonts.zenMaruGothic(
-                color: AppColors.gray500,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            if (!_isScanning) ...[
-              const SizedBox(height: 16),
-              GestureDetector(
-                onTap: _startScan,
-                child: Text(
-                  'もう一度スキャン',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: AppColors.primary700,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ============================================================
-  // デバイスカード（未接続）
-  // ============================================================
   Future<void> _connectToDevice(ScanResult result) async {
     final deviceName = result.device.platformName.isNotEmpty
         ? result.device.platformName
@@ -367,115 +151,131 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     }
   }
 
-  Widget _buildDeviceCard(ScanResult result) {
-    final deviceName = result.device.platformName.isNotEmpty
-        ? result.device.platformName
-        : '不明なデバイス';
-    final deviceId = result.device.remoteId.str;
-    final rssi = result.rssi;
-
-    Color signalColor;
-    if (rssi > -60) {
-      signalColor = AppColors.success;
-    } else if (rssi > -80) {
-      signalColor = AppColors.primary700;
-    } else {
-      signalColor = AppColors.error;
-    }
-
-    return GestureDetector(
-      onTap: () => _connectToDevice(result),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 2, color: Colors.black),
-            borderRadius: BorderRadius.circular(8),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Positioned(
+            left: -85,
+            top: -215,
+            width: 360,
+            height: 346.5,
+            child: SvgPicture.asset(
+              'assets/icons/items_bg_decoration.svg',
+              fit: BoxFit.fill,
+            ),
           ),
-          shadows: const [
-            BoxShadow(color: Color(0xFF000000), blurRadius: 0, offset: Offset(3, 4.50), spreadRadius: 0),
-          ],
-        ),
-        child: _buildDeviceCardContent(deviceName, deviceId, rssi, signalColor),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: _buildHeader(),
+                ),
+                const SizedBox(height: 51),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(25, 0, 25, 120),
+                    children: [
+                      if (_connectedDevices.isNotEmpty) ...[
+                        ..._connectedDevices.map((device) => Padding(
+                              padding: const EdgeInsets.only(bottom: 24),
+                              child: GestureDetector(
+                                onTap: () => _connectAndSendUid(device),
+                                child: _buildConnectedDeviceCard(device),
+                              ),
+                            )),
+                      ],
+                      _buildSectionLabel(_isScanning ? 'スキャン中...' : 'ほかのデバイス'),
+                      const SizedBox(height: 11),
+                      _buildDeviceListCard(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildDeviceCardContent(String deviceName, String deviceId, int rssi, Color signalColor) {
+  Widget _buildHeader() {
     return Row(
       children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: const Color(0xFF26A5FF).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Icon(Icons.bluetooth, size: 24, color: Color(0xFF26A5FF)),
-        ),
-        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                deviceName,
+                'Bluetooth',
                 style: GoogleFonts.zenMaruGothic(
-                  color: Colors.black, fontSize: 16, fontWeight: FontWeight.w900, height: 1.20,
+                  color: AppColors.black1000,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  height: 1.20,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 2),
               Text(
-                deviceId,
+                'Bluetoothデバイスの管理',
                 style: GoogleFonts.zenMaruGothic(
-                  color: AppColors.gray500, fontSize: 12, fontWeight: FontWeight.w500,
+                  color: AppColors.black1000,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  height: 1.20,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
         ),
-        Column(
-          children: [
-            Icon(Icons.signal_cellular_alt, size: 20, color: signalColor),
-            Text(
-              '${rssi}dBm',
-              style: GoogleFonts.zenMaruGothic(
-                color: AppColors.gray500, fontSize: 10, fontWeight: FontWeight.w500,
-              ),
+        GestureDetector(
+          onTap: _isScanning ? null : _startScan,
+          child: Container(
+            width: 35,
+            height: 35,
+            decoration: BoxDecoration(
+              color: _isScanning ? const Color(0xFFB9BFC9) : AppColors.primary700,
+              shape: BoxShape.circle,
             ),
-          ],
+            child: _isScanning
+                ? const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  )
+                : const Icon(Icons.refresh, size: 20, color: Colors.white),
+          ),
         ),
       ],
     );
   }
 
-  // ============================================================
-  // デバイスカード（接続済み）
-  // ============================================================
+  Widget _buildSectionLabel(String label) {
+    return Text(
+      label,
+      style: GoogleFonts.zenMaruGothic(
+        color: AppColors.gray500,
+        fontSize: 14,
+        fontWeight: FontWeight.w700,
+        height: 1.20,
+      ),
+    );
+  }
+
   Widget _buildConnectedDeviceCard(BluetoothDevice device) {
-    final deviceName =
-        device.platformName.isNotEmpty ? device.platformName : '不明なデバイス';
+    final deviceName = device.platformName.isNotEmpty ? device.platformName : '不明なデバイス';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: ShapeDecoration(
-        color: const Color(0xFFA7F3D0), // 薄い緑色
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 2, color: Colors.black),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0xFF000000),
-            blurRadius: 0,
-            offset: Offset(3, 4.50),
-            spreadRadius: 0,
-          )
+      width: double.infinity,
+      height: 88,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: const [
+          BoxShadow(color: Color(0x40000000), blurRadius: 5),
         ],
       ),
       child: Row(
@@ -483,45 +283,35 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
           Container(
             width: 40,
             height: 40,
-            decoration: ShapeDecoration(
-              color: const Color(0xFF10B981), // 濃い緑
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 2, color: Colors.black),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              shadows: const [
-                BoxShadow(
-                  color: Color(0xFF000000),
-                  blurRadius: 0,
-                  offset: Offset(2, 2.5),
-                  spreadRadius: 0,
-                )
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: const [
+                BoxShadow(color: Color(0x40000000), blurRadius: 2.5),
               ],
             ),
-            child: const Icon(
-              Icons.bluetooth,
-              size: 24,
-              color: Colors.white,
-            ),
+            child: const Icon(Icons.bluetooth, size: 24, color: Color(0xFF508DFF)),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 29),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '接続済み',
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFF059669),
-                    fontSize: 12,
+                    color: const Color(0xFF22C55E),
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
+                    height: 1.20,
                   ),
                 ),
                 Text(
                   deviceName,
                   style: GoogleFonts.zenMaruGothic(
                     color: Colors.black,
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.w900,
                     height: 1.20,
                   ),
@@ -531,6 +321,89 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDeviceListCard() {
+    final otherDevices = _scanResults
+        .where((r) => !_connectedDevices.any((c) => c.remoteId == r.device.remoteId))
+        .toList();
+
+    if (otherDevices.isEmpty) {
+      return Container(
+        width: double.infinity,
+        height: 120,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: const [
+            BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            _isScanning ? 'デバイスを検索しています...' : 'デバイスが見つかりませんでした',
+            style: GoogleFonts.zenMaruGothic(
+              color: AppColors.gray500,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: const [
+          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+        ],
+      ),
+      child: Column(
+        children: [
+          for (int i = 0; i < otherDevices.length; i++) ...[
+            if (i > 0) _buildDivider(),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _connectToDevice(otherDevices[i]),
+              child: SizedBox(
+                height: 40,
+                child: Row(
+                  children: [
+                    Text(
+                      otherDevices[i].device.platformName.isNotEmpty
+                          ? otherDevices[i].device.platformName
+                          : '不明なデバイス',
+                      style: GoogleFonts.zenMaruGothic(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        height: 1.20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Container(
+        width: double.infinity,
+        height: 1,
+        color: const Color(0xFFE5E7EB),
       ),
     );
   }

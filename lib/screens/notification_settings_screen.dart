@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../core/constants/app_colors.dart';
 
-/// 通知設定画面
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
 
@@ -17,60 +16,43 @@ class _NotificationSettingsScreenState
   bool _notificationsEnabled = true;
   bool _noForgottenItemsEnabled = true;
   bool _forgottenWarningEnabled = true;
-  bool _sensorDetectionEnabled = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context),
-            const SizedBox(height: 24),
-            _buildSectionLabel('プッシュ通知', horizontal: 28),
-            const SizedBox(height: 8),
-            _buildPushNotificationCard(),
-            const SizedBox(height: 24),
-            _buildSectionLabel('通知の種類', horizontal: 29),
-            const SizedBox(height: 8),
-            _buildNotificationTypesCard(),
-            const SizedBox(height: 120),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 60,
-      margin: const EdgeInsets.only(top: 48),
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(width: 2, color: Colors.black)),
-      ),
-      child: Row(
+      body: Stack(
         children: [
-          GestureDetector(
-            onTap: () => context.go('/settings'),
-            child: Container(
-              width: 35,
-              height: 35,
-              decoration: ShapeDecoration(
-                color: const Color(0xFFB9BFC9),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(45)),
-              ),
-              child: const Icon(Icons.arrow_back_ios_new, size: 16, color: Colors.white),
+          Positioned(
+            left: -85,
+            top: -215,
+            width: 360,
+            height: 346.5,
+            child: SvgPicture.asset(
+              'assets/icons/items_bg_decoration.svg',
+              fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(width: 12),
-          Text(
-            '通知',
-            style: GoogleFonts.zenMaruGothic(
-              color: AppColors.primary700, fontSize: 32, fontWeight: FontWeight.w900, height: 0.90,
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 120),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 57),
+                    _buildSectionLabel('プッシュ通知'),
+                    const SizedBox(height: 4),
+                    _buildPushNotificationCard(),
+                    const SizedBox(height: 28),
+                    _buildSectionLabel('通知の種類'),
+                    const SizedBox(height: 4),
+                    _buildNotificationTypesCard(),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -78,174 +60,152 @@ class _NotificationSettingsScreenState
     );
   }
 
-  Widget _buildSectionLabel(String label, {double horizontal = 28}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontal),
-      child: Text(
-        label,
-        style: GoogleFonts.zenMaruGothic(
-          color: AppColors.gray500, fontSize: 14, fontWeight: FontWeight.w700, height: 1.20,
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '通知',
+          style: GoogleFonts.zenMaruGothic(
+            color: AppColors.black1000,
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            height: 1.20,
+          ),
         ),
+        Text(
+          '通知設定を管理',
+          style: GoogleFonts.zenMaruGothic(
+            color: AppColors.black1000,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            height: 1.20,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionLabel(String label) {
+    return Text(
+      label,
+      style: GoogleFonts.zenMaruGothic(
+        color: AppColors.gray500,
+        fontSize: 14,
+        fontWeight: FontWeight.w700,
+        height: 1.20,
       ),
     );
   }
 
   Widget _buildPushNotificationCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 26),
-      child: Container(
-        width: double.infinity,
-        height: 76,
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 2, color: Colors.black),
-            borderRadius: BorderRadius.circular(8),
+    return Container(
+      width: double.infinity,
+      height: 70,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: const [
+          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF45050),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: const [
+                BoxShadow(color: Color(0x40000000), blurRadius: 2.5),
+              ],
+            ),
+            child: const Icon(Icons.notifications_outlined, size: 24, color: Colors.white),
           ),
-          shadows: const [
-            BoxShadow(color: Color(0xFF000000), blurRadius: 0, offset: Offset(2, 3), spreadRadius: 0),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFF44F4F),
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(width: 1.50, color: Colors.black),
-                    borderRadius: BorderRadius.circular(8),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '通知を許可',
+                  style: GoogleFonts.zenMaruGothic(
+                    color: AppColors.black1000,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    height: 1.20,
                   ),
-                  shadows: const [
-                    BoxShadow(color: Color(0xFF000000), blurRadius: 0, offset: Offset(2, 3), spreadRadius: 0),
-                  ],
                 ),
-                child: const Icon(Icons.notifications_outlined, size: 24, color: Colors.white),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '通知を許可',
-                      style: GoogleFonts.zenMaruGothic(
-                        color: Colors.black, fontSize: 20, fontWeight: FontWeight.w900, height: 1.20,
-                      ),
-                    ),
-                    Text(
-                      '全ての通知のオン/オフ',
-                      style: GoogleFonts.zenMaruGothic(
-                        color: const Color(0xFFB9BFC9), fontSize: 11, fontWeight: FontWeight.w700, height: 1.53,
-                      ),
-                    ),
-                  ],
+                Text(
+                  '全ての通知のオン/オフ',
+                  style: GoogleFonts.zenMaruGothic(
+                    color: const Color(0xFFB9C0C9),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    height: 1.20,
+                  ),
                 ),
-              ),
-              Switch(
-                value: _notificationsEnabled,
-                onChanged: (value) => setState(() => _notificationsEnabled = value),
-                activeThumbColor: Colors.white,
-                activeTrackColor: AppColors.primary700,
-                inactiveThumbColor: Colors.white,
-                inactiveTrackColor: const Color(0xFFB9BFC9),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+          Switch(
+            value: _notificationsEnabled,
+            onChanged: (value) => setState(() => _notificationsEnabled = value),
+            activeThumbColor: Colors.white,
+            activeTrackColor: AppColors.primary700,
+            inactiveThumbColor: Colors.white,
+            inactiveTrackColor: const Color(0xFFB9C0C9),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildNotificationTypesCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 26),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 2, color: Colors.black),
-            borderRadius: BorderRadius.circular(8),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: const [
+          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+        ],
+      ),
+      child: Column(
+        children: [
+          _buildNotificationTypeRow(
+            label: '忘れ物無し通知',
+            description: '全ての通知のオン/オフ',
+            value: _noForgottenItemsEnabled,
+            onChanged: (v) => setState(() => _noForgottenItemsEnabled = v),
           ),
-          shadows: const [
-            BoxShadow(color: Color(0xFF000000), blurRadius: 0, offset: Offset(2, 3), spreadRadius: 0),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildNotificationTypeItem(
-              iconColor: AppColors.success, icon: Icons.check,
-              label: '忘れ物無し通知', description: '全ての通知のオン/オフ',
-              value: _noForgottenItemsEnabled,
-              onChanged: (v) => setState(() => _noForgottenItemsEnabled = v),
-            ),
-            _buildDivider(),
-            _buildNotificationTypeItem(
-              iconColor: const Color(0xFFFFECA0), icon: Icons.warning_amber_rounded,
-              iconIconColor: const Color(0xFFD97706),
-              label: '忘れ物警告', description: '全ての通知のオン/オフ',
-              value: _forgottenWarningEnabled,
-              onChanged: (v) => setState(() => _forgottenWarningEnabled = v),
-            ),
-            _buildDivider(),
-            _buildNotificationTypeItem(
-              iconColor: const Color(0xFFC1E5FF), icon: Icons.sensors,
-              iconIconColor: const Color(0xFF2563EB),
-              label: 'センサー検知', description: '全ての通知のオン/オフ',
-              value: _sensorDetectionEnabled,
-              onChanged: (v) => setState(() => _sensorDetectionEnabled = v),
-            ),
-          ],
-        ),
+          _buildDivider(),
+          _buildNotificationTypeRow(
+            label: '忘れ物警告',
+            description: '全ての通知のオン/オフ',
+            value: _forgottenWarningEnabled,
+            onChanged: (v) => setState(() => _forgottenWarningEnabled = v),
+          ),
+        ],
       ),
     );
   }
 
-  // 通知種類アイテム
-  Widget _buildNotificationTypeItem({
-    required Color iconColor,
-    required IconData icon,
-    Color? iconIconColor,
+  Widget _buildNotificationTypeRow({
     required String label,
     required String description,
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
     return SizedBox(
-      height: 60,
+      height: 40,
       child: Row(
         children: [
-          // カラーアイコンボックス
-          Container(
-            width: 40,
-            height: 40,
-            decoration: ShapeDecoration(
-              color: iconColor,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1.50, color: Colors.black),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              shadows: const [
-                BoxShadow(
-                  color: Color(0xFF000000),
-                  blurRadius: 0,
-                  offset: Offset(2, 3),
-                  spreadRadius: 0,
-                )
-              ],
-            ),
-            child: Icon(icon, size: 20, color: iconIconColor ?? Colors.white),
-          ),
-          const SizedBox(width: 16),
-          // テキスト
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -254,7 +214,7 @@ class _NotificationSettingsScreenState
                 Text(
                   label,
                   style: GoogleFonts.zenMaruGothic(
-                    color: Colors.black,
+                    color: AppColors.black1000,
                     fontSize: 14,
                     fontWeight: FontWeight.w900,
                     height: 1.20,
@@ -263,23 +223,22 @@ class _NotificationSettingsScreenState
                 Text(
                   description,
                   style: GoogleFonts.zenMaruGothic(
-                    color: const Color(0xFFB9BFC9),
+                    color: const Color(0xFFB9C0C9),
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    height: 1.53,
+                    height: 1.20,
                   ),
                 ),
               ],
             ),
           ),
-          // トグルスイッチ
           Switch(
             value: value,
             onChanged: onChanged,
             activeThumbColor: Colors.white,
             activeTrackColor: AppColors.primary700,
             inactiveThumbColor: Colors.white,
-            inactiveTrackColor: const Color(0xFFB9BFC9),
+            inactiveTrackColor: const Color(0xFFB9C0C9),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ],
@@ -287,14 +246,13 @@ class _NotificationSettingsScreenState
     );
   }
 
-  // 区切り線
   Widget _buildDivider() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Container(
         width: double.infinity,
-        height: 2,
-        color: const Color(0xFFB9BFC9),
+        height: 1,
+        color: const Color(0xFFE5E7EB),
       ),
     );
   }

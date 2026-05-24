@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../core/constants/app_colors.dart';
 import '../services/ble_config_service.dart';
 
-/// Wi-Fiパスワード入力画面
 class WifiPasswordScreen extends StatefulWidget {
   final String networkName;
 
@@ -30,177 +30,192 @@ class _WifiPasswordScreenState extends State<WifiPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context),
-            const SizedBox(height: 40),
-            const Center(
-              child: Icon(Icons.wifi, size: 96, color: Color(0xFF26A5FF)),
-            ),
-            const SizedBox(height: 24),
-            Center(
-              child: SizedBox(
-                width: 258,
-                child: Text(
-                  'このWi-Fiネットワークに接続するには、パスワードを入力してください。',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.zenMaruGothic(
-                    color: AppColors.gray500,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    height: 1.20,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            _buildPasswordField(),
-            const SizedBox(height: 32),
-            _buildConnectButton(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 60,
-      margin: const EdgeInsets.only(top: 48),
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(width: 2, color: Colors.black)),
-      ),
-      child: Row(
+      body: Stack(
         children: [
-          GestureDetector(
-            onTap: () => context.go('/wifi'),
-            child: Container(
-              width: 35,
-              height: 35,
-              decoration: ShapeDecoration(
-                color: const Color(0xFFB9BFC9),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(45),
-                ),
-              ),
-              child: const Icon(Icons.arrow_back_ios_new, size: 16, color: Colors.white),
+          Positioned(
+            left: -85,
+            top: -215,
+            width: 360,
+            height: 346.5,
+            child: SvgPicture.asset(
+              'assets/icons/items_bg_decoration.svg',
+              fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(width: 12),
-          Text(
-            'Wi-Fi',
-            style: GoogleFonts.zenMaruGothic(
-              color: AppColors.primary700,
-              fontSize: 32,
-              fontWeight: FontWeight.w900,
-              height: 0.90,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 57),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'パスワード',
-            style: GoogleFonts.zenMaruGothic(
-              color: Colors.black,
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-              height: 1.20,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
-            height: 50,
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    style: GoogleFonts.zenMaruGothic(fontSize: 16, fontWeight: FontWeight.w700),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                      hintText: 'パスワードを入力',
-                      hintStyle: GoogleFonts.zenMaruGothic(
-                        color: const Color(0xFFB9BFC9),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+          SafeArea(
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 120),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: _buildHeader(),
+                    ),
+                    const SizedBox(height: 90),
+                    const Center(
+                      child: Icon(Icons.wifi, size: 96, color: Color(0xFF508DFF)),
+                    ),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: Text(
+                        '"${widget.networkName}"に接続',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => setState(() => _obscurePassword = !_obscurePassword),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                      size: 24,
-                      color: const Color(0xFFB9BFC9),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: SizedBox(
+                        width: 258,
+                        child: Text(
+                          'このWi-Fiネットワークに接続するには、パスワードを入力してください。',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.zenMaruGothic(
+                            color: AppColors.gray500,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            height: 1.20,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 46),
+                      child: _buildPasswordInput(),
+                    ),
+                    const SizedBox(height: 32),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 46),
+                      child: _buildConnectButton(),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Wi-Fi接続',
+          style: GoogleFonts.zenMaruGothic(
+            color: AppColors.black1000,
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            height: 1.20,
+          ),
+        ),
+        Text(
+          'ネットワークに接続',
+          style: GoogleFonts.zenMaruGothic(
+            color: AppColors.black1000,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            height: 1.20,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordInput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'パスワード',
+          style: GoogleFonts.zenMaruGothic(
+            color: AppColors.gray500,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            height: 1.20,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          height: 48,
+          decoration: BoxDecoration(
+            color: const Color(0xFFF9FAFB),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  style: GoogleFonts.zenMaruGothic(fontSize: 16, fontWeight: FontWeight.w700),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    hintText: 'パスワードを入力',
+                    hintStyle: GoogleFonts.zenMaruGothic(
+                      color: const Color(0xFFB9C0C9),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () => setState(() => _obscurePassword = !_obscurePassword),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    size: 20,
+                    color: const Color(0xFFB9C0C9),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildConnectButton() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 57),
-      child: GestureDetector(
-        onTap: _isConnecting ? null : _handleConnect,
-        child: Container(
-          width: double.infinity,
-          height: 50,
-          decoration: ShapeDecoration(
-            color: _isConnecting ? Colors.grey : AppColors.primary700,
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 2, color: Colors.black),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            shadows: const [
-              BoxShadow(color: Color(0xFF000000), blurRadius: 0, offset: Offset(2, 3)),
-            ],
-          ),
-          child: Center(
-            child: _isConnecting
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
-                  )
-                : Text(
-                    '接続',
-                    style: GoogleFonts.zenMaruGothic(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      height: 1.20,
-                    ),
+    return GestureDetector(
+      onTap: _isConnecting ? null : _handleConnect,
+      child: Container(
+        width: double.infinity,
+        height: 60,
+        decoration: BoxDecoration(
+          color: _isConnecting ? Colors.grey : AppColors.black1000,
+          borderRadius: BorderRadius.circular(99999),
+        ),
+        child: Center(
+          child: _isConnecting
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
+                )
+              : Text(
+                  '接続',
+                  style: GoogleFonts.zenMaruGothic(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    height: 1.20,
                   ),
-          ),
+                ),
         ),
       ),
     );
