@@ -86,7 +86,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 28),
                       child: Column(
                         children: [
-                          const SizedBox(height: 68),
+                          const SizedBox(height: 20),
                           _buildStreakCard(appState),
                           const SizedBox(height: 18),
                           _buildCalendarCard(),
