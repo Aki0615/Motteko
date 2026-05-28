@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../core/constants/app_colors.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> {
   String? _deviceId;
+  bool _isChecking = false;
 
   @override
   void initState() {
@@ -31,221 +33,130 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // ============================================================
-              // ヘッダー「カメラ」
-              // ============================================================
-              Container(
-                width: double.infinity,
-                height: 60,
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(width: 2, color: Colors.black),
-                  ),
-                ),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'カメラ',
-                  style: GoogleFonts.zenMaruGothic(
-                    color: AppColors.primary700,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // ============================================================
-              // カメラプレビュー領域
-              // ============================================================
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
-                  width: double.infinity,
-                  height: 250,
-                  decoration: ShapeDecoration(
-                    color: AppColors.gray800,
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(width: 2, color: Colors.black),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 0,
-                        offset: Offset(3, 4.5),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: _buildCameraContent(),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // ============================================================
-              // 撮影ボタン & 画像更新ボタン
-              // ============================================================
-              Column(
-                children: [
-                  GestureDetector(
-                    onTap: _takePhoto,
-                    child: Container(
-                      height: 48,
-                      width: 200, // Figmaデザインに合わせた横幅
-                      decoration: ShapeDecoration(
-                        color: AppColors.primary700,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(width: 2, color: Colors.black),
-                          borderRadius: BorderRadius.circular(24), // 丸みを強く
-                        ),
-                        shadows: const [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 0,
-                            offset: Offset(3, 4.5),
-                            spreadRadius: 0,
-                          )
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '写真を撮影',
-                        style: GoogleFonts.zenMaruGothic(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        // _timestampは未使用になったため、直接setState内では何もしなくてもbuildが走る。
-                        // 画像URLのタイムスタンプ部分は DateTime.now().millisecondsSinceEpoch で再生成される。
-                      });
-                    },
-                    child: Container(
-                      height: 48,
-                      width: 280, // 少し幅広のグレーボタン
-                      decoration: ShapeDecoration(
-                        color: AppColors.gray500, // グレー
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(width: 2, color: Colors.black),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        shadows: const [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 0,
-                            offset: Offset(3, 4.5),
-                            spreadRadius: 0,
-                          )
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '最新の画像を読み込む',
-                        style: GoogleFonts.zenMaruGothic(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 48),
-
-              // ============================================================
-              // 判定ステータス表示
-              // ============================================================
-              _buildDetectionStatus(),
-
-              const SizedBox(height: 100), // ボトムナビゲーション用の余白
-            ],
+      body: Stack(
+        children: [
+          Positioned(
+            left: -85,
+            top: -215,
+            width: 360,
+            height: 346.5,
+            child: SvgPicture.asset(
+              'assets/icons/items_bg_decoration.svg',
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 26),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 54),
+                    _buildCameraCard(),
+                    const SizedBox(height: 15),
+                    _buildDetectionResultCard(),
+                    const SizedBox(height: 15),
+                    _buildCheckButton(),
+                    const SizedBox(height: 100),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Future<void> _takePhoto() async {
-    if (_deviceId == null) return;
-
-    try {
-      // Firestoreの commands コレクションに take_photo 命令を追加
-      await FirebaseFirestore.instance.collection('commands').add({
-        'command': 'take_photo',
-        'device_id': _deviceId,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('撮影リクエストを送信しました'),
-            duration: Duration(seconds: 1),
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'カメラ',
+          style: GoogleFonts.zenMaruGothic(
+            color: AppColors.black1000,
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            height: 1.20,
           ),
-        );
-      }
+        ),
+        Text(
+          '持ち物をアプリから確認',
+          style: GoogleFonts.zenMaruGothic(
+            color: AppColors.black1000,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            height: 1.20,
+          ),
+        ),
+      ],
+    );
+  }
 
-      // buildを再実行して画像URLのタイムスタンプを更新し、キャッシュを回避する
-      setState(() {});
-    } catch (e) {
-      debugPrint('Error taking photo: $e');
-    }
+  Widget _buildCameraCard() {
+    return Container(
+      width: double.infinity,
+      height: 250,
+      decoration: BoxDecoration(
+        color: AppColors.black1000,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 24,
+            top: 16,
+            right: 24,
+            bottom: 0,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: _buildCameraContent(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_isChecking)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 16,
+              child: Center(
+                child: Container(
+                  height: 20,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.34),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '持ち物を確認中...',
+                      style: GoogleFonts.zenMaruGothic(
+                        color: Colors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   Widget _buildCameraContent() {
     if (_deviceId == null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            'assets/icons/camera_off.png',
-            width: 48,
-            height: 48,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'カメラは停止しています',
-            style: GoogleFonts.zenMaruGothic(
-              color: AppColors.gray500,
-              fontSize: 14,
-            ),
-          ),
-        ],
-      );
-    }
-
-    final imageUrl =
-        'https://firebasestorage.googleapis.com/v0/b/matsuriba-max.firebasestorage.app/o/inbox%2F$_deviceId.jpg?alt=media&t=${DateTime.now().millisecondsSinceEpoch}';
-
-    return Image.network(
-      imageUrl,
-      fit: BoxFit.cover,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return const Center(
-          child: CircularProgressIndicator(color: Colors.white),
-        );
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return Column(
+      return Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
@@ -262,12 +173,49 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ],
+        ),
+      );
+    }
+
+    final imageUrl =
+        'https://firebasestorage.googleapis.com/v0/b/matsuriba-max.firebasestorage.app/o/inbox%2F$_deviceId.jpg?alt=media&t=${DateTime.now().millisecondsSinceEpoch}';
+
+    return Image.network(
+      imageUrl,
+      fit: BoxFit.cover,
+      width: double.infinity,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return const Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/icons/camera_off.png',
+                width: 48,
+                height: 48,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'カメラは停止しています',
+                style: GoogleFonts.zenMaruGothic(
+                  color: AppColors.gray500,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
   }
 
-  Widget _buildDetectionStatus() {
+  Widget _buildDetectionResultCard() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('detections')
@@ -275,70 +223,236 @@ class _CameraScreenState extends State<CameraScreen> {
           .limit(1)
           .snapshots(),
       builder: (context, snapshot) {
-        bool hasMissingItem = false;
-        String detectionMessage = '現在、カメラ内に物はない！偉い！';
-        bool isLoading = !snapshot.hasData;
-
-        if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-          final data = snapshot.data!.docs.first.data() as Map<String, dynamic>;
-          final missingItems = data['missing_items'] as List<dynamic>? ?? [];
-          final message = data['message'] as String? ?? '';
-
-          if (missingItems.isNotEmpty || message.contains('忘れ物')) {
-            hasMissingItem = true;
-            detectionMessage = message.isNotEmpty ? message : '忘れ物があります！気をつけて！';
-          }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return _buildResultCard(
+            message: 'まだ確認していません',
+            subMessage: 'ボタンを押して持ち物を確認しましょう',
+            items: [],
+            isSuccess: true,
+          );
         }
 
-        if (isLoading) {
-          return const SizedBox(height: 32);
+        final data =
+            snapshot.data!.docs.first.data() as Map<String, dynamic>;
+        final missingItems =
+            data['missing_items'] as List<dynamic>? ?? [];
+        final message = data['message'] as String? ?? '';
+        final allItems =
+            data['all_items'] as List<dynamic>? ?? [];
+
+        if (missingItems.isNotEmpty) {
+          return _buildResultCard(
+            message: '${missingItems.length}つの忘れ物があります',
+            subMessage: '下記の持ち物が見つかりません',
+            items: missingItems.map((e) => e.toString()).toList(),
+            isSuccess: false,
+          );
         }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: hasMissingItem
-                  ? const Color(0xFFFEF3C7) // 薄いオレンジ（Figmaに合わせて調整）
-                  : const Color(0xFFE8F5E9),
-              borderRadius: BorderRadius.circular(60), // Figmaに合わせて丸みを強く
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: hasMissingItem
-                        ? const Color(0xFFFDE68A) // アイコン背面の円
-                        : const Color(0xFF4CAF50),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    hasMissingItem ? Icons.warning_amber_rounded : Icons.check,
-                    color: hasMissingItem
-                        ? const Color(0xFFF59E0B) // 濃いオレンジ
-                        : Colors.white,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    detectionMessage,
-                    style: GoogleFonts.zenMaruGothic(
-                      color: AppColors.gray700, // 少し濃いめのグレー
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        if (allItems.isNotEmpty) {
+          return _buildResultCard(
+            message: '${allItems.length}つのアイテムを確認しました',
+            subMessage: '下記の持ち物があります',
+            items: allItems.map((e) => e.toString()).toList(),
+            isSuccess: true,
+          );
+        }
+
+        return _buildResultCard(
+          message: message.isNotEmpty ? message : '持ち物を確認しました',
+          subMessage: '忘れ物はありません',
+          items: [],
+          isSuccess: !message.contains('忘れ物'),
         );
       },
     );
+  }
+
+  Widget _buildResultCard({
+    required String message,
+    required String subMessage,
+    required List<String> items,
+    required bool isSuccess,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 13, 16, 13),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFF5F0EB)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x1F35291E),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            children: [
+              _buildStatusIcon(isSuccess),
+              const SizedBox(width: 13),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      message,
+                      style: GoogleFonts.zenMaruGothic(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        height: 1.20,
+                      ),
+                    ),
+                    Text(
+                      subMessage,
+                      style: GoogleFonts.zenMaruGothic(
+                        color: AppColors.gray500,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                        height: 1.20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (items.isNotEmpty) ...[
+            const SizedBox(height: 11),
+            Wrap(
+              spacing: 15,
+              runSpacing: 8,
+              children: items
+                  .map((item) => _buildItemChip(item))
+                  .toList(),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusIcon(bool isSuccess) {
+    return SizedBox(
+      width: 30,
+      height: 30,
+      child: Stack(
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: isSuccess
+                  ? AppColors.success
+                  : const Color(0xFFFFA600),
+              shape: BoxShape.circle,
+            ),
+          ),
+          const Center(
+            child: Icon(
+              Icons.check,
+              size: 18,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItemChip(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFEF7200)),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.zenMaruGothic(
+          color: AppColors.black1000,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCheckButton() {
+    return Center(
+      child: GestureDetector(
+        onTap: _isChecking ? null : _checkItems,
+        child: Container(
+          width: 250,
+          height: 40,
+          decoration: BoxDecoration(
+            color: _isChecking
+                ? AppColors.primary700.withValues(alpha: 0.6)
+                : AppColors.primary700,
+            borderRadius: BorderRadius.circular(999999),
+          ),
+          child: Center(
+            child: Text(
+              _isChecking ? '確認中...' : '持ち物を確認する',
+              style: GoogleFonts.zenMaruGothic(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                height: 1.20,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _checkItems() async {
+    if (_deviceId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'デバイスが接続されていません',
+            style: GoogleFonts.zenMaruGothic(),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isChecking = true);
+
+    try {
+      await FirebaseFirestore.instance.collection('commands').add({
+        'command': 'take_photo',
+        'device_id': _deviceId,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '撮影リクエストを送信しました',
+              style: GoogleFonts.zenMaruGothic(),
+            ),
+            duration: const Duration(seconds: 1),
+          ),
+        );
+      }
+
+      await Future.delayed(const Duration(seconds: 3));
+      if (mounted) setState(() => _isChecking = false);
+    } catch (e) {
+      debugPrint('Error checking items: $e');
+      if (mounted) setState(() => _isChecking = false);
+    }
   }
 }
