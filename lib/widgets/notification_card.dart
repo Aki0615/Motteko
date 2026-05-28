@@ -22,15 +22,16 @@ class NotificationCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: 88,
+      constraints: const BoxConstraints(minHeight: 88),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x40000000),
-            blurRadius: 2.5,
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 3,
           ),
         ],
       ),

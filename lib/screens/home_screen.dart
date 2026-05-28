@@ -76,17 +76,14 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xFFFAFAFA),
       body: Stack(
         children: [
-          // 左上の装飾
           Positioned(
-            left: -80,
-            top: -100,
-            child: Container(
-              width: 220,
-              height: 220,
-              decoration: const BoxDecoration(
-                color: AppColors.primary400,
-                shape: BoxShape.circle,
-              ),
+            left: -85,
+            top: -215,
+            width: 360,
+            height: 346.5,
+            child: SvgPicture.asset(
+              'assets/icons/items_bg_decoration.svg',
+              fit: BoxFit.fill,
             ),
           ),
           // メインコンテンツ
@@ -167,6 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
               fontWeight: FontWeight.w700,
               color: const Color(0xFF2B2B2B),
             ),
+            overflow: TextOverflow.ellipsis,
           ),
           Text(
             '今日も忘れ物ゼロを目指そう',
@@ -233,8 +231,9 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x40000000),
-              blurRadius: 10,
+              color: Color(0x1F35291E),
+              offset: Offset(1, 2),
+              blurRadius: 6,
             ),
           ],
         ),
@@ -307,8 +306,9 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x40000000),
-              blurRadius: 5,
+              color: Color(0x1F35291E),
+              offset: Offset(1, 2),
+              blurRadius: 3,
             ),
           ],
         ),
@@ -348,27 +348,31 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildDashedLine({required double width, required Color color}) {
+  Widget _buildDashedLine({required Color color}) {
     const dashWidth = 4.0;
     const dashSpace = 3.0;
-    final count = (width / (dashWidth + dashSpace)).floor();
-    return SizedBox(
-      width: width,
-      height: 1,
-      child: Row(
-        children: List.generate(count, (_) {
-          return Padding(
-            padding: const EdgeInsets.only(right: dashSpace),
-            child: SizedBox(
-              width: dashWidth,
-              height: 1,
-              child: DecoratedBox(
-                decoration: BoxDecoration(color: color),
-              ),
-            ),
-          );
-        }),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableWidth = constraints.maxWidth;
+        final count = (availableWidth / (dashWidth + dashSpace)).floor();
+        return SizedBox(
+          height: 1,
+          child: Row(
+            children: List.generate(count, (_) {
+              return Padding(
+                padding: const EdgeInsets.only(right: dashSpace),
+                child: SizedBox(
+                  width: dashWidth,
+                  height: 1,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(color: color),
+                  ),
+                ),
+              );
+            }),
+          ),
+        );
+      },
     );
   }
 
@@ -420,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        _buildDashedLine(width: 132, color: AppColors.primary400),
+        _buildDashedLine(color: AppColors.primary400),
         const SizedBox(height: 8),
         Text(
           '課題の可視化で、忘れ物を減らせる',

@@ -225,12 +225,15 @@ class LoginScreen extends StatelessWidget {
     return Row(
       children: [
         Expanded(child: Container(height: 2, color: const Color(0xFFB9BFC9))),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'すでにアカウントをお持ちの方',
-            style: GoogleFonts.zenMaruGothic(
-              color: const Color(0xFFB9BFC9), fontSize: 16, fontWeight: FontWeight.w900, height: 1.20,
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'すでにアカウントをお持ちの方',
+              style: GoogleFonts.zenMaruGothic(
+                color: const Color(0xFFB9BFC9), fontSize: 16, fontWeight: FontWeight.w900, height: 1.20,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),

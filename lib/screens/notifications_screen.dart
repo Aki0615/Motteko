@@ -97,7 +97,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ),
           ),
           Text(
-            '大切なお知らせを、見やすく整理。',
+            'お知らせを、見やすく',
             style: GoogleFonts.zenMaruGothic(
               color: AppColors.black1000,
               fontSize: 14,

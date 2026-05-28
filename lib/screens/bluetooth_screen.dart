@@ -275,7 +275,11 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 3,
+          ),
         ],
       ),
       child: Row(
@@ -287,7 +291,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
               boxShadow: const [
-                BoxShadow(color: Color(0x40000000), blurRadius: 2.5),
+                BoxShadow(color: Color(0x40000000), blurRadius: 2.5, spreadRadius: 0),
               ],
             ),
             child: const Icon(Icons.bluetooth, size: 24, color: Color(0xFF508DFF)),
@@ -339,7 +343,11 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
           boxShadow: const [
-            BoxShadow(color: Color(0x40000000), blurRadius: 5),
+            BoxShadow(
+              color: Color(0x1F35291E),
+              offset: Offset(1, 2),
+              blurRadius: 3,
+            ),
           ],
         ),
         child: Center(
@@ -362,7 +370,11 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 3,
+          ),
         ],
       ),
       child: Column(
@@ -376,15 +388,18 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                 height: 40,
                 child: Row(
                   children: [
-                    Text(
-                      otherDevices[i].device.platformName.isNotEmpty
-                          ? otherDevices[i].device.platformName
-                          : '不明なデバイス',
-                      style: GoogleFonts.zenMaruGothic(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        height: 1.20,
+                    Expanded(
+                      child: Text(
+                        otherDevices[i].device.platformName.isNotEmpty
+                            ? otherDevices[i].device.platformName
+                            : '不明なデバイス',
+                        style: GoogleFonts.zenMaruGothic(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          height: 1.20,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

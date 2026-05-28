@@ -80,7 +80,11 @@ class TermsOfServiceScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 3,
+          ),
         ],
       ),
       child: Row(
@@ -132,7 +136,11 @@ class TermsOfServiceScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 3,
+          ),
         ],
       ),
       child: Column(

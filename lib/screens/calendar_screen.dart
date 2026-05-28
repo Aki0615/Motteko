@@ -383,8 +383,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: List.generate(7, (index) {
-        return SizedBox(
-          width: 40,
+        return Expanded(
           child: Text(
             dayLabels[index],
             textAlign: TextAlign.center,

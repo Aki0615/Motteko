@@ -343,7 +343,7 @@ class _ItemFormPageState extends State<_ItemFormPage> {
       decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Color(0x40000000), blurRadius: 2, offset: Offset(0, 4)),
+          BoxShadow(color: Color(0x40000000), blurRadius: 2, offset: Offset(0, 4), spreadRadius: 0),
         ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 23),
@@ -354,13 +354,16 @@ class _ItemFormPageState extends State<_ItemFormPage> {
             child: const Icon(Icons.arrow_back, size: 30, color: Colors.black),
           ),
           const SizedBox(width: 20),
-          Text(
-            _isEditing ? 'アイテムを編集' : '新しいアイテムを追加',
-            style: GoogleFonts.zenMaruGothic(
-              color: Colors.black, fontSize: 24, fontWeight: FontWeight.w700, height: 1.20,
+          Expanded(
+            child: Text(
+              _isEditing ? 'アイテムを編集' : '新しいアイテムを追加',
+              style: GoogleFonts.zenMaruGothic(
+                color: Colors.black, fontSize: 24, fontWeight: FontWeight.w700, height: 1.20,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(width: 21),
+          const SizedBox(width: 12),
           _buildHeaderIcon(),
         ],
       ),
@@ -402,14 +405,20 @@ class _ItemFormPageState extends State<_ItemFormPage> {
   }
 
   Widget _buildFormCard() {
-    return Container(
-      width: 280,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 280),
+      child: Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 3,
+          ),
         ],
       ),
       child: Column(
@@ -462,12 +471,13 @@ class _ItemFormPageState extends State<_ItemFormPage> {
           _buildActions(),
         ],
       ),
+      ),
     );
   }
 
   Widget _buildTextField(TextEditingController controller, String hint, {bool autofocus = false}) {
     return Container(
-      width: 204,
+      width: double.infinity,
       height: 44,
       decoration: BoxDecoration(
         color: const Color(0xFFF9FAFB),
@@ -496,7 +506,6 @@ class _ItemFormPageState extends State<_ItemFormPage> {
     required ValueChanged<bool> onChanged,
   }) {
     return SizedBox(
-      width: 204,
       height: 55,
       child: Row(
         children: [
@@ -537,9 +546,7 @@ class _ItemFormPageState extends State<_ItemFormPage> {
   }
 
   Widget _buildActions() {
-    return SizedBox(
-      width: 204,
-      child: Row(
+    return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           GestureDetector(
@@ -583,7 +590,6 @@ class _ItemFormPageState extends State<_ItemFormPage> {
             ),
           ),
         ],
-      ),
     );
   }
 }

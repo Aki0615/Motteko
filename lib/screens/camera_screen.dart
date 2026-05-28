@@ -343,10 +343,12 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Widget _buildCheckButton() {
     return Center(
-      child: GestureDetector(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 250),
+        child: GestureDetector(
         onTap: _isChecking ? null : _checkItems,
         child: Container(
-          width: 250,
+          width: double.infinity,
           height: 40,
           decoration: BoxDecoration(
             color: _isChecking
@@ -366,6 +368,7 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

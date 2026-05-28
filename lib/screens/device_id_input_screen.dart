@@ -75,18 +75,16 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
             // ============================================================
             // 説明テキスト
             // ============================================================
-            Center(
-              child: SizedBox(
-                width: 280,
-                child: Text(
-                  'Mottekoデバイスの画面に表示されているIDを入力してください。',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.zenMaruGothic(
-                    color: AppColors.gray500,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    height: 1.20,
-                  ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Text(
+                'Mottekoデバイスの画面に表示されているIDを入力してください。',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.zenMaruGothic(
+                  color: AppColors.gray500,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  height: 1.20,
                 ),
               ),
             ),

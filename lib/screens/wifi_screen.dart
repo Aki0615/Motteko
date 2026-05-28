@@ -106,19 +106,14 @@ class _WifiScreenState extends State<WifiScreen> {
                         child: Icon(Icons.wifi, size: 96, color: Color(0xFF508DFF)),
                       ),
                       const SizedBox(height: 8),
-                      Center(
-                        child: SizedBox(
-                          width: 280,
-                          child: Text(
-                            'M5Stackに接続するWi-Fiの\nSSIDとパスワードを入力してください。',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.zenMaruGothic(
-                              color: AppColors.gray500,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              height: 1.40,
-                            ),
-                          ),
+                      Text(
+                        'M5Stackに接続するWi-Fiの\nSSIDとパスワードを入力してください。',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.zenMaruGothic(
+                          color: AppColors.gray500,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          height: 1.40,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -196,6 +191,7 @@ class _WifiScreenState extends State<WifiScreen> {
               fontWeight: FontWeight.w900,
               height: 1.20,
             ),
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -210,7 +206,11 @@ class _WifiScreenState extends State<WifiScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 6,
+          ),
         ],
       ),
       child: Column(

@@ -32,6 +32,8 @@ void main() async {
   await notificationService.initialize();
   await notificationService.requestPermissions();
 
+
+
   // 監視サービスの開始
   final detectionService = DetectionService();
   detectionService.startListening();

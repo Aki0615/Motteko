@@ -107,7 +107,11 @@ class _NotificationSettingsScreenState
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x0F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 2,
+          ),
         ],
       ),
       child: Row(
@@ -119,7 +123,7 @@ class _NotificationSettingsScreenState
               color: const Color(0xFFF45050),
               borderRadius: BorderRadius.circular(8),
               boxShadow: const [
-                BoxShadow(color: Color(0x40000000), blurRadius: 2.5),
+                BoxShadow(color: Color(0x40000000), blurRadius: 2.5, spreadRadius: 0),
               ],
             ),
             child: const Icon(Icons.notifications_outlined, size: 24, color: Colors.white),
@@ -173,7 +177,11 @@ class _NotificationSettingsScreenState
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x0F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 2,
+          ),
         ],
       ),
       child: Column(

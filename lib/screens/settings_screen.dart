@@ -74,7 +74,7 @@ class SettingsScreen extends StatelessWidget {
           ),
         ),
         Text(
-          'アカウントとアプリの設定を管理',
+          'アカウントと設定を管理',
           style: GoogleFonts.zenMaruGothic(
             color: AppColors.black1000,
             fontSize: 14,
@@ -94,8 +94,13 @@ class SettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFF5F0EB)),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 3,
+          ),
         ],
       ),
       child: Row(
@@ -106,9 +111,6 @@ class SettingsScreen extends StatelessWidget {
             decoration: const BoxDecoration(
               color: AppColors.primary700,
               shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(color: Color(0x40000000), blurRadius: 2.5),
-              ],
             ),
             child: Center(
               child: Text(
@@ -130,6 +132,7 @@ class SettingsScreen extends StatelessWidget {
                   style: GoogleFonts.zenMaruGothic(
                     color: Colors.black, fontSize: 20, fontWeight: FontWeight.w900, height: 1.20,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -233,8 +236,13 @@ class SettingsScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFF5F0EB)),
           boxShadow: const [
-            BoxShadow(color: Color(0xFFEF4444), blurRadius: 5),
+            BoxShadow(
+              color: Color(0x1435291E),
+              offset: Offset(1, 2),
+              blurRadius: 3,
+            ),
           ],
         ),
         child: Row(
@@ -264,8 +272,13 @@ class SettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFF5F0EB)),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x1F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 3,
+          ),
         ],
       ),
       child: child,
@@ -295,13 +308,16 @@ class SettingsScreen extends StatelessWidget {
               child: Icon(icon, size: 24, color: Colors.white),
             ),
             const SizedBox(width: 28),
-            Text(
-              label,
-              style: GoogleFonts.zenMaruGothic(
-                color: AppColors.black1000,
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                height: 1.20,
+            Expanded(
+              child: Text(
+                label,
+                style: GoogleFonts.zenMaruGothic(
+                  color: AppColors.black1000,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  height: 1.20,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -387,8 +403,13 @@ class SettingsScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFFF5F0EB)),
                   boxShadow: const [
-                    BoxShadow(color: Color(0x40000000), blurRadius: 5),
+                    BoxShadow(
+                      color: Color(0x1F35291E),
+                      offset: Offset(1, 2),
+                      blurRadius: 3,
+                    ),
                   ],
                 ),
                 child: Row(
@@ -421,6 +442,7 @@ class SettingsScreen extends StatelessWidget {
                             style: GoogleFonts.zenMaruGothic(
                               color: AppColors.black1000, fontSize: 20, fontWeight: FontWeight.w900, height: 1.20,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 2),
                           Text(

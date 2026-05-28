@@ -105,7 +105,11 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x0F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 2,
+          ),
         ],
       ),
       child: Column(
@@ -204,7 +208,11 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 5),
+          BoxShadow(
+            color: Color(0x0F35291E),
+            offset: Offset(1, 2),
+            blurRadius: 2,
+          ),
         ],
       ),
       child: Center(
@@ -231,7 +239,7 @@ class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
           boxShadow: const [
-            BoxShadow(color: Color(0xFFEF4444), blurRadius: 5),
+            BoxShadow(color: Color(0xFFEF444D), blurRadius: 5, spreadRadius: 0),
           ],
         ),
         child: Center(
