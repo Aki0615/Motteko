@@ -48,6 +48,10 @@ app.*.map.json
 serviceAccountKey.json
 **/serviceAccountKey.json
 
+# Python virtual environments
+venv/
+**/venv/
+
 # Duplicate files from sync tools (AI tools/iCloud/etc)
 * 2.*
 * 2

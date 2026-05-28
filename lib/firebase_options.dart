@@ -50,21 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDpNsNEEZOEG5S5i3Ld9w9xYHARqqmDeCM',
-    appId: '1:732989522720:ios:aa46d41f53cbc916d70d45',
-    messagingSenderId: '732989522720',
-    projectId: 'matsuriba-max',
-    storageBucket: 'matsuriba-max.firebasestorage.app',
-    iosClientId: '732989522720-jnmflu8a17041mni3m5n9u6u9qkf73q9.apps.googleusercontent.com',
+    apiKey: 'AIzaSyA9lGw5U2VRwTk4IF0bShOGNSTF95jaknM',
+    appId: '1:894146935785:ios:d3b2cf84106a7983966978',
+    messagingSenderId: '894146935785',
+    projectId: 'geek-haku',
+    storageBucket: 'geek-haku.firebasestorage.app',
+    iosClientId: '894146935785-9e09trk084c1l9u7pik83a7218ch0q1k.apps.googleusercontent.com',
     iosBundleId: 'com.eiden.wasurenbo',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCBTAr2khBTPMrmSzJbsufSmCZPOsiOD5s',
-    appId: '1:732989522720:android:7cd780fcced93e84d70d45',
-    messagingSenderId: '732989522720',
-    projectId: 'matsuriba-max',
-    storageBucket: 'matsuriba-max.firebasestorage.app',
+    apiKey: 'AIzaSyAS-1TEk2Qh3_3P9eaHBwypWEFYLqsnEyc',
+    appId: '1:894146935785:android:dc4b0d49e31312ef966978',
+    messagingSenderId: '894146935785',
+    projectId: 'geek-haku',
+    storageBucket: 'geek-haku.firebasestorage.app',
   );
 
 }

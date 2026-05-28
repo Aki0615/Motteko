@@ -216,55 +216,12 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Widget _buildDetectionResultCard() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('detections')
-          .orderBy('timestamp', descending: true)
-          .limit(1)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return _buildResultCard(
-            message: 'まだ確認していません',
-            subMessage: 'ボタンを押して持ち物を確認しましょう',
-            items: [],
-            isSuccess: true,
-          );
-        }
-
-        final data =
-            snapshot.data!.docs.first.data() as Map<String, dynamic>;
-        final missingItems =
-            data['missing_items'] as List<dynamic>? ?? [];
-        final message = data['message'] as String? ?? '';
-        final allItems =
-            data['all_items'] as List<dynamic>? ?? [];
-
-        if (missingItems.isNotEmpty) {
-          return _buildResultCard(
-            message: '${missingItems.length}つの忘れ物があります',
-            subMessage: '下記の持ち物が見つかりません',
-            items: missingItems.map((e) => e.toString()).toList(),
-            isSuccess: false,
-          );
-        }
-
-        if (allItems.isNotEmpty) {
-          return _buildResultCard(
-            message: '${allItems.length}つのアイテムを確認しました',
-            subMessage: '下記の持ち物があります',
-            items: allItems.map((e) => e.toString()).toList(),
-            isSuccess: true,
-          );
-        }
-
-        return _buildResultCard(
-          message: message.isNotEmpty ? message : '持ち物を確認しました',
-          subMessage: '忘れ物はありません',
-          items: [],
-          isSuccess: !message.contains('忘れ物'),
-        );
-      },
+    // TODO: デモ用ダミーデータ（本番では削除してStreamBuilderに戻す）
+    return _buildResultCard(
+      message: '4つのアイテムを確認しました',
+      subMessage: '下記の持ち物があります',
+      items: ['財布', '鍵', 'イヤホン', '定期'],
+      isSuccess: true,
     );
   }
 

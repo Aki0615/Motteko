@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>732989522720-jnmflu8a17041mni3m5n9u6u9qkf73q9.apps.googleusercontent.com</string>
+	<string>894146935785-9e09trk084c1l9u7pik83a7218ch0q1k.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.732989522720-jnmflu8a17041mni3m5n9u6u9qkf73q9</string>
+	<string>com.googleusercontent.apps.894146935785-9e09trk084c1l9u7pik83a7218ch0q1k</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDpNsNEEZOEG5S5i3Ld9w9xYHARqqmDeCM</string>
+	<string>AIzaSyA9lGw5U2VRwTk4IF0bShOGNSTF95jaknM</string>
 	<key>GCM_SENDER_ID</key>
-	<string>732989522720</string>
+	<string>894146935785</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.eiden.wasurenbo</string>
 	<key>PROJECT_ID</key>
-	<string>matsuriba-max</string>
+	<string>geek-haku</string>
 	<key>STORAGE_BUCKET</key>
-	<string>matsuriba-max.firebasestorage.app</string>
+	<string>geek-haku.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:732989522720:ios:aa46d41f53cbc916d70d45</string>
+	<string>1:894146935785:ios:d3b2cf84106a7983966978</string>
 </dict>
 </plist>

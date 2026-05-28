@@ -81,17 +81,31 @@ class NotificationService {
     // 通知タップでアプリが開かれた時
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationOpen);
 
-    // アプリ終了状態から通知タップで起動した場合
-    final initialMessage = await _firebaseMessaging.getInitialMessage();
-    if (initialMessage != null) {
-      _handleNotificationOpen(initialMessage);
-    }
-
-    // FCMトークン取得・保存
-    await saveFCMToken();
+    // アプリ終了状態から通知タップで起動した場合（APNs未到着時にハングするためタイムアウト付き）
+    try {
+      final initialMessage = await _firebaseMessaging
+          .getInitialMessage()
+          .timeout(const Duration(seconds: 5));
+      if (initialMessage != null) {
+        _handleNotificationOpen(initialMessage);
+      }
+    } catch (_) {}
 
     // トークンリフレッシュ時の更新
     _firebaseMessaging.onTokenRefresh.listen(_updateFCMTokenInFirestore);
+
+    // getToken()はAPNsトークン到着前にハングするため遅延実行
+    Future.delayed(const Duration(seconds: 5), () async {
+      try {
+        final token = await _firebaseMessaging.getToken().timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => null,
+        );
+        if (token != null) {
+          await _updateFCMTokenInFirestore(token);
+        }
+      } catch (_) {}
+    });
 
     _isInitialized = true;
   }
@@ -120,7 +134,10 @@ class NotificationService {
 
   Future<void> saveFCMToken() async {
     try {
-      final token = await _firebaseMessaging.getToken();
+      final token = await _firebaseMessaging.getToken().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () => null,
+      );
       if (token != null) {
         debugPrint('FCMトークン: $token');
         await _updateFCMTokenInFirestore(token);
