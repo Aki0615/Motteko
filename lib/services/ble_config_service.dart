@@ -10,11 +10,13 @@ class BleConfigService {
   static const String charUuidSsidStr = "12345678-1234-5678-1234-56789abcdef1";
   static const String charUuidPassStr = "12345678-1234-5678-1234-56789abcdef2";
   static const String charUuidUidStr = "12345678-1234-5678-1234-56789abcdef3";
+  static const String charUuidDeviceIdStr = "12345678-1234-5678-1234-56789abcdef4";
 
   final Guid serviceUuid = Guid(serviceUuidStr);
   final Guid charUuidSsid = Guid(charUuidSsidStr);
   final Guid charUuidPass = Guid(charUuidPassStr);
   final Guid charUuidUid = Guid(charUuidUidStr);
+  final Guid charUuidDeviceId = Guid(charUuidDeviceIdStr);
 
   Future<void> sendWifiInfo(String ssid, String password) async {
     final mottekoDevice = await _findMottekoDevice();
@@ -46,6 +48,24 @@ class BleConfigService {
       await uidCharacteristic.write(utf8.encode(uid), withoutResponse: false);
     } finally {
       await device.disconnect();
+    }
+  }
+
+  /// デバイスIDをM5Stackへ送信する
+  Future<void> sendDeviceId(String deviceId) async {
+    final mottekoDevice = await _findMottekoDevice();
+    try {
+      await mottekoDevice.connect(timeout: const Duration(seconds: 5));
+      final configService = await _discoverConfigService(mottekoDevice);
+
+      final deviceIdCharacteristic = _findCharacteristic(configService, charUuidDeviceId);
+      if (deviceIdCharacteristic == null) {
+        throw Exception('デバイスID送信用のCharacteristicが見つかりませんでした。');
+      }
+
+      await deviceIdCharacteristic.write(utf8.encode(deviceId), withoutResponse: false);
+    } finally {
+      await mottekoDevice.disconnect();
     }
   }
 

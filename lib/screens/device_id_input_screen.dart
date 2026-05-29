@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/app_colors.dart';
+import '../services/ble_config_service.dart';
 
 /// デバイスID登録画面
 class DeviceIdInputScreen extends StatefulWidget {
@@ -14,6 +15,8 @@ class DeviceIdInputScreen extends StatefulWidget {
 
 class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
   final TextEditingController _idController = TextEditingController();
+  final BleConfigService _bleService = BleConfigService();
+  bool _isSending = false;
 
   @override
   void dispose() {
@@ -158,7 +161,7 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: GestureDetector(
-                onTap: () async {
+                onTap: _isSending ? null : () async {
                   final deviceId = _idController.text.trim();
                   if (deviceId.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -170,26 +173,43 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
                     return;
                   }
 
+                  setState(() => _isSending = true);
+
                   // SharedPreferencesに保存
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.setString('motteko_device_id', deviceId);
 
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('デバイスを登録しました！'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    // ホーム画面へ戻る
-                    context.go('/');
+                  try {
+                    await _bleService.sendDeviceId(deviceId);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('デバイスIDをM5へ送信しました！'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      // ホーム画面へ戻る
+                      context.go('/');
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(e.toString().replaceFirst('Exception: ', '')),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  } finally {
+                    if (mounted) setState(() => _isSending = false);
                   }
                 },
                 child: Container(
                   width: double.infinity,
                   height: 50,
                   decoration: ShapeDecoration(
-                    color: AppColors.primary700,
+                    color: _isSending ? Colors.grey : AppColors.primary700,
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(width: 2, color: Colors.black),
                       borderRadius: BorderRadius.circular(8),
@@ -205,7 +225,7 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      '登録して設定を完了',
+                      _isSending ? '送信中...' : '登録して設定を完了',
                       style: GoogleFonts.zenMaruGothic(
                         color: Colors.white,
                         fontSize: 20,
