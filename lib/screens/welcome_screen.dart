@@ -166,7 +166,7 @@ class WelcomeScreen extends StatelessWidget {
             ),
             child: Center(
               child: Image.asset(
-                'assets/icons/Motteko_rogo2.png',
+                'assets/icons/logo/Motteko_rogo2.png',
                 width: 40,
                 height: 40,
               ),

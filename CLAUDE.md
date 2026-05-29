@@ -13,13 +13,23 @@ IoT忘れ物防止アプリ。ESP32-S3 CAMで玄関の持ち物をAI画像認識
 
 ```
 lib/
-├── core/           # テーマ(app_theme)、ルーティング(app_router)
+├── core/           # テーマ(app_theme)、ルーティング(app_router)、カラー定数
 ├── models/         # ItemModel, NotificationModel, SensorStatus
 ├── providers/      # AppState (ChangeNotifier + Provider)
 ├── screens/        # 各画面 (welcome, login_form, sign_in, home, items, camera, calendar, etc.)
-├── services/       # AuthService, NotificationService, DetectionService, BleConfigService, ApiService
-├── widgets/        # 共通ウィジェット (item_card, streak_celebration, etc.)
+├── services/       # AuthService, NotificationService, DetectionService, BleConfigService
+├── widgets/        # 共通ウィジェット (item_card, notification_card, streak_celebration)
 └── main.dart       # エントリポイント
+
+assets/
+├── icons/
+│   ├── nav/        # ナビゲーションバー用アイコン (nav_*.svg)
+│   ├── stat/       # ホーム画面ステータスカード用 (stat_*.svg)
+│   ├── calendar/   # カレンダー画面用 (calendar_streak_*.svg)
+│   ├── logo/       # アプリロゴ (Motteko_rogo*.png, app_icon)
+│   └── common/     # 背景装飾・共通アイコン (items_bg_decoration, camera_off, etc.)
+└── images/
+    └── welcome/    # ウェルカム画面イラスト
 ```
 
 ## Architecture

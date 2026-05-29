@@ -39,21 +39,17 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  fonts:
-    - family: LINESeedJP
-      fonts:
-        - asset: assets/fonts/LINESeedJP_A_OTF_Rg.otf
-        - asset: assets/fonts/LINESeedJP_A_OTF_Bd.otf
-          weight: 700
-
   assets:
-    - assets/fonts/
-    - assets/icons/
+    - assets/icons/nav/
+    - assets/icons/stat/
+    - assets/icons/calendar/
+    - assets/icons/logo/
+    - assets/icons/common/
     - assets/images/welcome/
 
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons/Motteko_app_icon.png"
+  image_path: "assets/icons/logo/Motteko_app_icon.png"
   min_sdk_android: 21
   remove_alpha_ios: true

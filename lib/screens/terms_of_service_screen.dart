@@ -18,7 +18,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             width: 360,
             height: 346.5,
             child: SvgPicture.asset(
-              'assets/icons/items_bg_decoration.svg',
+              'assets/icons/common/items_bg_decoration.svg',
               fit: BoxFit.fill,
             ),
           ),

@@ -70,7 +70,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             width: 360,
             height: 346.5,
             child: SvgPicture.asset(
-              'assets/icons/items_bg_decoration.svg',
+              'assets/icons/common/items_bg_decoration.svg',
               fit: BoxFit.fill,
             ),
           ),
@@ -151,7 +151,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             width: 126,
             height: 128,
             child: SvgPicture.asset(
-              'assets/icons/calendar_streak_box.svg',
+              'assets/icons/calendar/calendar_streak_box.svg',
               fit: BoxFit.contain,
             ),
           ),
@@ -173,7 +173,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         borderRadius: BorderRadius.circular(31.5),
                       ),
                       child: SvgPicture.asset(
-                        'assets/icons/calendar_streak_icon.svg',
+                        'assets/icons/calendar/calendar_streak_icon.svg',
                         width: 30,
                         height: 31,
                       ),
@@ -264,7 +264,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: Opacity(
               opacity: 0.2,
               child: Image.asset(
-                'assets/icons/box_icon2.png',
+                'assets/icons/common/box_icon2.png',
                 width: 140,
                 height: 140,
               ),
@@ -276,7 +276,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: Opacity(
               opacity: 0.18,
               child: Image.asset(
-                'assets/icons/box_icon2.png',
+                'assets/icons/common/box_icon2.png',
                 width: 120,
                 height: 120,
               ),
@@ -288,7 +288,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: Opacity(
               opacity: 0.22,
               child: Image.asset(
-                'assets/icons/box_icon2.png',
+                'assets/icons/common/box_icon2.png',
                 width: 150,
                 height: 150,
               ),
@@ -300,7 +300,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: Opacity(
               opacity: 0.15,
               child: Image.asset(
-                'assets/icons/box_icon2.png',
+                'assets/icons/common/box_icon2.png',
                 width: 100,
                 height: 100,
               ),

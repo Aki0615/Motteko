@@ -110,7 +110,7 @@ class LoginScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(19.69),
                 ),
               ),
-              child: Image.asset('assets/icons/Motteko_rogo.png', fit: BoxFit.cover),
+              child: Image.asset('assets/icons/logo/Motteko_rogo.png', fit: BoxFit.cover),
             ),
             const SizedBox(height: 16),
             Text(

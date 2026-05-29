@@ -41,7 +41,7 @@ class _CameraScreenState extends State<CameraScreen> {
             width: 360,
             height: 346.5,
             child: SvgPicture.asset(
-              'assets/icons/items_bg_decoration.svg',
+              'assets/icons/common/items_bg_decoration.svg',
               fit: BoxFit.fill,
             ),
           ),
@@ -160,7 +160,7 @@ class _CameraScreenState extends State<CameraScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/icons/camera_off.png',
+              'assets/icons/common/camera_off.png',
               width: 48,
               height: 48,
             ),
@@ -196,7 +196,7 @@ class _CameraScreenState extends State<CameraScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/icons/camera_off.png',
+                'assets/icons/common/camera_off.png',
                 width: 48,
                 height: 48,
               ),

@@ -27,7 +27,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             width: 360,
             height: 346.5,
             child: SvgPicture.asset(
-              'assets/icons/items_bg_decoration.svg',
+              'assets/icons/common/items_bg_decoration.svg',
               fit: BoxFit.fill,
             ),
           ),

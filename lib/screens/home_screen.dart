@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 360,
             height: 346.5,
             child: SvgPicture.asset(
-              'assets/icons/items_bg_decoration.svg',
+              'assets/icons/common/items_bg_decoration.svg',
               fit: BoxFit.fill,
             ),
           ),
@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         children: [
           _buildStatCard(
-            svgAsset: 'assets/icons/stat_calendar.svg',
+            svgAsset: 'assets/icons/stat/stat_calendar.svg',
             iconBg: AppColors.primary400,
             label: '連続日数',
             value: '${appState.consecutiveDaysWithoutForgetting}',
@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(width: 26),
           _buildStatCard(
-            svgAsset: 'assets/icons/stat_bell.svg',
+            svgAsset: 'assets/icons/stat/stat_bell.svg',
             iconBg: const Color(0xFFD1FAE5),
             label: '通知',
             value: '${appState.notificationCount}',
@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(width: 26),
           _buildStatCard(
-            svgAsset: 'assets/icons/stat_box.svg',
+            svgAsset: 'assets/icons/stat/stat_box.svg',
             iconBg: const Color(0xFFDBE8FF),
             label: '登録数',
             value: '${appState.items.length}',

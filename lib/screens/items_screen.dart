@@ -25,7 +25,7 @@ class ItemsScreen extends StatelessWidget {
             width: 360,
             height: 346.5,
             child: SvgPicture.asset(
-              'assets/icons/items_bg_decoration.svg',
+              'assets/icons/common/items_bg_decoration.svg',
               fit: BoxFit.fill,
             ),
           ),
@@ -140,7 +140,7 @@ class ItemsScreen extends StatelessWidget {
             ),
             child: Center(
               child: SvgPicture.asset(
-                'assets/icons/items_empty_box.svg',
+                'assets/icons/common/items_empty_box.svg',
                 width: 48,
                 height: 53,
               ),
@@ -384,7 +384,7 @@ class _ItemFormPageState extends State<_ItemFormPage> {
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: SvgPicture.asset('assets/icons/items_empty_box.svg', width: 18, height: 20),
+              child: SvgPicture.asset('assets/icons/common/items_empty_box.svg', width: 18, height: 20),
             ),
           ),
           Positioned(
