@@ -25,17 +25,17 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ============================================================
-            // ヘッダー
-            // ============================================================
-            Container(
-              width: double.infinity,
-              height: 60,
-              margin: const EdgeInsets.only(top: 48),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ============================================================
+              // ヘッダー
+              // ============================================================
+              Container(
+                width: double.infinity,
+                height: 60,
               padding: const EdgeInsets.symmetric(horizontal: 24),
               decoration: const BoxDecoration(
                 border: Border(
@@ -217,7 +217,8 @@ class _DeviceIdInputScreenState extends State<DeviceIdInputScreen> {
                 ),
               ),
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );

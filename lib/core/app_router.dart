@@ -282,47 +282,56 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
                   ],
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildNavItem(
-                      context: context,
-                      index: 0,
-                      selectedIndex: selectedIndex,
-                      icon: Icons.home_outlined,
-                      selectedIcon: Icons.home,
-                      label: 'ホーム',
+                    Expanded(
+                      child: _buildNavItem(
+                        context: context,
+                        index: 0,
+                        selectedIndex: selectedIndex,
+                        icon: Icons.home_outlined,
+                        selectedIcon: Icons.home,
+                        label: 'ホーム',
+                      ),
                     ),
-                    _buildSvgNavItem(
-                      context: context,
-                      index: 1,
-                      selectedIndex: selectedIndex,
-                      svgAsset: 'assets/icons/nav/nav_bag.svg',
-                      selectedSvgAsset: 'assets/icons/nav/nav_bag_active.svg',
-                      label: '持ち物',
+                    Expanded(
+                      child: _buildSvgNavItem(
+                        context: context,
+                        index: 1,
+                        selectedIndex: selectedIndex,
+                        svgAsset: 'assets/icons/nav/nav_bag.svg',
+                        selectedSvgAsset: 'assets/icons/nav/nav_bag_active.svg',
+                        label: '持ち物',
+                      ),
                     ),
-                    _buildSvgNavItem(
-                      context: context,
-                      index: 2,
-                      selectedIndex: selectedIndex,
-                      svgAsset: 'assets/icons/nav/nav_camera.svg',
-                      selectedSvgAsset: 'assets/icons/nav/nav_camera_active.svg',
-                      label: 'カメラ',
+                    Expanded(
+                      child: _buildSvgNavItem(
+                        context: context,
+                        index: 2,
+                        selectedIndex: selectedIndex,
+                        svgAsset: 'assets/icons/nav/nav_camera.svg',
+                        selectedSvgAsset: 'assets/icons/nav/nav_camera_active.svg',
+                        label: 'カメラ',
+                      ),
                     ),
-                    _buildSvgNavItem(
-                      context: context,
-                      index: 3,
-                      selectedIndex: selectedIndex,
-                      svgAsset: 'assets/icons/nav/nav_calendar.svg',
-                      selectedSvgAsset: 'assets/icons/nav/nav_calendar_active.svg',
-                      label: 'カレンダー',
+                    Expanded(
+                      child: _buildSvgNavItem(
+                        context: context,
+                        index: 3,
+                        selectedIndex: selectedIndex,
+                        svgAsset: 'assets/icons/nav/nav_calendar.svg',
+                        selectedSvgAsset: 'assets/icons/nav/nav_calendar_active.svg',
+                        label: 'カレンダー',
+                      ),
                     ),
-                    _buildSvgNavItem(
-                      context: context,
-                      index: 4,
-                      selectedIndex: selectedIndex,
-                      svgAsset: 'assets/icons/nav/nav_bell.svg',
-                      selectedSvgAsset: 'assets/icons/nav/nav_bell_active.svg',
-                      label: '通知',
+                    Expanded(
+                      child: _buildSvgNavItem(
+                        context: context,
+                        index: 4,
+                        selectedIndex: selectedIndex,
+                        svgAsset: 'assets/icons/nav/nav_bell.svg',
+                        selectedSvgAsset: 'assets/icons/nav/nav_bell_active.svg',
+                        label: '通知',
+                      ),
                     ),
                   ],
                 ),
@@ -366,12 +375,11 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
 
       child: Container(
-        width: 60,
         height: 60,
         decoration: isSelected
-            ? const BoxDecoration(
+            ? BoxDecoration(
                 color: AppColors.primary400,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(30),
               )
             : null,
         child: Column(
@@ -386,7 +394,7 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
             Text(
               label,
               maxLines: 1,
-              overflow: TextOverflow.visible,
+              overflow: TextOverflow.ellipsis,
               style: GoogleFonts.zenMaruGothic(
                 fontSize: 10,
                 fontWeight: FontWeight.w400,
@@ -413,12 +421,11 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
       onTap: () => _onItemTapped(index, context),
       behavior: HitTestBehavior.opaque,
       child: Container(
-        width: 60,
         height: 60,
         decoration: isSelected
-            ? const BoxDecoration(
+            ? BoxDecoration(
                 color: AppColors.primary400,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(30),
               )
             : null,
         child: Column(
@@ -433,7 +440,7 @@ class ScaffoldWithBottomNavBar extends StatelessWidget {
             Text(
               label,
               maxLines: 1,
-              overflow: TextOverflow.visible,
+              overflow: TextOverflow.ellipsis,
               style: GoogleFonts.zenMaruGothic(
                 fontSize: 10,
                 fontWeight: FontWeight.w400,

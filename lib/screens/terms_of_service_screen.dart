@@ -99,7 +99,8 @@ class TermsOfServiceScreen extends StatelessWidget {
             child: const Icon(Icons.description_outlined, size: 24, color: Colors.white),
           ),
           const SizedBox(width: 31),
-          Column(
+          Expanded(
+            child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -122,6 +123,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                 ),
               ),
             ],
+            ),
           ),
         ],
       ),
