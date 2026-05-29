@@ -198,7 +198,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       Text.rich(
                         TextSpan(children: [
                           TextSpan(
-                            text: streak.toString().padLeft(3, '0'),
+                            text: streak.toString(),
                             style: GoogleFonts.zenMaruGothic(
                               color: Colors.white,
                               fontSize: 64,
@@ -226,7 +226,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             curve: Curves.elasticOut,
                           ),
                       Text(
-                        streak > 0 ? '連続忘れ物なし！！' : '今日から記録スタート！',
+                        '連続忘れ物なし！！',
                         style: GoogleFonts.zenMaruGothic(
                           color: Colors.white,
                           fontSize: 14,
