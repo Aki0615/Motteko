@@ -1,1 +1,30 @@
-{"flutter":{"platforms":{"ios":{"default":{"projectId":"geek-haku","appId":"1:894146935785:ios:d3b2cf84106a7983966978","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"geek-haku","configurations":{"android":"1:894146935785:android:dc4b0d49e31312ef966978","ios":"1:894146935785:ios:d3b2cf84106a7983966978"}}},"android":{"default":{"projectId":"geek-haku","appId":"1:894146935785:android:dc4b0d49e31312ef966978","fileOutput":"android/app/google-services.json"}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "ios": {
+        "default": {
+          "projectId": "geek-haku",
+          "appId": "1:894146935785:ios:d3b2cf84106a7983966978",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "geek-haku",
+          "configurations": {
+            "android": "1:894146935785:android:dc4b0d49e31312ef966978",
+            "ios": "1:894146935785:ios:d3b2cf84106a7983966978"
+          }
+        }
+      },
+      "android": {
+        "default": {
+          "projectId": "geek-haku",
+          "appId": "1:894146935785:android:dc4b0d49e31312ef966978",
+          "fileOutput": "android/app/google-services.json"
+        }
+      }
+    }
+  }
+}
