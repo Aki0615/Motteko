@@ -155,7 +155,7 @@ class NotificationService {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
-          .update({'fcm_token': token});
+          .set({'fcm_token': token}, SetOptions(merge: true));
     } catch (e) {
       debugPrint('FCMトークン保存エラー: $e');
     }
