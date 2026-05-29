@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../core/constants/app_colors.dart';
+import '../../core/constants/app_colors.dart';
 
 /// デバイスID登録画面
 class DeviceIdInputScreen extends StatefulWidget {

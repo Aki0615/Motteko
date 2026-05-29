@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../providers/app_state.dart';
-import '../core/constants/app_colors.dart';
-import '../widgets/streak_celebration.dart';
+import '../../providers/app_state.dart';
+import '../../core/constants/app_colors.dart';
+import '../../widgets/streak_celebration.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});

@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'dart:async';
-import '../core/constants/app_colors.dart';
-import '../services/ble_config_service.dart';
+import '../../core/constants/app_colors.dart';
+import '../../services/ble_config_service.dart';
 
 
 class BluetoothScreen extends StatefulWidget {

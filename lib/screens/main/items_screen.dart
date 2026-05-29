@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../providers/app_state.dart';
-import '../models/item_model.dart';
-import '../widgets/item_card.dart';
-import '../core/app_theme.dart';
-import '../core/constants/app_colors.dart';
+import '../../providers/app_state.dart';
+import '../../models/item_model.dart';
+import '../../widgets/item_card.dart';
+import '../../core/app_theme.dart';
+import '../../core/constants/app_colors.dart';
 
 class ItemsScreen extends StatelessWidget {
   const ItemsScreen({super.key});

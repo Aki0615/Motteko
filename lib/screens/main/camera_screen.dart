@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../core/constants/app_colors.dart';
+import '../../core/constants/app_colors.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});

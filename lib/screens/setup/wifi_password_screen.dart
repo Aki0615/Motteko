@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../core/constants/app_colors.dart';
-import '../services/ble_config_service.dart';
+import '../../core/constants/app_colors.dart';
+import '../../services/ble_config_service.dart';
 
 class WifiPasswordScreen extends StatefulWidget {
   final String networkName;
