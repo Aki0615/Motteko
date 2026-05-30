@@ -112,15 +112,18 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 53),
-                      Text(
-                        '忘れ物を減らす。',
-                        style: GoogleFonts.zenMaruGothic(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.black1000,
-                          height: 0.9,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '忘れ物を減らす。',
+                          style: GoogleFonts.zenMaruGothic(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.black1000,
+                            height: 0.9,
+                          ),
+                          maxLines: 1,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
                       Text(
